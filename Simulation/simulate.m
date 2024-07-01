@@ -20,10 +20,10 @@ function simulate()
     fill_ratio = opts.filling_ratio;        % WARNING : this is a volumic ratio and MUST NOT be confused with x, massic vapor ratio.
     V_tank = opts.V_tank;                               % The volume of the tank (m^3).
 
-    rho_liq = py.CoolProp.CoolProp.PropsSI('D', 'T', opts.T_tank_init, 'Q', 0, 'NitrousOxide');      % Density for liquid N2O (kg/m^3).
-    rho_vap = py.CoolProp.CoolProp.PropsSI('D', 'T', opts.T_tank_init, 'Q', 1, 'NitrousOxide');      % Density for vapor N2O (kg/m^3).
-    u_liq = py.CoolProp.CoolProp.PropsSI('U', 'T', opts.T_tank_init, 'Q', 0, 'NitrousOxide');        % Specific internal energy for liquid N2O (J/kg).
-    u_vap = py.CoolProp.CoolProp.PropsSI('U', 'T', opts.T_tank_init, 'Q', 1, 'NitrousOxide');        % Specific internal energy for vapor N2O (J/kg).
+    rho_liq = py.CoolProp.CoolProp.PropsSI('D', 'T', opts.T_tank_init, 'Q', 0, 'NitrousOxide');        % Density for liquid N2O (kg/m^3).
+    rho_vap = py.CoolProp.CoolProp.PropsSI('D', 'T', opts.T_tank_init, 'Q', 1, 'NitrousOxide');        % Density for vapor  N2O (kg/m^3).
+    u_liq   = py.CoolProp.CoolProp.PropsSI('U', 'T', opts.T_tank_init, 'Q', 0, 'NitrousOxide');        % Specific internal energy for liquid N2O (J/kg).
+    u_vap   = py.CoolProp.CoolProp.PropsSI('U', 'T', opts.T_tank_init, 'Q', 1, 'NitrousOxide');        % Specific internal energy for vapor N2O (J/kg).
     
     m_liq = fill_ratio * V_tank * rho_liq;              % The liquid mass is the liquid volume in the tank times the liquid density (kg).
     m_vap = (1 - fill_ratio) * V_tank * rho_vap;        % The liquid mass is the remaining volume in the tank times the vapor density (kg).
