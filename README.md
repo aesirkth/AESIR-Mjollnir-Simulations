@@ -3,8 +3,12 @@
 This repository contains the simulation code for AESIR's NOx/Paraffin hybrid Mjollnir rocket.
 
 ## Usage
+#### Step 1:
+To install the python dependencies, run installer.bat
 
-Simply run main.m to simulate and plot the results, where you can also set the most important tunable parameters. To plot the simulations along with data: process data or download processed data from the AESIR Google Drive (Mjollnir/Procedures and tests), store it somewhere convenient, and change the file path in the main.
+
+#### step 2: 
+Run main.m to simulate and plot the results, where you can also set the most important tunable parameters. To plot the simulations along with data: process data or download processed data from the AESIR Google Drive (Mjollnir/Procedures and tests), store it somewhere convenient, and change the file path in the main.
 
 ## Repository structure
 
@@ -21,3 +25,4 @@ Simply run main.m to simulate and plot the results, where you can also set the m
 - main.m: The main interface, where you need to be for basic usage.
 - set_options.m: Sets options and contains additional non-tunable model parameters (although they can, of course, be changed).
 - setup.m: Initializes the workspace so that we start with a clean slate and all relevant files are added to the path.
+- installer.bat: installs the neccesary python, conda and coolprop dependencies.
