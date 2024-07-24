@@ -15,28 +15,28 @@
 setup;
 
 %% User settings.
-run_simulation = true;       % True if the simulation should be run, if false it will load the most recent simulation.
-process_data = false;        % TODO: it would be nice to integrate this more properly into the main.
+run_simulation = true;                          % True if the simulation should be run, if false it will load the most recent simulation.
+process_data = false;                           % TODO: it would be nice to integrate this more properly into the main.
 data_name = "Datasets/HT-2/ht21_large.mat";
 
-plot_data = false;           % True if the data should be plot together with the simulations.
-save_plots = true;           % True if the resulting plots should be saved.
-debug_plot = false;
+plot_data     = false;                          % True if the data should be plot together with the simulations.
+save_plots    = true;                           % True if the resulting plots should be saved.
+debug_plot    = false;
 
 %% Simulation settings:
-quick = false;               % True if quick simulation should be done. Less accurate, but useful for tuning.
-static = true;               % True if simulation should be for a static fire, otherwise it is done for flight.
-full_duration = false;       % True if the tank parameters should be set to a full-duration burn, otherwise short-duration parameters are used.
-model = 'Moody';             % Mass flow model, one of {'Moody', 'Dyer'}. Uses Moody by default.
+quick         = false;                          % True if quick simulation should be done. Less accurate, but useful for tuning.
+static        = true;                           % True if simulation should be for a static fire, otherwise it is done for flight.
+full_duration = false;                          % True if the tank parameters should be set to a full-duration burn, otherwise short-duration parameters are used.
+model         = 'Moody';                        % Mass flow model, one of {'Moody', 'Dyer'}. Uses Moody by default.
 
 
 
 
 
-%% Run or load simulations.
+%% Run or load simulation.
 if run_simulation
-    %% Run simulations.
-    initiate_mjolnir;
+    %% Run simulation.
+    initiate_mjolnir; % <---- [Go here to change mjolnir's parameters]
     simulate(mjonlir);
 end
 simulation = load("simulation_results.mat");

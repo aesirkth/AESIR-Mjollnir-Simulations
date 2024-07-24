@@ -1,5 +1,10 @@
 function state_vector = comp2state_vector(comp, state_vector)
 
+
+state_vector(1:3)   =  comp.position;
+state_vector(4:6)   =  comp.velocity;
+state_vector(7:9)   =  comp.angular_momentum;
+state_vector(10:18) =  reshape(comp.attitude, 9,1);
 state_vector(19:32) = [comp.m_ox_init;             % The oxidizer mass.
                        comp.U_total_init;          % The total energy inside the tank.
                        comp.opts.T_wall_init;      % The tank wall temperature.
