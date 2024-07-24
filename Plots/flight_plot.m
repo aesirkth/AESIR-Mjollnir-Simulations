@@ -1,6 +1,6 @@
+function flight_plot(comp, simulation)
 %% Flight plots.
 
-global opts
 
 rows = 2;
 columns = 4;
@@ -9,14 +9,14 @@ fig.WindowState = 'maximized';
 pause(0.1)  % Needed to make sure maximization takes effect before saving.
 sgtitle("Flight", 'FontSize', 20, 'Color', 'Red', 'FontWeight', 'bold')
 
-m_fuel = opts.rho_fuel * opts.L_fuel * pi * (opts.D_cc_int.^2 / 4 - simulation.r_cc.^2);
+m_fuel = comp.rho_fuel * comp.L_fuel * pi * (comp.D_cc_int.^2 / 4 - simulation.r_cc.^2);
 
 
 v = sqrt(simulation.vx.^2 + simulation.vy.^2);
 acc = sqrt(simulation.ax.^2 + simulation.ay.^2);
 
 Cd = drag_coefficient_model(v, simulation.speed_of_sound);
-D = Cd .* 0.5 .* simulation.rho_ext .* v.^2 .* opts.surface;
+D = Cd .* 0.5 .* simulation.rho_ext .* v.^2 .* comp.surface;
 
 Dx = D .* simulation.vx ./ v;
 Dy = D .* simulation.vy ./ v;
@@ -76,8 +76,8 @@ axis padded
 subplot(rows, columns, 5)
 plot(simulation.x / 1000, simulation.y / 1000)
 hold on
-yline(opts.design_altitude / 1000, '--', 'Color', '#77AC30')
-yline(opts.required_altitude / 1000, '--', 'Color', '#D95319')
+yline(comp.design_altitude / 1000, '--', 'Color', '#77AC30')
+yline(comp.required_altitude / 1000, '--', 'Color', '#D95319')
 hold off
 
 title("Trajectory")
@@ -90,14 +90,14 @@ axis padded
 subplot(rows, columns, 6)
 plot(simulation.t, simulation.y / 1000)
 hold on
-yline(opts.design_altitude / 1000, '--', 'Color', '#77AC30')
-yline(opts.required_altitude / 1000, '--', 'Color', '#D95319')
+yline(comp.design_altitude / 1000, '--', 'Color', '#77AC30')
+yline(comp.required_altitude / 1000, '--', 'Color', '#D95319')
 hold off
 
 title("Height")
 xlabel("Time (s)")
 ylabel("Height (km)")
-ylim([0, opts.design_altitude / 1000])
+ylim([0, comp.design_altitude / 1000])
 legend("Trajectory", "Design", "Required", 'Location', 'southeast')
 axis padded
 
@@ -120,7 +120,7 @@ ylabel("Dynamic pressure (bar)")
 axis padded
 
 %% Save plots.
-if opts.save_plots
+if evalin("base","save_plots")
     % Rename old plot for easy comparison.
     if exist('./Plots/flight_plot.fig', 'file') == 2
         movefile('./Plots/flight_plot.fig', './Plots/flight_plot_old.fig')

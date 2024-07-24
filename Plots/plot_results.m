@@ -6,9 +6,9 @@ disp("---------------------------------")
 disp(" ")
 
 close all
-flight_plot();
-thrust_plot();
-combustion_plot();
+flight_plot    (mjolnir, simulation);
+thrust_plot    (mjolnir, simulation);
+combustion_plot(mjolnir, simulation);
 
 % sensor_plot;
 

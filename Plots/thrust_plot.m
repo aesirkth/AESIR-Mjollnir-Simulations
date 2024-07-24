@@ -1,6 +1,6 @@
-%% Thrust plots.
+function thrust_plot(comp, simulation)
 
-global opts
+%% Thrust plots.
 
 rows = 2;
 columns = 3;
@@ -8,7 +8,7 @@ fig = figure(2);
 fig.WindowState = 'maximized';
 sgtitle("Thrust", 'FontSize', 20, 'Color', 'Green', 'FontWeight', 'bold')
 
-if opts.full_duration
+if evalin("base", "full_duration")
     t_burn = 25;
 else
     t_burn = 8;
@@ -21,8 +21,8 @@ t_data = linspace(0, t_burn, 1000);
 subplot(rows, columns, 1);
 plot(t_sim, simulation.F(sim_ind) / 1000)
 hold on
-plot(t_sim, opts.combustion_efficiency * simulation.F(sim_ind) / 1000)
-if opts.plot_data
+plot(t_sim, comp.combustion_efficiency * simulation.F(sim_ind) / 1000)
+if evalin("base","plot_data")
     plot(t_data, data.THRUST_I(t_data), '--', 'Color', '#EDB120');
 end
 hold off
@@ -30,7 +30,7 @@ hold off
 title("Thrust")
 xlabel("Time (s)")
 ylabel("Thrust (kN)")
-if opts.plot_data
+if evalin("base","plot_data")
     legend("Ideal", "Estimated", "Actual", 'Location', 'southeast')
 else
     legend("Ideal", "Estimated", 'Location', 'southeast')
@@ -39,7 +39,7 @@ axis padded
 
 %% Specific impulse.
 subplot(rows, columns, 2)
-Isp = simulation.F ./ (opts.g .* simulation.mf_throat);
+Isp = simulation.F ./ (comp.g .* simulation.mf_throat);
 plot(t_sim, Isp(sim_ind))
 
 title("Specific impulse")
@@ -84,7 +84,7 @@ ylabel("Mach")
 axis padded
 
 %% Save plots.
-if opts.save_plots
+if evalin("base","save_plots")
     % Rename old plot for easy comparison.
     if exist('./Plots/thrust_plot.fig', 'file') == 2
         movefile('./Plots/thrust_plot.fig', './Plots/thrust_plot_old.fig')

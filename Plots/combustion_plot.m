@@ -1,6 +1,5 @@
+function combustion_plot(comp, simulation)
 %% Combustion plots.
-
-global opts
 
 rows = 2;
 columns = 4;
@@ -8,7 +7,7 @@ fig = figure(1);
 fig.WindowState = 'maximized';
 sgtitle("Combustion", 'FontSize', 20, 'Color', 'blue', 'FontWeight', 'bold')
 
-if opts.full_duration
+if evalin("base","full_duration")
     t_burn = 25;
 else
     t_burn = 8;
@@ -21,8 +20,8 @@ t_data = linspace(0, t_burn, 1000);
 subplot(rows, columns, 1);
 plot(t_sim, simulation.r_cc(sim_ind) * 1000)
 hold on
-yline(opts.D_cc_int / 2 * 1000, '--', 'Color', '#A2142F')
-yline(opts.fuel_margin_radius * 1000, '--', 'Color', '#D95319')
+yline(comp.D_cc_int / 2 * 1000, '--', 'Color', '#A2142F')
+yline(comp.fuel_margin_radius * 1000, '--', 'Color', '#D95319')
 hold off
 
 title("Port radius")
@@ -60,7 +59,7 @@ axis padded
 subplot(rows, columns, 4)
 A_port = pi * simulation.r_cc'.^2;
 G_Ox = simulation.mf_ox ./ A_port;
-drdt = opts.a * G_Ox.^opts.n;
+drdt = comp.a * G_Ox.^comp.n;
 plot(t_sim, drdt(sim_ind) * 1000)
 
 title("Fuel regression rate")
@@ -74,7 +73,7 @@ plot(t_sim, simulation.mf_ox(sim_ind))
 hold on
 plot(t_sim, simulation.mf_fuel(sim_ind))
 plot(t_sim, simulation.mf_throat(sim_ind))
-if opts.plot_data
+if evalin("base","plot_data")
     % TODO: Might be nice to incorporate computations into data processing.
     time = data.TANK_WEIGHT_DATA(:, 1);
     weight = data.TANK_WEIGHT_DATA(:, 2);
@@ -88,7 +87,7 @@ hold off
 title("Mass flow")
 xlabel("Time (s)")
 ylabel("Mass flow (kg/s)")
-if opts.plot_data
+if evalin("base","plot_data")
     legend("Oxidizer", "Fuel", "Throat", "Oxidizer (actual)", 'Location', 'east')
 else
     legend("Oxidizer", "Fuel", "Throat", 'Location', 'east')
@@ -110,18 +109,18 @@ plot(t_sim, simulation.P_tank(sim_ind) / 10^6)
 hold on
 plot(t_sim, simulation.P_cc(sim_ind) / 10^6)
 plot(t_sim, simulation.P_ex(sim_ind) / 10^6)
-if opts.plot_data
+if evalin("base","plot_data")
     % Plot actual top and bottom pressure (divide by 10 for bar to MPa conversion and add atmospheric pressure).
-    plot(t_data, data.PTRAN_1_I(t_data) / 10 + opts.P_atm / 1e6, '--', 'Color', '#0072BD');
-    plot(t_data, data.PTRAN_2_I(t_data) / 10 + opts.P_atm / 1e6, ':', 'Color', '#0072BD');
-    plot(t_data, data.PTRAN_4_I(t_data) / 10 + opts.P_atm / 1e6, '--', 'Color', '#D95319');
+    plot(t_data, data.PTRAN_1_I(t_data) / 10 + comp.P_atm / 1e6, '--', 'Color', '#0072BD');
+    plot(t_data, data.PTRAN_2_I(t_data) / 10 + comp.P_atm / 1e6, ':', 'Color', '#0072BD');
+    plot(t_data, data.PTRAN_4_I(t_data) / 10 + comp.P_atm / 1e6, '--', 'Color', '#D95319');
 end
 hold off
 
 title("Pressure")
 xlabel("Time (s)")
 ylabel("Pressure (MPa)")
-if opts.plot_data
+if evalin("base","plot_data")
     legend("Tank", "CC", "Exhaust", "Top (actual)", "Bottom (actual)", "CC (actual)", 'Location', 'northeast')  % Note: Tank pressure at saturation.
 else
     legend("Tank", "CC", "Exhaust", 'Location', 'northeast')  % Note: Tank pressure at saturation.
@@ -132,7 +131,7 @@ axis padded
 subplot(rows, columns, 8)
 plot(t_sim, simulation.V_liq(sim_ind) * 1000)
 hold on
-yline(opts.V_tank * 1000, '--', 'Color', '#D95319')
+yline(comp.V_tank * 1000, '--', 'Color', '#D95319')
 hold off
 
 title("N2O volume in tank")
@@ -142,7 +141,7 @@ legend("Volume", "Full", 'Location', 'east')
 axis padded
 
 %% Save plots.
-if opts.save_plots
+if evalin("base","save_plots")
     % Rename old plot for easy comparison.
     if exist('./Plots/combustion_plot.fig', 'file') == 2
         movefile('./Plots/combustion_plot.fig', './Plots/combustion_plot_old.fig')
