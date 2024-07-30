@@ -1,5 +1,5 @@
 function [comp,state_vector_derivative] = apply_propulsion_model(comp, state_vector_derivative)
-
+% This model is based on the following literature: https://arc.aiaa.org/doi/10.2514/6.2013-4045
 
    
     if comp.position(3) < 0; comp.position(3) = 0; end % Fix atmoscoesa warnings.end
