@@ -69,7 +69,7 @@ axis padded
 subplot(rows, columns, 5)
 plot(t_sim, simulation.A_t(sim_ind))
 
-title("Nozlle exit area")
+title("Nozzle exit area")
 xlabel("Time (s)")
 ylabel("Area (m²)")
 axis padded

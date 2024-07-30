@@ -1,14 +1,13 @@
-function mf_ox = mass_flow_oxidizer(T_tank, P_tank, P_cc)
+function mf_ox = mass_flow_oxidizer(comp)
     %MASS_FLOW_FUEL calculates the mass flow of the fuel
-    global opts
     
-    if strcmp(opts.model, 'Dyer')
-        [P_cc_range, mf_crit] = critical_mf_Dyer(P_tank, T_tank);
+    if strcmp(evalin("base", "model"), 'Dyer')
+        [P_cc_range, mf_crit] = critical_mf_Dyer(comp);
     else
         % Use Moody by default.
-        [P_cc_range, mf_crit] = critical_mf_Moody(P_tank, T_tank, opts.Cd);
+        [P_cc_range, mf_crit] = critical_mf_Moody(comp);
     end
     
-    mf_ox = interp1(P_cc_range, mf_crit, P_cc);
+    mf_ox = interp1(P_cc_range, mf_crit, comp.P_cc);
 end
 

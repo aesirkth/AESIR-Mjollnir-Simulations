@@ -1,6 +1,6 @@
 clc
-clear
-clear global
+% clear
+% clear global
 
 
 %% Adding paths to sub-folders:
@@ -10,6 +10,14 @@ addpath('./Simulation/Combustion');
 addpath('./Simulation/Flight');
 addpath('./Simulation/Thrust');
 addpath('./Plots');
+addpath('./Assets');
+addpath('./Methods');
+addpath('./STLRead');
+addpath('./UI');
+addpath('./Data');
+if isfolder('../colorthemes/')
+addpath('../colorthemes/'); 
+end
 
 
 %% Python-setup:
@@ -30,6 +38,7 @@ disp("Loading of CoolProp package failed. Run installer.bat to install CoopProp 
 end
 
 
+p = gcp;
 
 
 

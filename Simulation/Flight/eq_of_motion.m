@@ -1,46 +1,45 @@
-function [d2xdt2, d2ydt2] = eq_of_motion(Tf,m_ox,m_fuel,y,vx,vy,speed_of_sound,rho_ext)
+function [d2xdt2, d2ydt2] = eq_of_motion(comp)
 
-    global opts
 
-    %EQOFMOTION Summary of this function goes here
+    %EQOFMOTION Summarcomp.y of this function goes here
     %   Detailed explanation goes here
     
     
-    v=sqrt(vx.^2+vy.^2);
-    m = opts.dry_mass+m_ox+m_fuel;
-    angle = opts.launch_angle;
-    Cd = drag_coefficient_model(v, speed_of_sound);
-    frontal_area = opts.surface;
+    v=sqrt(comp.dxdt.^2+ comp.dydt.^2);
+    m = comp.dry_mass+comp.m_ox+comp.m_fuel;
+    angle = comp.launch_angle;
+    Cd = drag_coefficient_model(v, comp.speed_of_sound);
+    frontal_area = comp.surface;
     
-    D= Cd .* 0.5 .* rho_ext .* v.^2 .* frontal_area;
+    D= Cd .* 0.5 .* comp.rho_ext .* v.^2 .* frontal_area;
     
-    g=gravity_model(y);
+    g=gravity_model(comp.y);
     
     
-    if opts.static %static fire
+    if evalin("base", "static") %static fire
         d2xdt2 = 0;
         d2ydt2 = 0;
     else %flight condition
-        if v<10 || y<0
+        if v<10 || comp.y<0
             Dx = 0;
             Dy = 0;
-            Tfx = Tf.*cosd(angle);
-            Tfy = Tf.*sind(angle);
+            comp.Fx = comp.F.*cosd(angle);
+            comp.Fy = comp.F.*sind(angle);
         else
-            Dx = D.*vx./v;
-            Dy = D.*vy./v;
-            Tfx = Tf.*vx./v;
-            Tfy = Tf.*vy./v;
+            Dx = D.*comp.dxdt./v;
+            Dy = D.*comp.dydt./v;
+            comp.Fx = comp.F.*comp.dxdt./v;
+            comp.Fy = comp.F.*comp.dydt./v;
         end
     
-        d2xdt2=(Tfx-Dx)./m;
-        d2ydt2=-g+(Tfy-Dy)./m;
+        d2xdt2=(comp.Fx-Dx)./m;
+        d2ydt2=-g+(comp.Fcomp.y-Dy)./m;
         
         %     disp("Drag (N) : "+D)
         %     disp("Dx : "+Dx)
-        %     disp("Dy : "+Dy)  
-        %     disp("Thrust (N) : "+Tf)
+        %     disp("Dcomp.y : "+Dcomp.y)  
+        %     disp("Thrust (N) : "+comp.F)
         %     disp("a_x (g) : "+d2xdt2./g)
-        %     disp("a_y (g) : "+d2ydt2./g)  
+        %     disp("a_comp.y (g) : "+d2comp.ydt2./g)  
     end
 end

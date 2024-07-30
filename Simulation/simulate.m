@@ -33,22 +33,24 @@ function simulate(comp)
     % ode_opts = odeset('MaxStep', 0.05);
     % [t, state] = ode23tb(@system_equations, t_range,  initial_state_vector, ode_opts);
     if evalin("base", "quick") == false
-        [t, state] = ode23t(@system_equations, t_range,  initial_state_vector);
+        [t, state] = ode23t(@(t,state_vector) system_equations(t,state_vector,comp), t_range,  initial_state_vector);
     else
-        [t, state] = ode45(@system_equations, t_range,  initial_state_vector);
+        [t, state] = ode45( @(t,state_vector) system_equations(t,state_vector,comp), t_range,  initial_state_vector);
     end
     
 
     %% Post-compute recuperation of data.
     disp(" ")
     disp("---------------------------------")
-    disp("Collecting results...") 
+    disp("Plotting:") 
     disp("---------------------------------")
     disp(" ")
 
 
-
-    post_processing
+    %post_processing
     
     toc
+    
+    my_ui = ui;
+    
 end

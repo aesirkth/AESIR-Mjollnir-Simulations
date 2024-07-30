@@ -1,10 +1,9 @@
-function m_dot_th = mass_flow_throat(P_cc,OF,At)
-%MASS_FLOW_TH calculates the mass flow of that goes through the throat
+function m_dot_th = mass_flow_throat(comp)
+%m_dot_th calculates the mass flow of that goes through the throat
 
-global opts
-c_star = interp1q(opts.OF_set, opts.c_star_set, OF);
+c_star = interp1q(comp.OF_set, comp.c_star_set, comp.OF);
 
-m_dot_th = P_cc*At/c_star;
+m_dot_th = comp.P_cc*comp.A_t/c_star;
 
 end
 

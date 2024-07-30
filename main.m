@@ -35,19 +35,62 @@ model         = 'Moody';                        % Mass flow model, one of {'Mood
 
 %% Run or load simulation.
 if run_simulation
-    %% Run simulation.
+    %% Initialization.
+    
+    disp("---------------------------------")
+    disp("Intitialization...") 
+    disp("---------------------------------")
+    disp(" ")
+    
     initiate_mjolnir; % <---- [Go here to change mjolnir's parameters]
-    simulate(mjonlir);
-end
-simulation = load("simulation_results.mat");
+    pre_processing
+    
+  
+    %% Set simulation time.
+    t0      = 0;                  % Initial time of ignition.
+    t_max   = 0.1;                % Final time.
+    t_range = [t0 t_max];         % Integration interval.
+    
+    tic
 
-%% Data processing.
-if process_data
-    disp("")          %% TODO: data processing.
-else
-    data = load(data_name); 
-    data = data.data;
+    %% Solve differential equations.
+    disp("---------------------------------")
+    disp("Solving differential equations...") 
+    disp("---------------------------------")
+    disp(" ")
+    
+    % tol = odeset('RelTol',1e-5,'AbsTol',1e-6);
+
+     initial_state_vector = comp2state_vector(mjolnir, zeros(28,1));
+    
+    % Solve ODE initial value problem.
+
+    if quick; [t, state] = ode45( @(t,state_vector) system_equations(t,state_vector,mjolnir), t_range,  initial_state_vector);
+    else;     [t, state] = ode23t(@(t,state_vector) system_equations(t,state_vector,mjolnir), t_range,  initial_state_vector);
+    end
+    
+    state = state';
+
+    disp(" ")
+    disp("---------------------------------")
+    disp("Done.") 
+    disp("---------------------------------")
+    disp(" ")
+    
+    toc
+
 end
 
-%% Plot the simulation results.
-plot_results;
+% %% Plotting:
+% my_ui = ui;
+% my_ui.TSlider.Limits = t_range;
+% 
+% if isfolder('../colorthemes/'); aesir_purple(); end
+% light(my_ui.ax)
+% annotation(my_ui.UIFigure,'rectangle',[0 0 1 1],'Color',[1 1 1]);
+% az = 45;
+% index = 1; drawnow
+% 
+% while ui_running
+% update_ui
+% end
