@@ -5,7 +5,7 @@ state_vector(1:3)   =  comp.position;
 state_vector(4:6)   =  comp.velocity;
 state_vector(7:9)   =  comp.angular_momentum;
 state_vector(10:18) =  reshape(comp.attitude, 9,1);
-state_vector(19:28) = [comp.m_ox;                  % The oxidizer mass.
+state_vector(19:29) = [comp.m_ox;                  % The oxidizer mass.
                        comp.U_total;               % The total energy inside the tank.
                        comp.T_wall;                % The tank wall temperature.
                        comp.r_cc;                  % The radius of the combustion chamber.
@@ -14,7 +14,8 @@ state_vector(19:28) = [comp.m_ox;                  % The oxidizer mass.
                        comp.mass;
                        comp.h_liq;
                        comp.h_gas;
-                       comp.h_air_ext];
+                       comp.h_air_ext;
+                       comp.active_burn_flag];
 
 
 

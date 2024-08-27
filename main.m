@@ -12,22 +12,28 @@
         - Tweak a and n.
         - This data has not been available yet, so beware that these parameters are not tuned.
 %}
-setup;
+setup; clc
 
 %% User settings.
-run_simulation = true;                          % True if the simulation should be run, if false it will load the most recent simulation.
-process_data = false;                           % TODO: it would be nice to integrate this more properly into the main.
-data_name = "Datasets/HT-2/ht21_large.mat";
+run_simulation         = false;                  % True if the simulation should be run, if false it will load the most recent simulation.
+process_data           = false;                  % TODO: it would be nice to integrate this more properly into the main.
+plot_data              = true;                   % True if the data should be plot together with the simulations.
+data_name              = "Datasets/test8.mat";
 
-plot_data     = false;                          % True if the data should be plot together with the simulations.
-save_plots    = true;                           % True if the resulting plots should be saved.
-debug_plot    = false;
+
+save_plots             = false;                  % True if the resulting plots should be saved.
+debug_plot             = false;
 
 %% Simulation settings:
-quick         = false;                          % True if quick simulation should be done. Less accurate, but useful for tuning.
-static        = true;                           % True if simulation should be for a static fire, otherwise it is done for flight.
-full_duration = false;                          % True if the tank parameters should be set to a full-duration burn, otherwise short-duration parameters are used.
-model         = 'Moody';                        % Mass flow model, one of {'Moody', 'Dyer'}. Uses Moody by default.
+quick                  = false;                 % True if quick simulation should be done. Less accurate, but useful for tuning.
+static                 = false;                 % True if simulation should be for a static fire, otherwise it is done for flight.
+full_duration          = true;                  % True if the tank parameters should be set to a full-duration burn, otherwise short-duration parameters are used.
+model                  = 'Moody';               % Mass flow model, one of {'Moody', 'Dyer'}. Uses Moody by default.
+
+
+
+
+
 
 
 
@@ -36,61 +42,100 @@ model         = 'Moody';                        % Mass flow model, one of {'Mood
 %% Run or load simulation.
 if run_simulation
     %% Initialization.
-    
-    disp("---------------------------------")
-    disp("Intitialization...") 
-    disp("---------------------------------")
-    disp(" ")
-    
-    initiate_mjolnir; % <---- [Go here to change mjolnir's parameters]
+
+    if isfile(data_name); warning("File name already exists, file will be overwritten upon simulation completion."); end
+
+    initiate_terrain;
+    mjolnir = initiate_mjolnir; % <---- [Go here to change mjolnir's parameters]
     pre_processing
     
-  
+
+
     %% Set simulation time.
     t0      = 0;                  % Initial time of ignition.
-    t_max   = 0.1;                % Final time.
-    t_range = [t0 t_max];         % Integration interval.
+    t_max   = 80;                 % Final time.
+    t_range = t0:0.01:t_max;         % Integration interval.
     
     tic
-
-    %% Solve differential equations.
-    disp("---------------------------------")
-    disp("Solving differential equations...") 
-    disp("---------------------------------")
-    disp(" ")
     
-    % tol = odeset('RelTol',1e-5,'AbsTol',1e-6);
+    %% Solve differential equations.
 
-     initial_state_vector = comp2state_vector(mjolnir, zeros(28,1));
+    % tol = odeset('RelTol',1e-5,'AbsTol',1e-6);
+    opts = odeset("Refine",10);
+    loading_message = "Simulating " + data_name + ":";
+    loading_bar = waitbar(0, loading_message);
+    initial_state_vector = comp2state_vector(mjolnir, zeros(28,1));
     
     % Solve ODE initial value problem.
-
-    if quick; [t, state] = ode45( @(t,state_vector) system_equations(t,state_vector,mjolnir), t_range,  initial_state_vector);
-    else;     [t, state] = ode23t(@(t,state_vector) system_equations(t,state_vector,mjolnir), t_range,  initial_state_vector);
+    
+    if quick; solution = ode45( @(t,state_vector) system_equations(t,state_vector,mjolnir), t_range,  initial_state_vector, opts);
+    else;     solution = ode23t(@(t,state_vector) system_equations(t,state_vector,mjolnir), t_range,  initial_state_vector, opts);
     end
     
-    state = state';
-
-    disp(" ")
-    disp("---------------------------------")
-    disp("Done.") 
-    disp("---------------------------------")
-    disp(" ")
     
-    toc
+    simulation_time = toc;
+    waitbar(1,loading_bar,  "Done! Elapsed simulation time: " +string(simulation_time)+" s");
+    close(loading_bar);
+    save(data_name)
+    
+end
+
+
+
+
+if process_data
+%% Post-processing:
+    
+    load(data_name)
+    
+    if isfile(data_name); warning("File name already exists, file will be overwritten upon simulation completion."); end
+
+    loading_message = "Post-processing " + data_name + ":";
+    loading_bar = waitbar(0, loading_message);
+
+
+    t     = solution.x(  1:3:end);
+    state = solution.y(:,1:3:end);
+
+
+
+    [mjolnir_historian, mjolnir] = create_historian(mjolnir,t);
+   
+    tic
+    
+    for time_index = 1:numel(t)
+    
+    mjolnir_historian = record_history(mjolnir, ...
+                                       state(:,time_index), ...
+                                       t(time_index), ...
+                                       time_index,...
+                                       mjolnir_historian);
+    end
+
+    post_processing_time = toc;
+    waitbar(1,loading_bar,  "Done! Elapsed post-processing time: " +string(post_processing_time)+" s");
+    close(loading_bar)
+    save(data_name)
+    
+    
+    
+    
 
 end
 
-% %% Plotting:
-% my_ui = ui;
-% my_ui.TSlider.Limits = t_range;
-% 
-% if isfolder('../colorthemes/'); aesir_purple(); end
-% light(my_ui.ax)
-% annotation(my_ui.UIFigure,'rectangle',[0 0 1 1],'Color',[1 1 1]);
-% az = 45;
-% index = 1; drawnow
-% 
-% while ui_running
-% update_ui
-% end
+
+
+
+if plot_data
+    %% Plotting:
+    
+    load(data_name)
+    initiate_terrain
+    initiate_ui
+    
+    while ui_running
+    update_ui
+    end
+
+
+end

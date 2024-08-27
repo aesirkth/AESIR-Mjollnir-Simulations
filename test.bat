@@ -1,0 +1,2 @@
+Pause
+exit 1
