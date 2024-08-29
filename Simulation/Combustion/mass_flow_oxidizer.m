@@ -8,6 +8,6 @@ function mf_ox = mass_flow_oxidizer(comp)
         [mf_crit] = critical_mf_Moody(comp);
     end
     
-    mf_ox = interp1(comp.moody_spline.P_cc, mf_crit, comp.P_cc);
+    mf_ox = interp1(comp.N2O.moody.pressure, mf_crit, comp.P_cc);
 end
 

@@ -207,6 +207,39 @@ mjolnir.aluminium_emissivity_painted = 0.8;          % Emissivity of painted tan
 mjolnir.aluminium_emissivity = 0.3;                  % Emissivity of plain aluminium.
 mjolnir.aluminium_absorbitivity = 0.4;               % Absorptivity of plain aluminium.
 
+
+
+
+
+mjolnir.N2O = initiate_N2O;
+mjolnir.dont_record(end+1) = "N2O";
+
+mjolnir.m_liq = mjolnir.filling_ratio       * mjolnir.V_tank *  mjolnir.N2O.temperature2density_liquid(mjolnir.T_tank);               % The liquid mass is the liquid volume in the tank times the liquid density (kg).
+mjolnir.m_vap = (1 - mjolnir.filling_ratio) * mjolnir.V_tank *  mjolnir.N2O.temperature2density_vapor (mjolnir.T_tank);               % The liquid mass is the remaining volume in the tank times the vapor density (kg).
+
+mjolnir.m_ox         = mjolnir.m_liq + mjolnir.m_vap;                                         % The initial mass of the oxidizer in the tank is the sum of liquid and vapor mass (kg).
+mjolnir.U_total      = mjolnir.m_liq * mjolnir.N2O.temperature2specific_internal_energy_liquid(mjolnir.T_tank) ...
+                     + mjolnir.m_vap * mjolnir.N2O.temperature2specific_internal_energy_vapor(mjolnir.T_tank);         % The initial energy in the tank is the sum of liquid and vapor mass times energy (J).
+mjolnir.r_cc         = mjolnir.r_fuel;                                                        % The initial radius of the combustion chamber is equal to the initial radius of the fuel port (m).
+mjolnir.r_fuel_init  = mjolnir.r_fuel;
+mjolnir.r_throat     = mjolnir.D_throat / 2;                                                  % The initial radius of the nozzle throat is half of the throat diameter.
+mjolnir.remaining_ox = 100;      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 %% Set up the import options.
 import_options_N2O = delimitedTextImportOptions("NumVariables", 8);
 
@@ -257,12 +290,6 @@ for i = 1:length(names)
     mjolnir.(name) = fnxtr(spln, 2);               % Extrapolate with a quadratic polynomial to avoid wonkiness at the boundaries.
     mjolnir.dont_record(end+1) = name;
 end
-
-mjolnir.N2O = struct;
-mjolnir.dont_record(end+1) = "N2O";
-mjolnir.N2O.T_samples      = 190:0.5:300;
-mjolnir.N2O.u_vap_samples  = arrayfun (@(T) py.CoolProp.CoolProp.PropsSI('U', 'T', T, 'Q', 1, 'NitrousOxide'), mjolnir.N2O.T_samples);
-mjolnir.N2O.u_liq_samples  = arrayfun (@(T) py.CoolProp.CoolProp.PropsSI('U', 'T', T, 'Q', 0, 'NitrousOxide'), mjolnir.N2O.T_samples);
 
 
 % Plots for debugging.

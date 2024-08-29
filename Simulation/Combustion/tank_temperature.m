@@ -23,11 +23,16 @@ function F_tank = Tank_Temperature_finder_fct(T)
 %Tank_Temperature_finder_fct(Utot,mtot,T)=0 (Utot is fixed at each step)
 
     
-    %Coolprop liquid density (kg/m^3)
-    rho_liq = py.CoolProp.CoolProp.PropsSI('D','T',T,'Q', 0,'NitrousOxide');
-    
-    %Coolprop vapor density (kg/m^3)
-    rho_vap = py.CoolProp.CoolProp.PropsSI('D','T',T,'Q', 1,'NitrousOxide');
+    % rho_liq = interp1(comp.N2O_density_spline.T,...
+    %                   comp.N2O_density_spline.rho_liq,...
+    %                   T);
+    % 
+    % rho_vap = interp1(comp.N2O_density_spline.T,...
+    %                   comp.N2O_density_spline.rho_vap,...
+    %                   T);
+
+    rho_liq = comp.N2O.temperature2density_liquid(T);
+    rho_vap = comp.N2O.temperature2density_vapor(T);
 
     x = x_vapor(comp.U_tank_total, comp.m_ox, T, comp);
     %x = 0.5;

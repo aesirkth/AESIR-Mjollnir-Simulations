@@ -42,7 +42,7 @@ if comp.active_burn_flag == 0
     [Qdot_w_t, comp.h_liq, comp.h_gas] = heat_flux_wall_tank(comp);                   % Compute thermal heat flux from the tank wall to the interior.
     [Qdot_ext_w , comp.h_air_ext]      = heat_flux_ext_wall (comp);                   % Compute thermal heat flux from the exterior to the tank wall.
     
-    h_outlet = py.CoolProp.CoolProp.PropsSI('H', 'P', comp.P_tank, 'T|liquid', comp.T_tank, 'NitrousOxide');  % Get mass specific enthalpy comp.OF N2O.
+    h_outlet = py.CoolProp.CoolProp.PropsSI('H', 'P', comp.P_tank, 'T|liquid', comp.T_tank, 'NitrousOxide');  % Get mass specific enthalpy of N2O.
     
     V_cc = pi * (comp.D_cc_int^2 / 4 * comp.L_cc - (comp.D_cc_int^2 / 4 - comp.r_cc^2) * comp.L_fuel);    % Compute volume of the combustion chamber (total_volume - fuel_volume).
     

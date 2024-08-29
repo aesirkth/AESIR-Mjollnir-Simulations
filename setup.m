@@ -28,17 +28,17 @@ mypath = mypath{1}+"\"+mypath{2}+"\"+mypath{3}; % Oooga booga
 
 
 disp("Loading CoolProp into MATLAB:")
-try
+%try
 pyenv('Version', mypath+'\miniconda3\envs\matlab_python_enviroment\python.exe');
 py.importlib.import_module("CoolProp");
 test = py.CoolProp.CoolProp.PropsSI('D', 'T', 200, 'Q', 0, 'NitrousOxide');
 disp("test:"+string(test));
 disp("Package loaded correctly.")
-catch python_error
-disp("Coolprop and/or Conda not installed. Installing...")
-status = system("installer.bat&");
-end
-pause(1)
+%catch python_error
+%system("installer.bat&");
+%error("Coolprop and/or Conda not installed. Installing...")
+%end
+%pause(1)
 
 
 

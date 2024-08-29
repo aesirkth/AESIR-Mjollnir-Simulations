@@ -15,10 +15,11 @@
 setup; clc
 
 %% User settings.
-run_simulation         = false;                  % True if the simulation should be run, if false it will load the most recent simulation.
-process_data           = false;                  % TODO: it would be nice to integrate this more properly into the main.
-plot_data              = true;                   % True if the data should be plot together with the simulations.
-data_name              = "Datasets/test8.mat";
+update_N2O             = false;                 % True if the calculations for N2O should be re-run.
+run_simulation         = true;                  % True if the simulation should be run, if false it will load the most recent simulation.
+process_data           = true;                  % TODO: it would be nice to integrate this more properly into the main.
+plot_data              = false;                   % True if the data should be plot together with the simulations.
+data_name              = "Datasets/test7.mat";
 
 
 save_plots             = false;                  % True if the resulting plots should be saved.
@@ -47,7 +48,7 @@ if run_simulation
 
     initiate_terrain;
     mjolnir = initiate_mjolnir; % <---- [Go here to change mjolnir's parameters]
-    pre_processing
+    %pre_processing
     
 
 
@@ -139,3 +140,10 @@ if plot_data
 
 
 end
+
+
+
+%{
+Test-data
+Flight-instrument
+%}
