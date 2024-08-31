@@ -2,12 +2,29 @@ function mjolnir = initiate_mjolnir()
 terrain = evalin("base", "terrain");
 
 mjolnir = struct();
+
+mjolnir.rigid_body   = struct();
+mjolnir.aerodynamics = struct();
+mjolnir.tank         = struct();
+mjolnir.motor        = struct();
+
+mjolnir.rigid_body.forces        = struct();
+mjolnir.rigid_body.moments       = struct();
+
+mjolnir.motor.combustion_chamber = struct();
+mjolnir.motor.injector           = struct();
+mjolnir.motor.nozzle             = struct();
+
+mjolnir.tank.tank_wall           = struct();
+mjolnir.tank.liquid              = struct();
+mjolnir.tank.vapor               = struct();
+
+
 mjolnir.dont_record = ["", ""];
 
 
-mjolnir.wind_velocity               = [0;0;0];
-mjolnir.air_density                 = 1.2;
-mjolnir.g                           = 9.81;                  % Gravitational constant (m/s^2).
+
+mjolnir.rigid_body.g                = 9.81;                  % Gravitational constant (m/s^2).
 
 %% Manual settings.
 
@@ -17,38 +34,50 @@ mjolnir.g                           = 9.81;                  % Gravitational con
 
 
 %% Global coordinates
-mjolnir.attitude                    = rotx(5)*eye(3);
-mjolnir.dimensions                  = [1;1;1];
-mjolnir.angular_momentum            = zeros(3,1);
-mjolnir.rotation_rate               = zeros(3,1);
-mjolnir.position                    = [0;0;terrain.z(0,0)];
-mjolnir.velocity                    = zeros(3,1);
-mjolnir.area                        = ones(3,1);
-mjolnir.pressure_coefficient        = [0.2;0.2;0.1];
-
-mjolnir.friction_coefficient        = ones(3,1)*0.01;
-mjolnir.relative_velocity           = zeros(3,1);
-
-mjolnir.center_of_mass              = [0;0;0.5];
-
-mjolnir.mesh                        = stlread("./assets/AM_00 Mjollnir Full CAD v79 low_poly 0.03.stl");
-mjolnir.dont_record(1)              = "mesh";
-mjolnir.mesh.vertices               = mjolnir.mesh.vertices*0.05;
-mjolnir.mesh.vertices               = mjolnir.mesh.vertices -     0.5*[max(mjolnir.mesh.vertices(:,1))+min(mjolnir.mesh.vertices(:,1));
-                                                                       max(mjolnir.mesh.vertices(:,2))+min(mjolnir.mesh.vertices(:,2));
-                                                                       max(mjolnir.mesh.vertices(:,3))+min(mjolnir.mesh.vertices(:,3))]';
-
-mjolnir                             = data_from_mesh(mjolnir);
-mjolnir.center_of_mass(1:2)         = mjolnir.center_of_pressure(1:2);
-mjolnir                             = data_from_mesh(mjolnir);
-mjolnir.moment_of_area(:,1:2,[1,3]) = 0;
-mjolnir.moment_of_inertia           = eye(3)*(80*mjolnir.length_scale(3).^2)*0.2;
-mjolnir.moment_of_inertia(3,3)      = (80*mjolnir.length_scale(1).^2)*2;
+mjolnir.rigid_body.mass                          = 0;
+mjolnir.rigid_body.attitude                      = rotx(5)*eye(3);
+mjolnir.rigid_body.center_of_mass                = [0;0;0.5];
+%mjolnir.dimensions                              = [1;1;1];
+mjolnir.rigid_body.angular_momentum              = zeros(3,1);
+mjolnir.rigid_body.rotation_rate                 = zeros(3,1);
+mjolnir.rigid_body.position                      = [0;0;terrain.z(0,0)];
+mjolnir.rigid_body.velocity                      = zeros(3,1);
+mjolnir.rigid_body.moment_of_inertia             = eye(3)*(80*4.^2)*0.2;
+mjolnir.rigid_body.moment_of_inertia(3,3)        = (80*4.^2)*2;
 
 
-mjolnir.forces                      = struct;
-mjolnir.moments                     = struct;
-mjolnir.forces.Gravity              = force(mjolnir.g*80*[0;0;-1], mjolnir.center_of_mass);
+mjolnir.rigid_body.forces.null                   = force ([0;0;0], [0;0;0]);
+mjolnir.rigid_body.moments.null                  = moment([0;0;0], [0;0;0]);
+
+
+
+mjolnir.mesh                                     = stlread("./assets/AM_00 Mjollnir Full CAD v79 low_poly 0.03.stl");
+mjolnir.dont_record(1)                           = "mesh";
+mjolnir.mesh.vertices                            = mjolnir.mesh.vertices*0.05;
+mjolnir.mesh.vertices                            = mjolnir.mesh.vertices -   ...
+                                                    0.5*[max(mjolnir.mesh.vertices(:,1))+min(mjolnir.mesh.vertices(:,1));
+                                                         max(mjolnir.mesh.vertices(:,2))+min(mjolnir.mesh.vertices(:,2));
+                                                         max(mjolnir.mesh.vertices(:,3))+min(mjolnir.mesh.vertices(:,3))]';
+
+
+mjolnir.aerodynamics                              = mesh2aerodynamics(mjolnir);
+mjolnir.aerodynamics.wind_velocity                = [0;0;0];
+mjolnir.aerodynamics.air_density                  = 1.2;
+mjolnir.aerodynamics.pressure_coefficient         = [0.2;0.2;0.1];
+mjolnir.aerodynamics.friction_coefficient         = ones(3,1)*0.01;
+%mjolnir.aerodynamics.moment_of_area(:,1:2,[1,3])  = 0;
+%mjolnir.aerodynamics.relative_velocity                        = zeros(3,1);
+
+
+
+
+%mjolnir.rigid_body.center_of_mass(1:2)            = mjolnir.center_of_pressure(1:2);
+%mjolnir                                           = data_from_mesh(mjolnir);
+
+
+
+
+
 
 
 
@@ -71,6 +100,8 @@ mjolnir.P_cc = 2500000;             % Initial pressure in the combustion chamber
 mjolnir.T_tank = 285;               % Initial tank temperature (K).
 mjolnir.T_wall = 285;               % Assume that initial tank wall temperature is equal to the initial internal temperature (K).
 mjolnir.T_ext = 282;                % External (environment) temperature (K).
+
+evalin("base", "T_tank_initial_estimate = 285;")
 
 [T_ext_COESA, ~, P_atm, ~] = atmoscoesa(0);
 mjolnir.dT_ext = T_ext_COESA - mjolnir.T_ext;  % Difference between the COESA temperature and the actual temperature (K).
@@ -239,78 +270,7 @@ mjolnir.remaining_ox = 100;
 
 
 
-
-%% Set up the import options.
-import_options_N2O = delimitedTextImportOptions("NumVariables", 8);
-
-% Specify range and delimiter.
-import_options_N2O.DataLines = [8, 602];
-import_options_N2O.Delimiter = ";";
-
-% Specify column names and types.
-import_options_N2O.VariableNames = ["TemperatureK", "Pressurebar", "Liquiddensitykgm", "Gasdensitykgm", "LiquidIntEnergy", "VaporIntEnergy", "LiquidEnthalpy", "VaporEnthalpy"];
-import_options_N2O.VariableTypes = ["double", "double", "double", "double", "double", "double", "double", "double"];
-import_options_N2O.ExtraColumnsRule = "ignore";
-import_options_N2O.EmptyLineRule = "read";
-
-% Import the data.
-N2O     = readtable("Datasets/nitrous-oxide_LVsaturation.csv", import_options_N2O);
 c_star  = readtable("Datasets/characteristic_velocity.csv");
-
-%% Clear temporary variables.
-clear import_options_N2O
-
-%% Spline fitting.
-Temperature_set = N2O.TemperatureK;         % Get temperature range.
-N2O_Psat_set    = N2O.Pressurebar;          % Get saturation pressure for the temperatures above.
-N2O_Rhol_set    = N2O.Liquiddensitykgm;     % Get liquid density for the temperatures above.
-N2O_Rhog_set    = N2O.Gasdensitykgm;        % Get gas density for the temperatures above.
-N2O_Ul_set      = N2O.LiquidIntEnergy;      % Get liquid internal energy for the temperatures above.
-N2O_Ug_set      = N2O.VaporIntEnergy;       % Get gas internal energy for the temperatures above.
-
-% Put all variables in a map under the shorthand names.
-names = {'T', 'Psat', 'Rhol', 'Rhog', 'Ul', 'Ug'};
-vars = [Temperature_set, N2O_Psat_set, N2O_Rhol_set, N2O_Rhog_set, N2O_Ul_set, N2O_Ug_set];
-N2O_vars = containers.Map;
-for i = 1:length(names)
-    N2O_vars(string(names(i))) = vars(:, i);
-end
-
-% Specify the x and y variables that are required, and a name for each pair.
-xs = {'T', 'T', 'T', 'T', 'T', 'Psat', 'Psat', 'Psat'};
-ys = {'Psat', 'Rhol', 'Rhog', 'Ul', 'Ug', 'Rhog', 'Ul', 'Ug'};
-names = {'Psat', 'RhoL_T', 'RhoG_T', 'UL_T', 'UG_T', 'RhoG_P', 'UL_P', 'UG_P'};
-
-% Fit a spline to each (x, y) pair.
-for i = 1:length(names)
-    x = N2O_vars(string(xs(i)));
-    y = N2O_vars(string(ys(i)));
-    name = string(names(i)) + '_N2O_spline';
-    spln = csaps(x, y);                            % Fit a cubic smoothing spline to the data.
-    mjolnir.(name) = fnxtr(spln, 2);               % Extrapolate with a quadratic polynomial to avoid wonkiness at the boundaries.
-    mjolnir.dont_record(end+1) = name;
-end
-
-
-% Plots for debugging.
-if evalin("base", "debug_plot")
-    rows = ceil(sqrt(length(names)));
-    tiledlayout(rows, rows)
-    for i = 1:length(names)
-        x = N2O_vars(string(xs(i)));
-        y = N2O_vars(string(ys(i)));
-        name = string(names(i)) + '_N2O_spline';
-        nexttile
-        hold on
-        xlim([0.99 * min(x) 1.01 * max(x)])
-        scatter(x, y, '.')
-        fnplt(mjolnir.(name))
-        hold off
-    end
-end
-
-% Delete temporary variables.
-clear debug_plot i name names N2O_vars spln vars x xs y ys;
 
 mjolnir.OF_set = c_star.OF;                                % OF ratio range.
 mjolnir.c_star_set = c_star.c_star;                        % Characteristic velocity c_star.
@@ -337,8 +297,11 @@ mjolnir.d_filling_outlet = 0.9e-3;                 % m
 mjolnir.S_inlet = pi * (mjolnir.d_filling_inlet)^2 / 4;
 mjolnir.S_outlet = pi * (mjolnir.d_filling_outlet)^2 / 4;
 
-mjolnir.P_storage_tank = fnval(mjolnir.Psat_N2O_spline, mjolnir.T_ext) * 10^6;
+mjolnir.P_storage_tank = fnval(mjolnir.N2O.temperature2saturation_pressure, mjolnir.T_ext) * 10^6;
 mjolnir.cd_inlet = 0.85;
 mjolnir.cd_outlet = 0.95;
 % mjolnir.r_ox = py.CoolProp.CoolProp.PropsSI('P','T',mjolnir.T_ext,'Q', 1,'NitrousOxide') / py.CoolProp.CoolProp.PropsSI('D','T',mjolnir.T_ext,'Q', 1,'NitrousOxide') / mjolnir.T_ext;
 % mjolnir.r_ox = 180.7175;
+
+
+%mjolnir = system_equations(0, zeros(29,1), mjolnir);

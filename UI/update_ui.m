@@ -12,12 +12,11 @@ my_ui.TSlider.Value = t(index);
 
 mjolnir = historian2comp(mjolnir, mjolnir_historian, index);
 
-% [~,mjolnir] = system_equations(t(index),state(:,index), mjolnir); % Calculating dependant data from the state-vector
-%mjolnir = state_vector2comp(mjolnir, state(:,index));
 
 draw_component(my_ui.ax,  mjolnir, 0.003);
-draw_component(my_ui.ax3, mjolnir, 0.003);
-draw_trajectory(my_ui.ax2, mjolnir_historian.position(:,1:index), terrain);
+%draw_component(my_ui.ax3, mjolnir, 0.003);
+draw_node_positions(my_ui.ax3, my_ui.mjolnirNode, my_ui.Tree, mjolnir);
+draw_trajectory(my_ui.ax2, mjolnir_historian.rigid_body.position(:,1:index), terrain);
 
 az = az+0.1;
 my_ui.ax .View = [az, 5];
@@ -31,22 +30,12 @@ else
 my_ui.TLabel.Text = "T+"+string(floor(t(index)/60))+" m, " + string(mod(t(index), 60)) + " s";
 end
 
-my_ui.VelocityLabel.Text = "Velocity: "+string(norm(mjolnir.velocity)) +" m/s";
+my_ui.VelocityLabel.Text = "Velocity: "+string(norm(mjolnir.rigid_body.velocity)) +" m/s";
 
-plotted_parameters = cell(1,numel(my_ui.Tree.CheckedNodes));
+
 plot(my_ui.ax4, 0,0);
 my_ui.ax4.NextPlot = "add";
-for parameter_index = 1:numel(my_ui.Tree.CheckedNodes)
-parameter = my_ui.Tree.CheckedNodes(parameter_index).Text;
-plotted_parameters{parameter_index} = parameter;
-
-plot   (my_ui.ax4, t(1:index  ), mjolnir_historian.(parameter)(1,1:index  ),             'Color',           ColorMap(1,:), 'LineWidth', 2);
-plot   (my_ui.ax4, t(index:end), mjolnir_historian.(parameter)(1,index:end),             'Color',           ColorMap(1,:), 'LineWidth', 1, 'LineStyle','--');
-scatter(my_ui.ax4, t(index    ), mjolnir_historian.(parameter)(1,index    ),             'MarkerEdgeColor', ColorMap(1,:));
-text   (my_ui.ax4, t(index    ), mjolnir_historian.(parameter)(1,index    ), parameter,  'Color',           ColorMap(1,:), 'VerticalAlignment', 'top');
-end
-
-
+draw_branch(my_ui.ax4, my_ui.Tree, my_ui.mjolnirNode, mjolnir_historian, t, index);
 
 my_ui.ax4.NextPlot = "replacechildren";
 
@@ -55,3 +44,4 @@ pause(0.5)
 
 end
 drawnow
+

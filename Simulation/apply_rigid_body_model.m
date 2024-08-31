@@ -3,30 +3,34 @@ function [comp, state_vector_derivatives] = apply_rigid_body_model(comp, state_v
 % parameters. The state-vector derivative and the state vector are then
 % used by the ODE-solver to iterate the system.
 
+ % Unpack fields of rigid_body-struct into workspace
+variables = fieldnames(comp.rigid_body);
+for i = 1:numel(variables); eval(variables{i}+"= comp.rigid_body."+variables{i}+";"); end
+
 
 
 % Forces & moments
 
-force_sum  = cellsum(cellfun(@(force)  comp.forces .(force ).vec ,                                                                    fieldnames(comp.forces),  "UniformOutput",false));
-moment_sum = cellsum(cellfun(@(moment) comp.moments.(moment).vec ,                                                                    fieldnames(comp.moments), "UniformOutput",false)) + ...
-             cellsum(cellfun(@(force)  cross(comp.attitude*(comp.forces.(force).pos - comp.center_of_mass), comp.forces.(force).vec), fieldnames(comp.forces),  "UniformOutput",false));
+force_sum  = cellsum(cellfun(@(force)  forces .(force ).vec ,                                                     fieldnames(forces),  "UniformOutput",false));
+moment_sum = cellsum(cellfun(@(moment) moments.(moment).vec ,                                                     fieldnames(moments), "UniformOutput",false)) + ...
+             cellsum(cellfun(@(force)  cross(attitude*(forces.(force).pos - center_of_mass), forces.(force).vec), fieldnames(forces),  "UniformOutput",false));
 
 
 
 % Stepping velocity
 
-state_vector_derivatives(1:3) = comp.velocity;
-state_vector_derivatives(4:6) = force_sum/comp.mass;
+state_vector_derivatives(1:3) = velocity;
+state_vector_derivatives(4:6) = force_sum/mass;
 
 
 % Stepping angular shit
-comp.rotation_rate = (comp.attitude*comp.moment_of_inertia*(comp.attitude'))\comp.angular_momentum; 
+rotation_rate = (attitude*moment_of_inertia*(attitude'))\angular_momentum; 
 
-rotation_rate_tensor = [ 0                     -comp.rotation_rate(3)  comp.rotation_rate(2);
-                        comp.rotation_rate(3)  0                      -comp.rotation_rate(1);
-                       -comp.rotation_rate(2)  comp.rotation_rate(1)   0];
+rotation_rate_tensor = [ 0                     -rotation_rate(3)  rotation_rate(2);
+                        rotation_rate(3)  0                      -rotation_rate(1);
+                       -rotation_rate(2)  rotation_rate(1)   0];
 
-attitude_derivative = rotation_rate_tensor*comp.attitude;
+attitude_derivative = rotation_rate_tensor*attitude;
 
 
 state_vector_derivatives(7:9)   = moment_sum;

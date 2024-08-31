@@ -20,10 +20,10 @@ function [Qdot_ext_w,hcc] = heat_flux_ext_wall(comp)
     rho_air = py.CoolProp.CoolProp.PropsSI('D','P',comp.P_ext,'T', (comp.T_ext+comp.T_wall)/2,'Air'); %density of air
     
     
-    if evalin("base", "static") || norm(comp.velocity) ==0
+    if evalin("base", "static") || norm(comp.rigid_body.velocity) ==0
         %Natural Convection
         DeltaT=comp.T_ext-comp.T_wall;
-        G_r = rho_air^2*comp.g*L^3*Beta_air*abs(DeltaT)/(visc_dyn_air^2);
+        G_r = rho_air^2*comp.rigid_body.g*L^3*Beta_air*abs(DeltaT)/(visc_dyn_air^2);
         
         Nu = 0.5*G_r^(1/4);
         hcc = Nu*k_alu/L;
@@ -36,11 +36,11 @@ function [Qdot_ext_w,hcc] = heat_flux_ext_wall(comp)
         %Flight mode: taking into account turbulent, compressible and supersonic
         %flow (also friction)
         
-        Re=norm(comp.velocity)*L*rho_air/visc_dyn_air;
+        Re=norm(comp.rigid_body.velocity)*L*rho_air/visc_dyn_air;
         Vertex_angle=20*pi/180;%20 degrees
         hcc=(0.0071 + 0.0154*sqrt(Vertex_angle))*k_air*Re^(0.8)/L; %Eber formula for supersonic compressible flow
         
-        T_st=comp.T_ext+norm(comp.velocity)^2/(2*cp_air);%stagnation temperature
+        T_st=comp.T_ext+norm(comp.rigid_body.velocity)^2/(2*cp_air);%stagnation temperature
         T_boundary = comp.T_ext + K*(T_st-comp.T_ext);%temperature inside the boudary layer taking into account friction
         
         %comp.T_wall_ext=fzero(@(T_unknown) Wall_ext_temp_finder(T_unknown), [0 1000]);

@@ -15,7 +15,7 @@ test_state = comp2state_vector(comp, zeros(28,1));
     
         for index = 1:numel(parameter_names)
             parameter = parameter_names{index};
-            if isequal(class(comp.(parameter)), 'double')
+            if isequal(class(comp.(parameter)), 'double') && isequal(parameter, "null") == false
             historian.(parameter) = zeros(numel(comp.(parameter)), numel(t));
             
             elseif isequal(class(comp.(parameter)), 'struct')

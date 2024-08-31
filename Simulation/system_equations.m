@@ -22,6 +22,7 @@ state_vector_derivative = zeros(size(state_vector));
 
 [comp, state_vector_derivative] = apply_propulsion_model  (comp, state_vector_derivative); % <---- [Original Aesir propulsion model]
  comp                           = apply_aerodynamics_model(comp);                          % <---- [Added by Spiggen 2024]
+ comp                           = apply_gravity_model     (comp);                          % <---- [Added by Spiggen 2024]
 [comp, state_vector_derivative] = apply_rigid_body_model  (comp, state_vector_derivative); % <---- [Added by Spiggen 2024]
 
 end

@@ -1,19 +1,21 @@
-my_ui = ui;
+my_ui = ui2;
 my_ui.UIFigure.Name = "Mjölnir flight sim";
 my_ui.TSlider.Limits = [t0,t_max];
 grid(my_ui.ax4, "on");
 
-parameters = fieldnames(mjolnir_historian);
 
-for index = 1:numel(parameters)
+mjolnir.rigid_body.               ui_node_position = [0;0;0];
+mjolnir.motor.                    ui_node_position = [0;0;-2];
+mjolnir.motor.nozzle.             ui_node_position = [0;0;-2.3];
+mjolnir.motor.combustion_chamber. ui_node_position = [0;0;-1.8];
+mjolnir.motor.injector.           ui_node_position = [0;0;-1.7];
+mjolnir.tank.                     ui_node_position = [0;0;-0.5];
+mjolnir.tank.liquid.              ui_node_position = [0;0;-0.8];
+mjolnir.tank.vapor.               ui_node_position = [0;0;0.5];
+mjolnir.tank.tank_wall.           ui_node_position = [0.07;0.07;0.4];
+mjolnir.aerodynamics.             ui_node_position = mjolnir.aerodynamics.center_of_pressure;
 
-parameter = parameters{index};
-if height(mjolnir_historian.(parameter)) == 1 && isequal(class(mjolnir_historian.(parameter)), 'double')
-if sum( mjolnir_historian.(parameter) ~= mjolnir_historian.(parameter)(1) ) ~= 0
-uitreenode(my_ui.Tree, "Text", parameter);
-end
-end
-end
+create_branch(my_ui.mjolnirNode, mjolnir_historian)
 
 
 if isfolder('../colorthemes/'); aesir_purple(); end
@@ -28,9 +30,51 @@ my_ui.UIFigure.WindowState = "maximized";
 mjolnir = historian2comp(mjolnir, mjolnir_historian, 1);
 
 draw_component(my_ui.ax, mjolnir, 0.003);
-draw_component(my_ui.ax3, mjolnir, 0.003);
-draw_trajectory(my_ui.ax2, mjolnir_historian.position(:,1:index), terrain);
+%draw_component(my_ui.ax3, mjolnir, 0.003);
+draw_node_positions(my_ui.ax3, my_ui.mjolnirNode, my_ui.Tree, mjolnir);
+draw_trajectory(my_ui.ax2, mjolnir_historian.rigid_body.position(:,1:index), terrain);
 
 my_ui.ax .View = [az, 5];
 my_ui.ax3.View = [az, 5];
 my_ui.ax2.View = [az, 5];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function create_branch(parent, historian)
+
+
+parameters = fieldnames(historian);
+
+for index = 1:numel(parameters)
+
+parameter = parameters{index};
+if height(historian.(parameter)) == 1 && isequal(class(historian.(parameter)), 'double')
+
+    if sum( historian.(parameter) ~= historian.(parameter)(1) ) ~= 0
+    uitreenode(parent, "Text", parameter);
+    end
+
+elseif isequal(class(historian.(parameter)), 'struct')
+    new_branch = uitreenode(parent, "Text", parameter);
+    create_branch(new_branch, historian.(parameter))
+end
+
+end
+
+
+end

@@ -15,17 +15,14 @@
 setup; clc
 
 %% User settings.
-update_N2O             = false;                 % True if the calculations for N2O should be re-run.
-run_simulation         = true;                  % True if the simulation should be run, if false it will load the most recent simulation.
-process_data           = true;                  % TODO: it would be nice to integrate this more properly into the main.
-plot_data              = false;                   % True if the data should be plot together with the simulations.
-data_name              = "Datasets/test7.mat";
+update_N2O             = false;                 % True if the calculations for N2O should be re-run, usually false.
+run_simulation         = false;                  % True if the simulation should be run, if false it will load the most recent simulation.
+process_data           = false;                  % TODO: it would be nice to integrate this more properly into the main.
+plot_data              = true;                   % True if the data should be plot together with the simulations.
+data_name              = "Datasets/test8.mat";
 
 
-save_plots             = false;                  % True if the resulting plots should be saved.
-debug_plot             = false;
 
-%% Simulation settings:
 quick                  = false;                 % True if quick simulation should be done. Less accurate, but useful for tuning.
 static                 = false;                 % True if simulation should be for a static fire, otherwise it is done for flight.
 full_duration          = true;                  % True if the tank parameters should be set to a full-duration burn, otherwise short-duration parameters are used.
@@ -48,14 +45,13 @@ if run_simulation
 
     initiate_terrain;
     mjolnir = initiate_mjolnir; % <---- [Go here to change mjolnir's parameters]
-    %pre_processing
     
 
 
     %% Set simulation time.
     t0      = 0;                  % Initial time of ignition.
-    t_max   = 80;                 % Final time.
-    t_range = t0:0.01:t_max;         % Integration interval.
+    t_max   = 120;                 % Final time.
+    t_range = t0:0.01:t_max;      % Integration interval.
     
     tic
     
@@ -85,7 +81,7 @@ end
 
 
 if process_data
-%% Post-processing:
+    %% Post-processing:
     
     load(data_name)
     
@@ -133,7 +129,7 @@ if plot_data
     load(data_name)
     initiate_terrain
     initiate_ui
-    
+    ui_running = true;
     while ui_running
     update_ui
     end
@@ -142,8 +138,3 @@ if plot_data
 end
 
 
-
-%{
-Test-data
-Flight-instrument
-%}
