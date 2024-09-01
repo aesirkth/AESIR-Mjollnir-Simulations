@@ -64,7 +64,7 @@ if comp.active_burn_flag == 0
     F = comp.combustion_efficiency * thrust(comp);   % Compute thrust.
     comp.rigid_body.forces.Thrust = force(F*comp.rigid_body.attitude*[0;0;1],[0;0;-0.9]);
 
-    state_vector_derivative(19:28) = [dmtotaldt; dUtotaldt; dTwalldt; drdt; comp.dr_thdt; dP_ccdt; 0; 0; 0; 0];
+    state_vector_derivative(19:29) = [dmtotaldt; dUtotaldt; dTwalldt; drdt; comp.dr_thdt; dP_ccdt; 0; 0; 0; 0; 0];
     if comp.remaining_ox <= 0;state_vector_derivative(29) = 1;end  % Check for burn-completion
 
 

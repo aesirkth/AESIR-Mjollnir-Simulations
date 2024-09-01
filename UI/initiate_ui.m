@@ -4,16 +4,16 @@ my_ui.TSlider.Limits = [t0,t_max];
 grid(my_ui.ax4, "on");
 
 
-mjolnir.rigid_body.               ui_node_position = [0;0;0];
-mjolnir.motor.                    ui_node_position = [0;0;-2];
-mjolnir.motor.nozzle.             ui_node_position = [0;0;-2.3];
-mjolnir.motor.combustion_chamber. ui_node_position = [0;0;-1.8];
-mjolnir.motor.injector.           ui_node_position = [0;0;-1.7];
-mjolnir.tank.                     ui_node_position = [0;0;-0.5];
-mjolnir.tank.liquid.              ui_node_position = [0;0;-0.8];
-mjolnir.tank.vapor.               ui_node_position = [0;0;0.5];
-mjolnir.tank.tank_wall.           ui_node_position = [0.07;0.07;0.4];
-mjolnir.aerodynamics.             ui_node_position = mjolnir.aerodynamics.center_of_pressure;
+mjolnir.rigid_body.                ui_node_position = [0;0;0];
+mjolnir.engine.                    ui_node_position = [0;0;-2];
+mjolnir.engine.nozzle.             ui_node_position = [0;0;-2.3];
+mjolnir.engine.combustion_chamber. ui_node_position = [0;0;-1.8];
+mjolnir.engine.injectors.          ui_node_position = [0;0;-1.7];
+mjolnir.tank.                      ui_node_position = [0;0;-0.5];
+mjolnir.tank.liquid.               ui_node_position = [0;0;-0.8];
+mjolnir.tank.vapor.                ui_node_position = [0;0;0.5];
+mjolnir.tank.tank_wall.            ui_node_position = [0.07;0.07;0.4];
+mjolnir.aerodynamics.              ui_node_position = mjolnir.aerodynamics.center_of_pressure;
 
 create_branch(my_ui.mjolnirNode, mjolnir_historian)
 

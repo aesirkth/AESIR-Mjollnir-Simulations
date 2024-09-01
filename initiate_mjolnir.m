@@ -2,42 +2,36 @@ function mjolnir = initiate_mjolnir()
 terrain = evalin("base", "terrain");
 
 mjolnir = struct();
+mjolnir.dont_record = ["", ""];
 
-mjolnir.rigid_body   = struct();
-mjolnir.aerodynamics = struct();
+
+
 mjolnir.tank         = struct();
-mjolnir.motor        = struct();
+mjolnir.engine       = struct();
+mjolnir.engine.mass  = 24.504;     % Total engine mass (kg)
 
-mjolnir.rigid_body.forces        = struct();
-mjolnir.rigid_body.moments       = struct();
 
-mjolnir.motor.combustion_chamber = struct();
-mjolnir.motor.injector           = struct();
-mjolnir.motor.nozzle             = struct();
+
+mjolnir.engine.nozzle             = struct();
 
 mjolnir.tank.tank_wall           = struct();
 mjolnir.tank.liquid              = struct();
 mjolnir.tank.vapor               = struct();
 
+mjolnir.N2O                      = initiate_N2O;
 
-mjolnir.dont_record = ["", ""];
-
-
-
-mjolnir.rigid_body.g                = 9.81;                  % Gravitational constant (m/s^2).
-
-%% Manual settings.
+mjolnir.dont_record(end+1)       = "N2O";
 
 
+%% Rigid-body model
+mjolnir.rigid_body                               = struct();
 
-%mjolnir.center_of_pressure          = zeros(3,1);
-
-
-%% Global coordinates
-mjolnir.rigid_body.mass                          = 0;
+mjolnir.rigid_body.forces                        = struct();
+mjolnir.rigid_body.moments                       = struct();
+mjolnir.rigid_body.g                             = 9.81;
+mjolnir.rigid_body.mass                          = 0;                       % dependant
 mjolnir.rigid_body.attitude                      = rotx(5)*eye(3);
 mjolnir.rigid_body.center_of_mass                = [0;0;0.5];
-%mjolnir.dimensions                              = [1;1;1];
 mjolnir.rigid_body.angular_momentum              = zeros(3,1);
 mjolnir.rigid_body.rotation_rate                 = zeros(3,1);
 mjolnir.rigid_body.position                      = [0;0;terrain.z(0,0)];
@@ -51,6 +45,8 @@ mjolnir.rigid_body.moments.null                  = moment([0;0;0], [0;0;0]);
 
 
 
+
+%% Mesh:
 mjolnir.mesh                                     = stlread("./assets/AM_00 Mjollnir Full CAD v79 low_poly 0.03.stl");
 mjolnir.dont_record(1)                           = "mesh";
 mjolnir.mesh.vertices                            = mjolnir.mesh.vertices*0.05;
@@ -60,19 +56,19 @@ mjolnir.mesh.vertices                            = mjolnir.mesh.vertices -   ...
                                                          max(mjolnir.mesh.vertices(:,3))+min(mjolnir.mesh.vertices(:,3))]';
 
 
+
+
+
+
+%% Aerodynamics-model
+mjolnir.aerodynamics                              = struct();
+
 mjolnir.aerodynamics                              = mesh2aerodynamics(mjolnir);
 mjolnir.aerodynamics.wind_velocity                = [0;0;0];
 mjolnir.aerodynamics.air_density                  = 1.2;
 mjolnir.aerodynamics.pressure_coefficient         = [0.2;0.2;0.1];
 mjolnir.aerodynamics.friction_coefficient         = ones(3,1)*0.01;
-%mjolnir.aerodynamics.moment_of_area(:,1:2,[1,3])  = 0;
-%mjolnir.aerodynamics.relative_velocity                        = zeros(3,1);
 
-
-
-
-%mjolnir.rigid_body.center_of_mass(1:2)            = mjolnir.center_of_pressure(1:2);
-%mjolnir                                           = data_from_mesh(mjolnir);
 
 
 
@@ -91,12 +87,59 @@ mjolnir.a = 20e-5;                  % Fuel regression parameter a in r_dot = a*G
 mjolnir.n = 0.55;                   % Fuel regression parameter n in r_dot = a*G_o^n (see Sutton, 2017, p. 602). Typical range: [0.4, 0.7].
 mjolnir.dr_thdt = 0.35e-2;          % Constant approximation of regression rate (m/s).
 
-%% Vehicle parameters.
-mjolnir.n_inj = 80;                 % Number of injector holes.
+
+
+%% Injectors:
+mjolnir.engine.injectors                 = struct();
+
+mjolnir.engine.injectors.number_of       = 80;                                                                            % Number of injectors holes.
+mjolnir.engine.injectors.radius          = 1.2e-3 / 2;                                                                    % injectors radius (m).
+mjolnir.engine.injectors.diameter        = 2*mjolnir.engine.injectors.radius;                                             % injectors diameter (m).
+mjolnir.engine.injectors.total_area      = mjolnir.engine.injectors.number_of*pi*(mjolnir.engine.injectors.radius)^2;     % injectors total area for ALL the injectorss (m).
+mjolnir.engine.injectors.plate_thickness = 15e-3;                                                                         % injectors plate thickness (m).
+mjolnir.engine.injectors.plate_radius    = 30e-3;                                                                         % plate radius(?) (m)
+mjolnir.engine.injectors.mass            = 0.271;                                                                         % total injector mass (kg)
+mjolnir.engine.injectors.e               = 0.013;                                                                         % (???) (m)
+
+
+%% Shute
+mjolnir.shute              = struct();
+mjolnir.shute.mass         = 10;
+
+
+%% Payload
+mjolnir.payload            = struct();
+mjolnir.payload.mass       = 2;
+
+
+%% Electronics
+mjolnir.electronics        = struct();
+mjolnir.electronics.mass   = 2.3;
+
+
+%% Body-tube
+mjolnir.body_tube          = struct();
+mjolnir.body_tube.mass     = 7;
+
+
+mjolnir.dry_mass = mjolnir.shute      .mass + ...
+                   mjolnir.electronics.mass + ...
+                   mjolnir.body_tube  .mass + ...
+                   mjolnir.payload    .mass + ...
+                   mjolnir.engine     .mass;
+
+
+
+%% Combustion-chamber
+mjolnir.engine.combustion_chamber = struct();
+
+mjolnir.engine.combustion_chamber.pressure     = 2500000; % Initial pressure in the combustion chamber (Pa). Needs to be quite high for the model to work.
+mjolnir.engine.combustion_chamber.temperature  = 285;     % Initial combustion chamber temperature.
+
+
 
 %% Environment parameters.
 % TODO: Retrieve from data?
-mjolnir.P_cc = 2500000;             % Initial pressure in the combustion chamber (Pa). Needs to be quite high for the model to work.
 mjolnir.T_tank = 285;               % Initial tank temperature (K).
 mjolnir.T_wall = 285;               % Assume that initial tank wall temperature is equal to the initial internal temperature (K).
 mjolnir.T_ext = 282;                % External (environment) temperature (K).
@@ -127,15 +170,8 @@ mjolnir.r_air = mjolnir.R / mjolnir.Molecular_weight_air;
 mjolnir.design_altitude = 14000;          % Designed altitude to reach (m).
 mjolnir.required_altitude = 12000;        % Mission requirements (m).
 
-%% Mass.
-mjolnir.parachute_mass = 10;
-mjolnir.electronics_mass = 2.3;
-mjolnir.bodyTube_mass = 7;
-mjolnir.payload_mass = 2;
 
-mjolnir.propulsionSystem = 24.504;
 
-mjolnir.dry_mass = mjolnir.parachute_mass + mjolnir.electronics_mass + mjolnir.bodyTube_mass + mjolnir.payload_mass + mjolnir.propulsionSystem;
 
 mjolnir.m_ox = 24.5;           % Oxidizer mass (kg).
 mjolnir.m_fuel = 3.1;          % Fuel mass (kg).
@@ -166,13 +202,6 @@ mjolnir.surface = pi * (mjolnir.D_ext_tank)^2 / 4;                              
 %% Kastrullen.
 mjolnir.L_kastrullen = 35e-2;      % Length of Kastrullen.
 
-%% Injector geometry.             
-mjolnir.r_inj = 1.2e-3 / 2;        % Injector radius (m).
-mjolnir.L_inj = 15e-3;             % Injector plate thickness (m).
-
-mjolnir.r_inj_plate = 30e-3;       % m
-mjolnir.mass_inj = 0.271;          % kg
-mjolnir.e_inj = 0.013;             % m
 
 %% Combustion chamber geometry.
 mjolnir.D_cc_ext = 15.2e-2;                              % Combustion chamber external diameter (m).
@@ -242,8 +271,7 @@ mjolnir.aluminium_absorbitivity = 0.4;               % Absorptivity of plain alu
 
 
 
-mjolnir.N2O = initiate_N2O;
-mjolnir.dont_record(end+1) = "N2O";
+
 
 mjolnir.m_liq = mjolnir.filling_ratio       * mjolnir.V_tank *  mjolnir.N2O.temperature2density_liquid(mjolnir.T_tank);               % The liquid mass is the liquid volume in the tank times the liquid density (kg).
 mjolnir.m_vap = (1 - mjolnir.filling_ratio) * mjolnir.V_tank *  mjolnir.N2O.temperature2density_vapor (mjolnir.T_tank);               % The liquid mass is the remaining volume in the tank times the vapor density (kg).
