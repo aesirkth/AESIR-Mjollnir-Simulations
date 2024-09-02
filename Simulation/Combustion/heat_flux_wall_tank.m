@@ -2,26 +2,26 @@ function [Qdot_w_t, h_liq, h_gas] = heat_flux_wall_tank(comp)
     %This function return the flucomp.x_vap going from the wall to the tank
 
     %Principal inputs:
-    DeltaT = comp.T_tank_wall - comp.T_tank;
+    DeltaT = comp.tank.wall.temperature - comp.tank.liquid.temperature;
     
     %Geometric parameters:
     D_int = comp.D_int_tank;
     Length = comp.L_tank;
     A = pi * D_int * Length;
-    g = comp.rigid_body.g;  %m/s2
+    g = comp.enviroment.g;  %m/s2
     
     %thermodynamic parameters liquid:
-    cp_liq = py.CoolProp.CoolProp.PropsSI('C', 'P', comp.P_tank, 'T|liquid', comp.T_tank, 'NitrousOxide'); %calorific capacity of N2O
-    rho_liq = py.CoolProp.CoolProp.PropsSI('D', 'P', comp.P_tank, 'T|liquid', comp.T_tank, 'NitrousOxide'); %density of rho
-    Beta_liq = py.CoolProp.CoolProp.PropsSI('isobaric_expansion_coefficient', 'P', comp.P_tank, 'T|liquid', comp.T_tank, 'NitrousOxide'); %isobaric coefficient of N2O
+    cp_liq = py.CoolProp.CoolProp.PropsSI('C', 'P', comp.P_tank, 'T|liquid', comp.tank.liquid.temperature, 'NitrousOxide'); %calorific capacity of N2O
+    rho_liq = py.CoolProp.CoolProp.PropsSI('D', 'P', comp.P_tank, 'T|liquid', comp.tank.liquid.temperature, 'NitrousOxide'); %density of rho
+    Beta_liq = py.CoolProp.CoolProp.PropsSI('isobaric_expansion_coefficient', 'P', comp.P_tank, 'T|liquid', comp.tank.liquid.temperature, 'NitrousOxide'); %isobaric coefficient of N2O
     kappa_liq = 100.1e-3; %thermal capacity of N2O  : Wm-1K-1
     L = D_int; %characteristic lenght : m
     visc_liq = 2.29e-5; %viscosity of N2O
     
     %thermodynamic parameters gaz:
-    cp_gaz = py.CoolProp.CoolProp.PropsSI('C', 'P', comp.P_tank, 'T|gas', comp.T_tank, 'NitrousOxide'); %calorific capacity of N2O
-    rho_gaz = py.CoolProp.CoolProp.PropsSI('D', 'P', comp.P_tank, 'T|gas', comp.T_tank, 'NitrousOxide'); %density of rho
-    Beta_gaz = py.CoolProp.CoolProp.PropsSI('isobaric_expansion_coefficient', 'P', comp.P_tank, 'T|gas', comp.T_tank, 'NitrousOxide'); %isobaric coefficient of N2O
+    cp_gaz = py.CoolProp.CoolProp.PropsSI('C', 'P', comp.P_tank, 'T|gas', comp.tank.liquid.temperature, 'NitrousOxide'); %calorific capacity of N2O
+    rho_gaz = py.CoolProp.CoolProp.PropsSI('D', 'P', comp.P_tank, 'T|gas', comp.tank.liquid.temperature, 'NitrousOxide'); %density of rho
+    Beta_gaz = py.CoolProp.CoolProp.PropsSI('isobaric_expansion_coefficient', 'P', comp.P_tank, 'T|gas', comp.tank.liquid.temperature, 'NitrousOxide'); %isobaric coefficient of N2O
     kappa_gaz = 20.6e-3; %thermal conductivity of N2O gaz : Wm-1K-1
     L = D_int; %characteristic lenght : m
     visc_gaz = 2.29e-5; %viscosity of N2O

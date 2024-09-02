@@ -6,7 +6,7 @@ mjolnir.dont_record = ["", ""];
 
 
 
-mjolnir.tank         = struct();
+
 mjolnir.engine       = struct();
 mjolnir.engine.mass  = 24.504;     % Total engine mass (kg)
 
@@ -14,13 +14,19 @@ mjolnir.engine.mass  = 24.504;     % Total engine mass (kg)
 
 mjolnir.engine.nozzle             = struct();
 
-mjolnir.tank.tank_wall           = struct();
-mjolnir.tank.liquid              = struct();
+mjolnir.tank.wall           = struct();
+
 mjolnir.tank.vapor               = struct();
 
 mjolnir.N2O                      = initiate_N2O;
 
 mjolnir.dont_record(end+1)       = "N2O";
+
+%% Enviroment
+mjolnir.enviroment              = struct();
+mjolnir.enviroment.g            = 9.81;
+mjolnir.enviroment.temperature  = 282;
+
 
 
 %% Rigid-body model
@@ -28,7 +34,7 @@ mjolnir.rigid_body                               = struct();
 
 mjolnir.rigid_body.forces                        = struct();
 mjolnir.rigid_body.moments                       = struct();
-mjolnir.rigid_body.g                             = 9.81;
+%mjolnir.rigid_body.g                             = 9.81;
 mjolnir.rigid_body.mass                          = 0;                       % dependant
 mjolnir.rigid_body.attitude                      = rotx(5)*eye(3);
 mjolnir.rigid_body.center_of_mass                = [0;0;0.5];
@@ -140,20 +146,32 @@ mjolnir.engine.combustion_chamber.temperature  = 285;     % Initial combustion c
 
 %% Environment parameters.
 % TODO: Retrieve from data?
-mjolnir.T_tank = 285;               % Initial tank temperature (K).
-mjolnir.T_wall = 285;               % Assume that initial tank wall temperature is equal to the initial internal temperature (K).
-mjolnir.T_ext = 282;                % External (environment) temperature (K).
 
-evalin("base", "T_tank_initial_estimate = 285;")
+%% Tank
 
-[T_ext_COESA, ~, P_atm, ~] = atmoscoesa(0);
-mjolnir.dT_ext = T_ext_COESA - mjolnir.T_ext;  % Difference between the COESA temperature and the actual temperature (K).
+mjolnir.tank         = struct();
+
+% Liquid
+mjolnir.tank.liquid               = struct();
+mjolnir.tank.liquid.temperature   = 285;  % Initial tank temperature (K).
+
+% Tank-wall
+mjolnir.tank.wall.  temperature   = 285;  % Assume that initial tank wall temperature is equal to the initial internal temperature (K).
+
+% Tank-exterior wall
+mjolnir.tank.exterior_wall = struct();
+
+
+evalin("base", "temperature_initial_estimate = 285;")
+
+
+[mjolnir.enviroment.temperature_COESA, ~, P_atm, ~] = atmoscoesa(0);
+mjolnir.dT_ext = mjolnir.enviroment.temperature_COESA - mjolnir.enviroment.temperature;  % Difference between the COESA temperature and the actual temperature (K).
 mjolnir.P_atm = P_atm;                         % Atmospheric pressure (Pa).
 
 %% Other settings (TODO: give good name).
 mjolnir.active_burn_flag = 0;
 mjolnir.filling_ratio = 0.95;      % Tank filling ratio.
-mjolnir.launch_angle = 87;         % Launch angle (°).
 
 mjolnir.drag_coefficient = 0.5;     
 mjolnir.combustion_efficiency = 0.9;
@@ -195,7 +213,7 @@ else
 end
 
 mjolnir.e_tank = 3.5e-3;                                                         % Tank thickness.
-mjolnir.D_int_tank = mjolnir.D_ext_tank - 2 * mjolnir.e_tank;    %9.42e-2;       % Tank internal diameter (m).
+mjolnir.D_int_tank= mjolnir.D_ext_tank- 2 * mjolnir.e_tank;    %9.42e-2;       % Tank internal diameter (m).
 mjolnir.V_tank = pi * (mjolnir.D_int_tank)^2 / 4 * mjolnir.L_tank;   %33.1e-3;   % Tank volume (m^3) (present in Tank_Temperature_finder_fct).
 mjolnir.surface = pi * (mjolnir.D_ext_tank)^2 / 4;                               % Rocket surface.
 
@@ -273,12 +291,12 @@ mjolnir.aluminium_absorbitivity = 0.4;               % Absorptivity of plain alu
 
 
 
-mjolnir.m_liq = mjolnir.filling_ratio       * mjolnir.V_tank *  mjolnir.N2O.temperature2density_liquid(mjolnir.T_tank);               % The liquid mass is the liquid volume in the tank times the liquid density (kg).
-mjolnir.m_vap = (1 - mjolnir.filling_ratio) * mjolnir.V_tank *  mjolnir.N2O.temperature2density_vapor (mjolnir.T_tank);               % The liquid mass is the remaining volume in the tank times the vapor density (kg).
+mjolnir.m_liq = mjolnir.filling_ratio       * mjolnir.V_tank *  mjolnir.N2O.temperature2density_liquid(mjolnir.tank.liquid.temperature);               % The liquid mass is the liquid volume in the tank times the liquid density (kg).
+mjolnir.m_vap = (1 - mjolnir.filling_ratio) * mjolnir.V_tank *  mjolnir.N2O.temperature2density_vapor (mjolnir.tank.liquid.temperature);               % The liquid mass is the remaining volume in the tank times the vapor density (kg).
 
 mjolnir.m_ox         = mjolnir.m_liq + mjolnir.m_vap;                                         % The initial mass of the oxidizer in the tank is the sum of liquid and vapor mass (kg).
-mjolnir.U_total      = mjolnir.m_liq * mjolnir.N2O.temperature2specific_internal_energy_liquid(mjolnir.T_tank) ...
-                     + mjolnir.m_vap * mjolnir.N2O.temperature2specific_internal_energy_vapor(mjolnir.T_tank);         % The initial energy in the tank is the sum of liquid and vapor mass times energy (J).
+mjolnir.U_total      = mjolnir.m_liq * mjolnir.N2O.temperature2specific_internal_energy_liquid(mjolnir.tank.liquid.temperature) ...
+                     + mjolnir.m_vap * mjolnir.N2O.temperature2specific_internal_energy_vapor(mjolnir.tank.liquid.temperature);         % The initial energy in the tank is the sum of liquid and vapor mass times energy (J).
 mjolnir.r_cc         = mjolnir.r_fuel;                                                        % The initial radius of the combustion chamber is equal to the initial radius of the fuel port (m).
 mjolnir.r_fuel_init  = mjolnir.r_fuel;
 mjolnir.r_throat     = mjolnir.D_throat / 2;                                                  % The initial radius of the nozzle throat is half of the throat diameter.
@@ -325,10 +343,10 @@ mjolnir.d_filling_outlet = 0.9e-3;                 % m
 mjolnir.S_inlet = pi * (mjolnir.d_filling_inlet)^2 / 4;
 mjolnir.S_outlet = pi * (mjolnir.d_filling_outlet)^2 / 4;
 
-mjolnir.P_storage_tank = fnval(mjolnir.N2O.temperature2saturation_pressure, mjolnir.T_ext) * 10^6;
+mjolnir.P_storage_tank = fnval(mjolnir.N2O.temperature2saturation_pressure, mjolnir.enviroment.temperature) * 10^6;
 mjolnir.cd_inlet = 0.85;
 mjolnir.cd_outlet = 0.95;
-% mjolnir.r_ox = py.CoolProp.CoolProp.PropsSI('P','T',mjolnir.T_ext,'Q', 1,'NitrousOxide') / py.CoolProp.CoolProp.PropsSI('D','T',mjolnir.T_ext,'Q', 1,'NitrousOxide') / mjolnir.T_ext;
+% mjolnir.r_ox = py.CoolProp.CoolProp.PropsSI('P','T',mjolnir.enviroment.temperature,'Q', 1,'NitrousOxide') / py.CoolProp.CoolProp.PropsSI('D','T',mjolnir.enviroment.temperature,'Q', 1,'NitrousOxide') / mjolnir.enviroment.temperature;
 % mjolnir.r_ox = 180.7175;
 
 

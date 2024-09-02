@@ -12,7 +12,7 @@ mjolnir.engine.injectors.          ui_node_position = [0;0;-1.7];
 mjolnir.tank.                      ui_node_position = [0;0;-0.5];
 mjolnir.tank.liquid.               ui_node_position = [0;0;-0.8];
 mjolnir.tank.vapor.                ui_node_position = [0;0;0.5];
-mjolnir.tank.tank_wall.            ui_node_position = [0.07;0.07;0.4];
+mjolnir.tank.wall.                 ui_node_position = [0.07;0.07;0.4];
 mjolnir.aerodynamics.              ui_node_position = mjolnir.aerodynamics.center_of_pressure;
 
 create_branch(my_ui.mjolnirNode, mjolnir_historian)
