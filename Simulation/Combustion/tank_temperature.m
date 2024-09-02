@@ -5,8 +5,8 @@ function T_tank = tank_temperature(comp)
 try
 T_tank_initial_estimate = evalin("base", "T_tank_initial_estimate");
 catch
-T_tank_initial_estimate = comp.T_tank;
-assignin("base", "T_tank_initial_estimate", comp.T_tank)
+T_tank_initial_estimate = comp.tank.liquid.temperature;
+assignin("base", "T_tank_initial_estimate", comp.tank.liquid.temperature)
 end
 
 
@@ -34,10 +34,10 @@ function F_tank = Tank_Temperature_finder_fct(T)
     rho_liq = comp.N2O.temperature2density_liquid(T);
     rho_vap = comp.N2O.temperature2density_vapor(T);
 
-    x = x_vapor(comp.U_tank_total, comp.m_ox, T, comp);
+    x = x_vapor(comp.tank.internal_energy, comp.tank.oxidizer_mass, T, comp);
     %x = 0.5;
 
-    F_tank = comp.V_tank - comp.m_ox.*((1-x)./rho_liq + x./rho_vap);
+    F_tank = comp.tank.volume - comp.tank.oxidizer_mass.*((1-x)./rho_liq + x./rho_vap);
 
 
 end

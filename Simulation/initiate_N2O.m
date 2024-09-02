@@ -89,7 +89,11 @@ N2O.saturation_pressure2internal_energy_vapor  = fnxtr(csaps(saturation_pressure
 
 
 
-
+N2O.Molecular_weight = 44.013e-3;           % Molecular weight N2O (kg/mol).
+N2O.gamma = 1.31;                           % Adiabatic index coefficient N2O.
+N2O.viscosity = 2.98e-5;                        % Pa.s
+N2O.calorific_capacity = 2269.5;           % J/kg
+N2O.thermal_conductivity = 103e-3;         % W/m.K
 
 
 

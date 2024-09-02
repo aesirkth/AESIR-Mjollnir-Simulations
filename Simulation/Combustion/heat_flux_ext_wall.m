@@ -2,22 +2,22 @@ function [Qdot_ext_w,hcc] = heat_flux_ext_wall(comp)
     %This function return the flux going from the external to the wall.
 
     %Geometric parameters:
-    D_ext = comp.D_ext_tank;
-    L = comp.L_tank;
+    D_ext = comp.tank.diameter;
+    L = comp.tank.length;
     S = pi*D_ext*L;
-    e = comp.e_tank;
-    K = comp.eber_parameter;
+    e = comp.tank.thickness;
+    K = comp.enviroment.eber_parameter;
     
     %Thermal and physical parameters
-    k_alu = comp.aluminium_thermal_conductivity;
+    k_alu = comp.tank.wall.aluminium_thermal_conductivity;
     Beta_air = 1/comp.enviroment.temperature;             %thermic dilatation coefficient for a perfect gas
     
     
     %thermophysical properties of the air must be evaluated at Tfilm = (Text + Twall) / 2
-    visc_dyn_air = py.CoolProp.CoolProp.PropsSI('V','P',comp.P_ext,'T', (comp.enviroment.temperature+comp.tank.wall.temperature)/2,'Air'); %Dynamic viscosity
-    cp_air = py.CoolProp.CoolProp.PropsSI('C','P',comp.P_ext,'T', (comp.enviroment.temperature+comp.tank.wall.temperature)/2,'Air'); %Cp of air
-    k_air = py.CoolProp.CoolProp.PropsSI('L','P',comp.P_ext,'T', (comp.enviroment.temperature+comp.tank.wall.temperature)/2,'Air'); %Conductivity of air
-    rho_air = py.CoolProp.CoolProp.PropsSI('D','P',comp.P_ext,'T', (comp.enviroment.temperature+comp.tank.wall.temperature)/2,'Air'); %density of air
+    visc_dyn_air = py.CoolProp.CoolProp.PropsSI('V','P',comp.enviroment.pressure,'T', (comp.enviroment.temperature+comp.tank.wall.temperature)/2,'Air'); %Dynamic viscosity
+    cp_air       = py.CoolProp.CoolProp.PropsSI('C','P',comp.enviroment.pressure,'T', (comp.enviroment.temperature+comp.tank.wall.temperature)/2,'Air'); %Cp of air
+    k_air        = py.CoolProp.CoolProp.PropsSI('L','P',comp.enviroment.pressure,'T', (comp.enviroment.temperature+comp.tank.wall.temperature)/2,'Air'); %Conductivity of air
+    rho_air      = py.CoolProp.CoolProp.PropsSI('D','P',comp.enviroment.pressure,'T', (comp.enviroment.temperature+comp.tank.wall.temperature)/2,'Air'); %density of air
     
     
     if evalin("base", "static") || norm(comp.rigid_body.velocity) ==0
@@ -60,7 +60,7 @@ function [Qdot_ext_w,hcc] = heat_flux_ext_wall(comp)
     %EXTERNAL WALL TEMPERATURE FINDER by getting the zero of this function
     %http://dark.dk/documents/technical_notes/simplified%20aerodynamic%20heating%20of%20rockets.pdf
     
-    sigma = comp.stephan_cst;
+    sigma = comp.enviroment.stephan_cst;
     epsilon = comp.aluminium_emissivity;
     
     

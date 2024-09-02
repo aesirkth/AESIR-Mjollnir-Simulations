@@ -2,7 +2,7 @@ function [P_cc, mf_ox] = critical_mf_Dyer(comp)
     %CRITICAL_MF_DYER Summary of this function goes here
     %   Detailed explanation goes here
 
-    Cd = comp.Cd;                     %Discharge coefficient
+    Cd = comp.tank.Cd;                     %Discharge coefficient
     D_inj = 2 * comp.r_inj;             %Injector diameter
     n_inj = comp.n_inj;               %Number of injector holes
     Ai = n_inj * pi * D_inj^2 / 4;

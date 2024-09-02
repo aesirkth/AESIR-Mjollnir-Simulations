@@ -9,10 +9,11 @@ function f = exhaust_Mach_fct(M_ex)
 % Equality f(M_ex) = 0 that we use to find the Mach number (see Sutton, 2017, p. 60).
 
 
-A_ex  = comp.A_exit;
-gamma = comp.gamma_combustion_products;
+A_ex  = comp.engine.nozzle.exit.area;
+A_t   = comp.engine.nozzle.throat.area;
+gamma = comp.engine.gamma_combustion_products;
 
-f = 1 / M_ex * (2 / (gamma + 1) * (1 + (gamma - 1) * M_ex^2 / 2))^((gamma + 1) / (2 * (gamma - 1))) - A_ex / comp.A_t;
+f = 1 / M_ex * (2 / (gamma + 1) * (1 + (gamma - 1) * M_ex^2 / 2))^((gamma + 1) / (2 * (gamma - 1))) - A_ex / A_t;
 end
 
 end

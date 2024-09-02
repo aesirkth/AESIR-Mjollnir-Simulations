@@ -12,7 +12,7 @@ for i = 1:numel(variables); eval(variables{i}+"= comp.rigid_body."  +variables{i
 
 if position(3) < 0; position(3) = 0; end % fix atmocoesa warning
 
-[~,~,~, air_density]             = atmoscoesa(position(3));
+%[air_temperature,~,air_pressure, air_density]             = atmoscoesa(position(3));
 
 
 relative_velocity               = wind_velocity - velocity;
@@ -94,7 +94,9 @@ lift_moment_vector = [lift_moment_tensor(3,2) + lift_moment_tensor(2,3);
 
 comp.rigid_body.moments.LiftMoment = moment(attitude*lift_moment_vector, center_of_mass);
 
-comp.aerodynamics.air_density       = air_density;
+% comp.enviroment.air_temperature     = air_temperature;
+% comp.enviroment.air_pressure        = air_pressure;
+% comp.enviroment.air_density         = air_density;
 comp.aerodynamics.relative_velocity = relative_velocity;
 
 
