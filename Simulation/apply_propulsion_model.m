@@ -3,7 +3,7 @@ function [comp,state_vector_derivative] = apply_propulsion_model(comp, state_vec
 
 if comp.rigid_body.position(3) < 0; comp.rigid_body.position(3) = 0; end % Fix atmoscoesa warnings
 
-comp.engine.fuel_grain.mass            = comp.engine.fuel_grain.density * pi * comp.engine.fuel_grain.length * (comp.engine.combustion_chamber.internal_diameter^2 / 4 - comp.engine.combustion_chamber.radius^2);  % Compute the fuel mass (density * pi * length * (fuel_r^2 - cc_r^2)).
+comp.engine.fuel_grain.mass            = comp.engine.fuel_grain.density * pi * comp.engine.fuel_grain.length * (comp.engine.combustion_chamber.internal_diameter^2 / 4 - comp.engine.fuel_grain.radius^2);  % Compute the fuel mass (density * pi * length * (fuel_r^2 - cc_r^2)).
 comp.rigid_body.mass   = comp.tank.oxidizer_mass + comp.engine.fuel_grain.mass + comp.dry_mass;                                 % Compute total mass.
 
 if comp.engine.active_burn_flag == 0
@@ -31,7 +31,7 @@ if comp.engine.active_burn_flag == 0
     comp.tank.pressure = fnval(comp.N2O.temperature2saturation_pressure, comp.tank.liquid.temperature)* 10^6;   % Get saturation pressure of N2O at this tank temperature.
 
     mf_ox                        = mass_flow_oxidizer(comp);                                         % Compute oxidizer mass flow.
-    A_port                       = pi * comp.engine.combustion_chamber.radius^2;                                                         % Compute port area.
+    A_port                       = pi * comp.engine.fuel_grain.radius^2;                                                         % Compute port area.
     comp.tank.G_o                = mf_ox / A_port;                                                         % Compute oxidizer mass velocity (see Sutton, 2017, p. 602).
     mf_fuel                      = mass_flow_fuel    (comp);                                         % Compute fuel mass flow.
     comp.engine.OF               = mf_ox / mf_fuel;                                                         % Compute O/F ratio.
@@ -42,7 +42,7 @@ if comp.engine.active_burn_flag == 0
     
     h_outlet = py.CoolProp.CoolProp.PropsSI('H', 'P', comp.tank.pressure, 'T|liquid', comp.tank.liquid.temperature, 'NitrousOxide');  % Get mass specific enthalpy of N2O.
     
-    V_cc = pi * (comp.engine.combustion_chamber.internal_diameter^2 / 4 * comp.engine.combustion_chamber.length - (comp.engine.combustion_chamber.internal_diameter^2 / 4 - comp.engine.combustion_chamber.radius^2) * comp.engine.fuel_grain.length);    % Compute volume of the combustion chamber (total_volume - fuel_volume).
+    V_cc = pi * (comp.engine.combustion_chamber.internal_diameter^2 / 4 * comp.engine.combustion_chamber.length - (comp.engine.combustion_chamber.internal_diameter^2 / 4 - comp.engine.fuel_grain.radius^2) * comp.engine.fuel_grain.length);    % Compute volume of the combustion chamber (total_volume - fuel_volume).
     
     c_star = interp1q(comp.engine.OF_set, comp.engine.c_star_set, comp.engine.OF);                              % Get the characteristic velocity of paraffin with N2O at the current O/F ratio.
     RTcc_Mw = gamma * (2 / (gamma + 1))^((gamma + 1) / (gamma - 1)) * c_star^2;       % Compute the ratio comp.R * comp.engine.combustion_chamber.temperature / Mw (see Sutton, 2017, p. 63).

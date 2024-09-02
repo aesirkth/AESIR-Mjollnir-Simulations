@@ -8,8 +8,8 @@ function m_dot_fuel = mass_flow_fuel(comp)
     Sin_amp = comp.engine.combustion_chamber.SinusShapeAmplitude;
     C8 = comp.engine.combustion_chamber.InitialPerimeter;
     Rinit=comp.engine.fuel_grain.radius_init;
-    coeff = 1+(C8/(2*pi*Rinit) - 1)*exp(sqrt(6/Sin_amp)*(Rinit-comp.engine.combustion_chamber.radius)*2/Rinit);
+    coeff = 1+(C8/(2*pi*Rinit) - 1)*exp(sqrt(6/Sin_amp)*(Rinit-comp.engine.fuel_grain.radius)*2/Rinit);
     
-    m_dot_fuel = rho_fuel*2*pi*comp.engine.combustion_chamber.radius*r_dot*L*coeff;
+    m_dot_fuel = rho_fuel*2*pi*comp.engine.fuel_grain.radius*r_dot*L*coeff;
 end
 
