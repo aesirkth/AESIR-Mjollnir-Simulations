@@ -17,8 +17,8 @@ setup; clc
 
 %% User settings.
 update_N2O             = false;                 % True if the calculations for N2O should be re-run, usually false.
-run_simulation         = true;                  % True if the simulation should be run, if false it will load the most recent simulation.
-process_data           = true;                  % TODO: it would be nice to integrate this more properly into the main.
+run_simulation         = false;                  % True if the simulation should be run, if false it will load the most recent simulation.
+process_data           = false;                  % TODO: it would be nice to integrate this more properly into the main.
 plot_data              = true;                  % True if the data should be plot together with the simulations.
 data_name              = "Datasets/test8.mat";
 
