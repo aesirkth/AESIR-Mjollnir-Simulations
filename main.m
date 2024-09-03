@@ -95,7 +95,7 @@ if process_data
     t     = solution.x(  1:3:end);
     state = solution.y(:,1:3:end);
 
-
+    assign_ui_node_positions
 
     [mjolnir_historian, mjolnir] = create_historian(mjolnir,t);
    

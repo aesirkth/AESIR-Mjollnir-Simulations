@@ -12,10 +12,26 @@ mjolnir.N2O                      = initiate_N2O;
 
 mjolnir.dont_record(end+1)       = "N2O";
 
-%% Enviroment
-mjolnir.enviroment              = struct();
-mjolnir.enviroment.g            = 9.81;
-mjolnir.enviroment.temperature  = 282;
+
+%% Enviroment & physical constants
+
+mjolnir.enviroment                      = struct();
+
+mjolnir.enviroment.g                    = 9.81;
+mjolnir.enviroment.temperature          = 282;
+
+mjolnir.enviroment.R                    = 8.314;                                 % Universal gas constant (J/K/mol).
+
+mjolnir.enviroment.stephan_cst          = 5.67e-8;                     % Stephan-Boltzman constant (W/m2/K4).
+mjolnir.enviroment.eber_parameter       = 0.89;                     % Eber parameter for vertex angle between 20-50 degrees.
+mjolnir.enviroment.Molecular_weight_air = 28.9647e-3;         % Molecular weight of air (kg/mol).
+mjolnir.enviroment.r_air                = mjolnir.enviroment.R / mjolnir.enviroment.Molecular_weight_air;
+
+
+
+[mjolnir.enviroment.temperature_COESA, ~, mjolnir.enviroment.pressure, ~] = atmoscoesa(0);
+ mjolnir.enviroment.dT_ext = mjolnir.enviroment.temperature_COESA - mjolnir.enviroment.temperature;  % Difference between the COESA temperature and the actual temperature (K).
+
 
 
 
@@ -69,48 +85,53 @@ mjolnir.aerodynamics.friction_coefficient         = ones(3,1)*0.01;
 
 
 %% Shute
-mjolnir.shute              = struct();
-mjolnir.shute.mass         = 10;
+mjolnir.shute                         = struct();
+
+mjolnir.shute.mass                    = 10;
 
 
 %% Payload
-mjolnir.payload            = struct();
-mjolnir.payload.mass       = 2;
+mjolnir.payload                       = struct();
+
+mjolnir.payload.mass                  = 2;
 
 
 %% Electronics
-mjolnir.electronics        = struct();
-mjolnir.electronics.mass   = 2.3;
+mjolnir.electronics                   = struct();
+
+mjolnir.electronics.mass              = 2.3;
 
 
 %% Body-tube
-mjolnir.body_tube          = struct();
-mjolnir.body_tube.mass     = 7;
+mjolnir.body_tube                     = struct();
+
+mjolnir.body_tube.mass                = 7;
 
 
 %% Kasrtullen
-mjolnir.kastrullen         = struct();
-mjolnir.kastrullen.length  = 35e-2;      % Length of Kastrullen.
+mjolnir.kastrullen                    = struct();
+
+mjolnir.kastrullen.length             = 35e-2;      % Length of Kastrullen.
 
 
-
-%% Environment parameters.
-% TODO: Retrieve from data?
 
 %% Tank
 
-mjolnir.tank                     = struct();
-mjolnir.tank.filling_ratio       = 0.95;      % Tank filling ratio.
+mjolnir.tank                         = struct();
 
-mjolnir.tank.vapor               = struct();
+mjolnir.tank.filling_ratio           = 0.95;      % Tank filling ratio.
+
+mjolnir.tank.vapor                   = struct();
 
 % Liquid
-mjolnir.tank.liquid               = struct();
-mjolnir.tank.liquid.temperature   = 285;  % Initial tank temperature (K).
+mjolnir.tank.liquid                  = struct();
+
+mjolnir.tank.liquid.temperature      = 285;  % Initial tank temperature (K).
 
 % Tank-wall
-mjolnir.tank.wall                 = struct();
-mjolnir.tank.wall.  temperature   = 285;  % Assume that initial tank wall temperature is equal to the initial internal temperature (K).
+mjolnir.tank.wall                    = struct();
+mjolnir.tank.wall.ui_node_position   = [0.07;0.07;0.4];
+mjolnir.tank.wall.  temperature      = 285;  % Assume that initial tank wall temperature is equal to the initial internal temperature (K).
 
 %mjolnir.tank.exterior_wall = struct();
 
@@ -165,83 +186,64 @@ evalin("base", "temperature_initial_estimate = 285;")
 
 
 
-%% Physical constants.
-
-
-
-
-
-
-
-mjolnir.enviroment.R = 8.314;                                 % Universal gas constant (J/K/mol).
-
-mjolnir.enviroment.stephan_cst = 5.67e-8;                     % Stephan-Boltzman constant (W/m2/K4).
-mjolnir.enviroment.eber_parameter = 0.89;                     % Eber parameter for vertex angle between 20-50 degrees.
-mjolnir.enviroment.Molecular_weight_air = 28.9647e-3;         % Molecular weight of air (kg/mol).
-mjolnir.enviroment.r_air = mjolnir.enviroment.R / mjolnir.enviroment.Molecular_weight_air;
-
-
-
-[mjolnir.enviroment.temperature_COESA, ~, mjolnir.enviroment.pressure, ~] = atmoscoesa(0);
- mjolnir.enviroment.dT_ext = mjolnir.enviroment.temperature_COESA - mjolnir.enviroment.temperature;  % Difference between the COESA temperature and the actual temperature (K).
-
-
-
 
 
 
 %% Engine
 
-mjolnir.engine       = struct();
+mjolnir.engine                  = struct();
 
-mjolnir.engine.mass  = 24.504;     % Total engine mass (kg)
+mjolnir.engine.mass             = 24.504;     % Total engine mass (kg)
 mjolnir.engine.active_burn_flag = 0;
 
-c_star  = readtable("Datasets/characteristic_velocity.csv");
-mjolnir.engine.OF_set = c_star.OF;                                % OF ratio range.
-mjolnir.engine.c_star_set = c_star.c_star;                        % Characteristic velocity c_star.
+c_star                          = readtable("Datasets/characteristic_velocity.csv");
+mjolnir.engine.OF_set           = c_star.OF;                                % OF ratio range.
+mjolnir.engine.c_star_set       = c_star.c_star;                        % Characteristic velocity c_star.
 
 
 %% Injectors:
-mjolnir.engine.injectors                 = struct();
+mjolnir.engine.injectors                  = struct();
 
-mjolnir.engine.injectors.number_of       = 80;                                                                            % Number of injectors holes.
-mjolnir.engine.injectors.radius          = 1.2e-3 / 2;                                                                    % injectors radius (m).
-mjolnir.engine.injectors.diameter        = 2*mjolnir.engine.injectors.radius;                                             % injectors diameter (m).
-mjolnir.engine.injectors.total_area      = mjolnir.engine.injectors.number_of*pi*(mjolnir.engine.injectors.radius)^2;     % injectors total area for ALL the injectorss (m).
-mjolnir.engine.injectors.plate_thickness = 15e-3;                                                                         % injectors plate thickness (m).
-mjolnir.engine.injectors.plate_radius    = 30e-3;                                                                         % plate radius(?) (m)
-mjolnir.engine.injectors.mass            = 0.271;                                                                         % total injector mass (kg)
-mjolnir.engine.injectors.e               = 0.013;                                                                         % (???) (m)
+mjolnir.engine.injectors.number_of        = 80;                                                                            % Number of injectors holes.
+mjolnir.engine.injectors.radius           = 1.2e-3 / 2;                                                                    % injectors radius (m).
+mjolnir.engine.injectors.diameter         = 2*mjolnir.engine.injectors.radius;                                             % injectors diameter (m).
+mjolnir.engine.injectors.total_area       = mjolnir.engine.injectors.number_of*pi*(mjolnir.engine.injectors.radius)^2;     % injectors total area for ALL the injectorss (m).
+mjolnir.engine.injectors.plate_thickness  = 15e-3;                                                                         % injectors plate thickness (m).
+mjolnir.engine.injectors.plate_radius     = 30e-3;                                                                         % plate radius(?) (m)
+mjolnir.engine.injectors.mass             = 0.271;                                                                         % total injector mass (kg)
+mjolnir.engine.injectors.e                = 0.013;                                                                         % (???) (m)
 
 
 
 
 %% Fuel-grain properties.
-mjolnir.engine.fuel_grain                = struct();
+mjolnir.engine.fuel_grain                 = struct();
 
-mjolnir.engine.fuel_grain.mass           = 3.1;                             % (kg)
-mjolnir.engine.fuel_grain.length         = 33e-2;                           % Fuel length (m).
-mjolnir.engine.fuel_grain.density        = 900;                             % Density of fuel (kg/m^3).
-mjolnir.engine.fuel_grain.radius         = 5e-2 / 2;                        % Fuel port diameter at ignition.
+mjolnir.engine.fuel_grain.mass            = 3.1;                             % (kg)
+mjolnir.engine.fuel_grain.length          = 33e-2;                           % Fuel length (m).
+mjolnir.engine.fuel_grain.density         = 900;                             % Density of fuel (kg/m^3).
+mjolnir.engine.fuel_grain.radius          = 5e-2 / 2;                        % Fuel port diameter at ignition.
 
-mjolnir.engine.fuel_grain.mass_margin    = 1.2;    % Mass of fuel that is for margin (kg).
-mjolnir.engine.fuel_grain.radius_margin  = sqrt(mjolnir.engine.fuel_grain.radius^2 - mjolnir.engine.fuel_grain.mass_margin / (mjolnir.engine.fuel_grain.density * mjolnir.engine.fuel_grain.length * pi));
+mjolnir.engine.fuel_grain.mass_margin     = 1.2;                              % Mass of fuel that is for margin (kg).
+mjolnir.engine.fuel_grain.radius_margin   = sqrt(mjolnir.engine.fuel_grain.radius^2 ...
+                                               - mjolnir.engine.fuel_grain.mass_margin / ...
+                                                (mjolnir.engine.fuel_grain.density * ...
+                                                 mjolnir.engine.fuel_grain.length * pi));
 
-mjolnir.engine.fuel_grain.a              = 20e-5;                           % Fuel regression parameter a in r_dot = a*G_o^n (see Sutton, 2017, p. 602).
-mjolnir.engine.fuel_grain.n              = 0.55;                            % Fuel regression parameter n in r_dot = a*G_o^n (see Sutton, 2017, p. 602). Typical range: [0.4, 0.7].
-mjolnir.engine.fuel_grain.dr_thdt        = 0.35e-2;                         % Constant approximation of regression rate (m/s).
-
-
-
-
-
+mjolnir.engine.fuel_grain.a               = 20e-5;                           % Fuel regression parameter a in r_dot = a*G_o^n (see Sutton, 2017, p. 602).
+mjolnir.engine.fuel_grain.n               = 0.55;                            % Fuel regression parameter n in r_dot = a*G_o^n (see Sutton, 2017, p. 602). Typical range: [0.4, 0.7].
+mjolnir.engine.fuel_grain.dr_thdt         = 0.35e-2;                         % Constant approximation of regression rate (m/s).
 
 
 
-%% Combustion chamber geometry.
+
+
+
+
+
 %% Combustion-chamber
-mjolnir.engine.combustion_chamber = struct();
+
+mjolnir.engine.combustion_chamber                       = struct();
 
 mjolnir.engine.combustion_chamber.pressure              = 2500000; % Initial pressure in the combustion chamber (Pa). Needs to be quite high for the model to work.
 mjolnir.engine.combustion_chamber.temperature           = 285;     % Initial combustion chamber temperature.
@@ -263,13 +265,16 @@ mjolnir.engine.combustion_chamber.SinusShapeAmplitude = 1/8 ;                   
 mjolnir.engine.combustion_chamber.InitialPerimeter = integral(dc,0,2*pi);                                               % Perimeter taking into account sinus shape.
 
 
+
+
 %% Pre-combustion-chamber properties.
 
-mjolnir.engine.pre_combustion_chamber                = struct();
-mjolnir.engine.pre_combustion_chamber.length         = 75e-3;                                                   % Pre-combustion chamber length.
-mjolnir.engine.pre_combustion_chamber.mass           = 0.5;                                                     % Pre-combustion chamber mass.
+mjolnir.engine.pre_combustion_chamber                  = struct();
 
-mjolnir.engine.combustion_chamber.temperature        = 280;                                                     % Combustion chamber temperature (K).
+mjolnir.engine.pre_combustion_chamber.length           = 75e-3;                                                   % Pre-combustion chamber length.
+mjolnir.engine.pre_combustion_chamber.mass             = 0.5;                                                     % Pre-combustion chamber mass.
+
+mjolnir.engine.combustion_chamber.temperature          = 280;                                                     % Combustion chamber temperature (K).
 
 
 
