@@ -1,16 +1,16 @@
 function [comp,state_vector_derivative] = apply_propulsion_model(comp, state_vector_derivative)
 % This model is based on the following literature: https://arc.aiaa.org/doi/10.2514/6.2013-4045
 
-if comp.rigid_body.position(3) < 0; comp.rigid_body.position(3) = 0; end % Fix atmoscoesa warnings
+if comp.position(3) < 0; comp.position(3) = 0; end % Fix atmoscoesa warnings
 
 comp.engine.fuel_grain.mass            = comp.engine.fuel_grain.density * pi * comp.engine.fuel_grain.length * (comp.engine.combustion_chamber.internal_diameter^2 / 4 - comp.engine.fuel_grain.radius^2);  % Compute the fuel mass (density * pi * length * (fuel_r^2 - cc_r^2)).
-comp.rigid_body.mass   = comp.tank.oxidizer_mass + comp.engine.fuel_grain.mass + comp.dry_mass;                                 % Compute total mass.
+comp.mass   = comp.tank.oxidizer_mass + comp.engine.fuel_grain.mass + comp.dry_mass;                                 % Compute total mass.
 
 if comp.engine.active_burn_flag == 0
     
     comp.engine.nozzle.throat.area = pi * comp.engine.nozzle.throat.radius.^2;                  % Compute the throat area (m^2).    
     % Get the temperature (K), speed of sound (m/s), pressure (Pa), and density (kg/m^3) at height y.
-    [comp.enviroment.temperature_COESA, comp.aerodynamics.speed_of_sound, comp.enviroment.pressure, comp.enviroment.air_density] = atmoscoesa(comp.rigid_body.position(3));
+    [comp.enviroment.temperature_COESA, comp.aerodynamics.speed_of_sound, comp.enviroment.pressure, comp.enviroment.air_density] = atmoscoesa(comp.position(3));
     comp.enviroment.temperature = comp.enviroment.temperature_COESA - comp.enviroment.dT_ext;
     
     %m_wall = comp.rho_alu * pi * comp.tank.length * (comp.tank.diameter^2 - (comp.tank.diameter - comp.tank.thickness*2)^2) / 4;     % Compute the mass of the tank wall (density * pi * length * (external_r^2 - internal_r^2)).
@@ -63,7 +63,7 @@ if comp.engine.active_burn_flag == 0
     
         
     F = comp.engine.combustion_chamber.combustion_efficiency * thrust(comp);   % Compute thrust.
-    comp.rigid_body.forces.Thrust = force(F*comp.rigid_body.attitude*[0;0;1],[0;0;-0.9]);
+    comp.forces.Thrust = force(F*comp.attitude*[0;0;1],comp.engine.nozzle.position);
 
     state_vector_derivative(19:29) = [dmtotaldt; dUtotaldt; dTwalldt; drdt; comp.engine.fuel_grain.dr_thdt; dP_ccdt; 0; 0; 0; 0; 0];
     if comp.tank.remaining_ox <= 0;state_vector_derivative(29) = 1;end  % Check for burn-completion
@@ -72,7 +72,7 @@ if comp.engine.active_burn_flag == 0
     
 else
 
-    comp.rigid_body.forces.Thrust = force([0;0;0],[0;0;-0.9]);
+    comp.forces.Thrust = force([0;0;0],comp.engine.nozzle.position);
 
     state_vector_derivative(19:29) = [0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 1];
 

@@ -1,5 +1,5 @@
 clc
-% clear
+clear
 % clear global
 
 
@@ -14,6 +14,7 @@ addpath('./Methods');
 addpath('./STLRead');
 addpath('./UI');
 addpath('./Data');
+addpath('./Arduino');
 if isfolder('../colorthemes/')
 addpath('../colorthemes/'); 
 end

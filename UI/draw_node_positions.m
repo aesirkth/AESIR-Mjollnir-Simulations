@@ -36,8 +36,8 @@ for parameter_index = 1:numel(parent_node.Children)
        && isequal(parameter, "forces" ) == false ...
        && isequal(parameter, "moments") == false
     
-    if isfield(parent_struct.(parameter), "ui_node_position"); node_position = parent_struct.(parameter).ui_node_position;
-    else;                                                      node_position = comp.rigid_body.center_of_mass;
+    if isfield(parent_struct.(parameter), "position"); node_position = parent_struct.(parameter).position;
+    else;                                                      node_position = comp.center_of_mass;
     end
     
     scatter3(ax, node_position(1), ...

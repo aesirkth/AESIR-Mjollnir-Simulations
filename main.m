@@ -15,127 +15,40 @@
 
 setup; clc
 
+job = struct();
+
 %% User settings.
-update_N2O             = false;                 % True if the calculations for N2O should be re-run, usually false.
-run_simulation         = false;                  % True if the simulation should be run, if false it will load the most recent simulation.
-process_data           = false;                  % TODO: it would be nice to integrate this more properly into the main.
-plot_data              = true;                  % True if the data should be plot together with the simulations.
-data_name              = "Datasets/test8.mat";
+job.update_N2O             = false;                 % True if the calculations for N2O should be re-run, usually false.
+job.run_simulation         = true;                  % True if the simulation should be run, if false it will load the most recent simulation.
+job.process_data           = true;                  % TODO: it would be nice to integrate this more properly into the main.
+job.plot_data              = true;                  % True if the data should be plot together with the simulations.
+job.record_video           = false;
+job.data_name              = filename_availability("Datasets/test.mat");
+job.quick                  = false;                % True if quick simulation should be done. Less accurate, but useful for tuning.
 
 
+%job.static                 = true;                 
+%job.full_duration          = true;                 % True if the tank parameters should be set to a full-duration burn, otherwise short-duration parameters are used.
+%job.model                  ='Moody';               % Mass flow model, one of {'Moody', 'Dyer'}. Uses Moody by default.
 
-quick                  = false;                 % True if quick simulation should be done. Less accurate, but useful for tuning.
-static                 = false;                 % True if simulation should be for a static fire, otherwise it is done for flight.
-full_duration          = true;                  % True if the tank parameters should be set to a full-duration burn, otherwise short-duration parameters are used.
-model                  = 'Moody';               % Mass flow model, one of {'Moody', 'Dyer'}. Uses Moody by default.
+job.mjolnir = initiate_mjolnir;
 
+job.t_max   = 120;                 % Final time.
 
-
-
-
-
+sim = run_simulation_job(job);
 
 
-
-
-%% Run or load simulation.
-if run_simulation
-    %% Initialization.
-
-    if isfile(data_name); warning("File name already exists, file will be overwritten upon simulation completion."); end
-
-    initiate_terrain;
-    mjolnir = initiate_mjolnir; % <---- [Go here to change mjolnir's parameters]
-    
-
-
-    %% Set simulation time.
-    t0      = 0;                  % Initial time of ignition.
-    t_max   = 120;                 % Final time.
-    t_range = t0:0.01:t_max;      % Integration interval.
-    
-    tic
-    
-    %% Solve differential equations.
-
-    % tol = odeset('RelTol',1e-5,'AbsTol',1e-6);
-    opts = odeset("Refine",10);
-    loading_message = "Simulating " + data_name + ":";
-    loading_bar = waitbar(0, loading_message);
-    initial_state_vector = comp2state_vector(mjolnir, zeros(28,1));
-    
-    % Solve ODE initial value problem.
-    
-    if quick; solution = ode45( @(t,state_vector) system_equations(t,state_vector,mjolnir), t_range,  initial_state_vector, opts);
-    else;     solution = ode23t(@(t,state_vector) system_equations(t,state_vector,mjolnir), t_range,  initial_state_vector, opts);
-    end
-    
-    
-    simulation_time = toc;
-    waitbar(1,loading_bar,  "Done! Elapsed simulation time: " +string(simulation_time)+" s");
-    close(loading_bar);
-    save(data_name)
-    
-end
-
-
-
-
-if process_data
-    %% Post-processing:
-    
-    load(data_name)
-    
-    if isfile(data_name); warning("File name already exists, file will be overwritten upon simulation completion."); end
-
-    loading_message = "Post-processing " + data_name + ":";
-    loading_bar = waitbar(0, loading_message);
-
-
-    t     = solution.x(  1:3:end);
-    state = solution.y(:,1:3:end);
-
-    assign_ui_node_positions
-
-    [mjolnir_historian, mjolnir] = create_historian(mjolnir,t);
-   
-    tic
-    
-    for time_index = 1:numel(t)
-    
-    mjolnir_historian = record_history(mjolnir, ...
-                                       state(:,time_index), ...
-                                       t(time_index), ...
-                                       time_index,...
-                                       mjolnir_historian);
-    end
-
-    post_processing_time = toc;
-    waitbar(1,loading_bar,  "Done! Elapsed post-processing time: " +string(post_processing_time)+" s");
-    close(loading_bar)
-    save(data_name)
-    
-    
-    
-    
-
-end
-
-
-
-
-if plot_data
+if job.plot_data
     %% Plotting:
-    
-    load(data_name)
-    initiate_terrain
-    initiate_ui
-    ui_running = true;
-    while ui_running
-    update_ui
+
+
+    load(job.data_name)
+    ui=configure_sim2ui(sim, job);
+    index = 1;
+    while exist("ui", "var")
+    push_sim2ui(sim, job, ui);
     end
+    if record_video; close(job.vidobj); end
 
 
 end
-
-

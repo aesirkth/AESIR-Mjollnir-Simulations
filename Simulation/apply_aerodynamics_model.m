@@ -3,16 +3,20 @@ function comp = apply_aerodynamics_model(comp)
 % third and fourth moments of area of the rockets broadsides to calculate the moment induced upon the rocket
 % due to the relative wind.
 
- % Unpack fields of aerodynamics-struct and the rigid_body into workspace
+if comp.position(3) < 0; comp.position(3) = 0; end % fix atmocoesa warning
+
+[comp.enviroment.temperature_COESA, comp.aerodynamics.speed_of_sound, comp.enviroment.pressure, comp.enviroment.air_density] = atmoscoesa(comp.position(3));
+ comp.enviroment.temperature = comp.enviroment.temperature_COESA - comp.enviroment.dT_ext;
+
+
+% Unpack fields of aerodynamics-struct and the rigid_body into workspace
 variables = fieldnames(comp.aerodynamics);
 for i = 1:numel(variables); eval(variables{i}+"= comp.aerodynamics."+variables{i}+";"); end
-variables = fieldnames(comp.rigid_body);
-for i = 1:numel(variables); eval(variables{i}+"= comp.rigid_body."  +variables{i}+";"); end
+variables = fieldnames(comp);
+for i = 1:numel(variables); eval(variables{i}+"= comp."  +variables{i}+";"); end
 
 
-if position(3) < 0; position(3) = 0; end % fix atmocoesa warning
-
-%[air_temperature,~,air_pressure, air_density]             = atmoscoesa(position(3));
+rotation_rate = (attitude*moment_of_inertia*(attitude'))\angular_momentum;
 
 
 relative_velocity               = wind_velocity - velocity;
@@ -29,8 +33,8 @@ parallel_velocity_magnitude          = sqrt(norm(relative_velocity)^2 - relative
 lift_force = attitude*(pressure_coefficient.*(surface_area.*sign(relative_velocity_comp_basis).*(relative_velocity_comp_basis.^2))*air_density);
 drag_force = normalize(relative_velocity)*sum(friction_coefficient.*surface_area.*parallel_velocity_magnitude.^2)*air_density;
 
-comp.rigid_body.forces.DragForce = force(drag_force, center_of_mass);
-comp.rigid_body.forces.LiftForce = force(lift_force, center_of_mass);
+comp.forces.DragForce = force(drag_force, center_of_mass);
+comp.forces.LiftForce = force(lift_force, center_of_mass);
 
 
 
@@ -92,13 +96,13 @@ lift_moment_vector = [lift_moment_tensor(3,2) + lift_moment_tensor(2,3);
 
 
 
-comp.rigid_body.moments.LiftMoment = moment(attitude*lift_moment_vector, center_of_mass);
+comp.moments.LiftMoment = moment(attitude*lift_moment_vector, center_of_mass);
 
 % comp.enviroment.air_temperature     = air_temperature;
 % comp.enviroment.air_pressure        = air_pressure;
 % comp.enviroment.air_density         = air_density;
 comp.aerodynamics.relative_velocity = relative_velocity;
-
+comp.rotation_rate                  = rotation_rate;
 
 
 

@@ -1,11 +1,10 @@
 function mjolnir = initiate_mjolnir()
-terrain = evalin("base", "terrain");
 
 mjolnir = struct();
 mjolnir.dont_record = ["", ""];
 
-
-
+mjolnir.static        = false; % True if simulation should be for a static fire, otherwise it is done for flight.
+mjolnir.full_duration = true;  % True if the tank parameters should be set to a full-duration burn, otherwise short-duration parameters are used.
 
 
 mjolnir.N2O                      = initiate_N2O;
@@ -16,15 +15,19 @@ mjolnir.dont_record(end+1)       = "N2O";
 %% Enviroment & physical constants
 
 mjolnir.enviroment                      = struct();
-
+mjolnir.enviroment.dont_record          = ["",""];
+mjolnir.enviroment.position             = [0.25;0.25;-0.2];
 mjolnir.enviroment.g                    = 9.81;
 mjolnir.enviroment.temperature          = 282;
 
-mjolnir.enviroment.R                    = 8.314;                                 % Universal gas constant (J/K/mol).
+mjolnir.enviroment.dont_record(end+1)   = "terrain";
+mjolnir.enviroment.terrain              = initiate_terrain();
+
+mjolnir.enviroment.R                    = 8.314;                       % Universal gas constant (J/K/mol).
 
 mjolnir.enviroment.stephan_cst          = 5.67e-8;                     % Stephan-Boltzman constant (W/m2/K4).
-mjolnir.enviroment.eber_parameter       = 0.89;                     % Eber parameter for vertex angle between 20-50 degrees.
-mjolnir.enviroment.Molecular_weight_air = 28.9647e-3;         % Molecular weight of air (kg/mol).
+mjolnir.enviroment.eber_parameter       = 0.89;                        % Eber parameter for vertex angle between 20-50 degrees.
+mjolnir.enviroment.Molecular_weight_air = 28.9647e-3;                  % Molecular weight of air (kg/mol).
 mjolnir.enviroment.r_air                = mjolnir.enviroment.R / mjolnir.enviroment.Molecular_weight_air;
 
 
@@ -37,23 +40,21 @@ mjolnir.enviroment.r_air                = mjolnir.enviroment.R / mjolnir.envirom
 
 
 %% Rigid-body model
-mjolnir.rigid_body                               = struct();
-
-mjolnir.rigid_body.forces                        = struct();
-mjolnir.rigid_body.moments                       = struct();
-mjolnir.rigid_body.mass                          = 0;                       % dependant
-mjolnir.rigid_body.attitude                      = rotx(5)*eye(3);
-mjolnir.rigid_body.center_of_mass                = [0;0;0.5];
-mjolnir.rigid_body.angular_momentum              = zeros(3,1);
-mjolnir.rigid_body.rotation_rate                 = zeros(3,1);
-mjolnir.rigid_body.position                      = [0;0;terrain.z(0,0)];
-mjolnir.rigid_body.velocity                      = zeros(3,1);
-mjolnir.rigid_body.moment_of_inertia             = eye(3)*(80*4.^2)*0.2;
-mjolnir.rigid_body.moment_of_inertia(3,3)        = (80*4.^2)*2;
+mjolnir.forces                        = struct();
+mjolnir.moments                       = struct();
+mjolnir.mass                          = 0;                       % dependant
+mjolnir.attitude                      = eye(3);
+mjolnir.center_of_mass                = [0;0;0.5];
+mjolnir.angular_momentum              = zeros(3,1);
+mjolnir.rotation_rate                 = zeros(3,1);
+mjolnir.position                      = [0;0;mjolnir.enviroment.terrain.z(0,0)];
+mjolnir.velocity                      = zeros(3,1);
+mjolnir.moment_of_inertia             = eye(3)*(80*4.^2)*0.2;
+mjolnir.moment_of_inertia(3,3)        = (80*4.^2)*2;
 
 
-mjolnir.rigid_body.forces.null                   = force ([0;0;0], [0;0;0]);
-mjolnir.rigid_body.moments.null                  = moment([0;0;0], [0;0;0]);
+mjolnir.forces.null                   = force ([0;0;0], [0;0;0]);
+mjolnir.moments.null                  = moment([0;0;0], [0;0;0]);
 
 
 
@@ -80,37 +81,46 @@ mjolnir.aerodynamics.wind_velocity                = [0;0;0];
 mjolnir.aerodynamics.air_density                  = 1.2;
 mjolnir.aerodynamics.pressure_coefficient         = [0.2;0.2;0.1];
 mjolnir.aerodynamics.friction_coefficient         = ones(3,1)*0.01;
-
+mjolnir.aerodynamics.position                     = mjolnir.aerodynamics.center_of_pressure;
 
 
 
 %% Shute
 mjolnir.shute                         = struct();
-
+mjolnir.shute.position                = [0;0;2];
 mjolnir.shute.mass                    = 10;
 
 
 %% Payload
 mjolnir.payload                       = struct();
-
+mjolnir.payload.position              = [0;0;1.7];
 mjolnir.payload.mass                  = 2;
 
 
 %% Electronics
 mjolnir.electronics                   = struct();
-
+mjolnir.electronics.position          = [0;0;1.5];
 mjolnir.electronics.mass              = 2.3;
 
 
+%% Guidance
+mjolnir.guidance                      = struct();
+mjolnir.guidance.D_gain               = 10000;
+mjolnir.guidance.I_gain               = 100000;
+
+mjolnir.guidance.control_athority     = 45;
+mjolnir.guidance.desired_direction    = roty(45)*[0;0;1];
+mjolnir.guidance.integrated_theta     = [0;0];
+
 %% Body-tube
 mjolnir.body_tube                     = struct();
-
+mjolnir.body_tube.position            = [0.07;0.07;1.4];
 mjolnir.body_tube.mass                = 7;
 
 
 %% Kasrtullen
 mjolnir.kastrullen                    = struct();
-
+mjolnir.kastrullen.position           = [0;0;-1.5];
 mjolnir.kastrullen.length             = 35e-2;      % Length of Kastrullen.
 
 
@@ -118,19 +128,20 @@ mjolnir.kastrullen.length             = 35e-2;      % Length of Kastrullen.
 %% Tank
 
 mjolnir.tank                         = struct();
-
+mjolnir.tank.position                = [0;0;-0.5];
 mjolnir.tank.filling_ratio           = 0.95;      % Tank filling ratio.
 
 mjolnir.tank.vapor                   = struct();
+mjolnir.tank.vapor.position          = [0;0;0.5];
 
 % Liquid
 mjolnir.tank.liquid                  = struct();
-
+mjolnir.tank.liquid.position         = [0;0;-0.8];
 mjolnir.tank.liquid.temperature      = 285;  % Initial tank temperature (K).
 
 % Tank-wall
 mjolnir.tank.wall                    = struct();
-mjolnir.tank.wall.ui_node_position   = [0.07;0.07;0.4];
+mjolnir.tank.wall.position           = [0.07;0.07;0.4];
 mjolnir.tank.wall.  temperature      = 285;  % Assume that initial tank wall temperature is equal to the initial internal temperature (K).
 
 %mjolnir.tank.exterior_wall = struct();
@@ -151,8 +162,10 @@ mjolnir.tank.wall  .heat_flux = 0;    % Thermal heat flux of the tank-wall (depe
 
 mjolnir.tank.oxidizer_mass      = 24.5;
 mjolnir.tank.pressure         = 0;    % Pressure (dependant, computed in simulation). 
+
 % Tank geometry.    
-if evalin("base", "full_duration")
+
+if mjolnir.full_duration
     mjolnir.tank.diameter = 16e-2;    % Tank external diameter for full-duration burn (m).
     mjolnir.tank.length   = 1.83;     % Tank length for full-duration burn (m).
 else
@@ -173,12 +186,12 @@ mjolnir.tank.liquid.mass = mjolnir.tank.filling_ratio       * mjolnir.tank.volum
 mjolnir.tank.vapor.mass = (1 - mjolnir.tank.filling_ratio)  * mjolnir.tank.volume *  mjolnir.N2O.temperature2density_vapor (mjolnir.tank.liquid.temperature);               % The liquid mass is the remaining volume in the tank times the vapor density (kg).
 
 mjolnir.tank.oxidizer_mass        = mjolnir.tank.liquid.mass + mjolnir.tank.vapor.mass;                                         % The initial mass of the oxidizer in the tank is the sum of liquid and vapor mass (kg).
-mjolnir.tank.internal_energy                 = mjolnir.tank.liquid.mass * mjolnir.N2O.temperature2specific_internal_energy_liquid(mjolnir.tank.liquid.temperature) ...
-                                + mjolnir.tank.vapor.mass * mjolnir.N2O.temperature2specific_internal_energy_vapor(mjolnir.tank.liquid.temperature);         % The initial energy in the tank is the sum of liquid and vapor mass times energy (J).
+mjolnir.tank.internal_energy      = mjolnir.tank.liquid.mass * mjolnir.N2O.temperature2specific_internal_energy_liquid(mjolnir.tank.liquid.temperature) ...
+                                  + mjolnir.tank.vapor .mass * mjolnir.N2O.temperature2specific_internal_energy_vapor (mjolnir.tank.liquid.temperature);         % The initial energy in the tank is the sum of liquid and vapor mass times energy (J).
 
 mjolnir.tank.Cd = 0.85;                                    % Discharge coefficient.
 mjolnir.tank.remaining_ox = 100;  
-
+mjolnir.tank.model = "moody";  % Moody or dyer.
 
 
 evalin("base", "temperature_initial_estimate = 285;")
@@ -192,7 +205,7 @@ evalin("base", "temperature_initial_estimate = 285;")
 %% Engine
 
 mjolnir.engine                  = struct();
-
+mjolnir.engine.position         = [0;0;-2];
 mjolnir.engine.mass             = 24.504;     % Total engine mass (kg)
 mjolnir.engine.active_burn_flag = 0;
 
@@ -203,7 +216,7 @@ mjolnir.engine.c_star_set       = c_star.c_star;                        % Charac
 
 %% Injectors:
 mjolnir.engine.injectors                  = struct();
-
+mjolnir.engine.injectors.position         = [0;0;-1.7];
 mjolnir.engine.injectors.number_of        = 80;                                                                            % Number of injectors holes.
 mjolnir.engine.injectors.radius           = 1.2e-3 / 2;                                                                    % injectors radius (m).
 mjolnir.engine.injectors.diameter         = 2*mjolnir.engine.injectors.radius;                                             % injectors diameter (m).
@@ -218,7 +231,7 @@ mjolnir.engine.injectors.e                = 0.013;                              
 
 %% Fuel-grain properties.
 mjolnir.engine.fuel_grain                 = struct();
-
+mjolnir.engine.fuel_grain.position        = [0;0;-2.1];
 mjolnir.engine.fuel_grain.mass            = 3.1;                             % (kg)
 mjolnir.engine.fuel_grain.length          = 33e-2;                           % Fuel length (m).
 mjolnir.engine.fuel_grain.density         = 900;                             % Density of fuel (kg/m^3).
@@ -244,15 +257,16 @@ mjolnir.engine.fuel_grain.dr_thdt         = 0.35e-2;                         % C
 %% Combustion-chamber
 
 mjolnir.engine.combustion_chamber                       = struct();
-
+mjolnir.engine.combustion_chamber.position              = [0.07;0.07;-1.9];
 mjolnir.engine.combustion_chamber.pressure              = 2500000; % Initial pressure in the combustion chamber (Pa). Needs to be quite high for the model to work.
 mjolnir.engine.combustion_chamber.temperature           = 285;     % Initial combustion chamber temperature.
-mjolnir.engine.combustion_chamber.external_diameter     = 15.2e-2;                                                  % Combustion chamber external diameter (m).
 mjolnir.engine.combustion_chamber.thickness             = 4e-3;                                                             % Combustion chamber thickness (m).
+mjolnir.engine.combustion_chamber.external_diameter     = 15.2e-2;                                                  % Combustion chamber external diameter (m).
 mjolnir.engine.combustion_chamber.internal_diameter     = mjolnir.engine.combustion_chamber.external_diameter ...
                                                        -2*mjolnir.engine.combustion_chamber.thickness;             % Combustion chamber interanl diameter (m)*.
 
-
+mjolnir.engine.combustion_chamber.internal_radius       = mjolnir.engine.combustion_chamber.internal_diameter*0.5;
+mjolnir.engine.combustion_chamber.external_radius       = mjolnir.engine.combustion_chamber.external_diameter*0.5;
 mjolnir.engine.combustion_chamber.length                = 505.8e-3;                                                % Combustion chamber total casing (pre_cc + cc).
 mjolnir.engine.combustion_chamber.temperature           = 3700;                                                    % Combustion temperature (K).
 mjolnir.engine.combustion_chamber.combustion_efficiency = 0.9;
@@ -270,7 +284,7 @@ mjolnir.engine.combustion_chamber.InitialPerimeter = integral(dc,0,2*pi);       
 %% Pre-combustion-chamber properties.
 
 mjolnir.engine.pre_combustion_chamber                  = struct();
-
+mjolnir.engine.pre_combustion_chamber.position         = [0;0;-1.8];
 mjolnir.engine.pre_combustion_chamber.length           = 75e-3;                                                   % Pre-combustion chamber length.
 mjolnir.engine.pre_combustion_chamber.mass             = 0.5;                                                     % Pre-combustion chamber mass.
 
@@ -281,13 +295,19 @@ mjolnir.engine.combustion_chamber.temperature          = 280;                   
 %% Nozzle properties.
 
 mjolnir.engine.nozzle                  = struct();
+mjolnir.engine.nozzle.position         = [0;0;-2.3];
 
 mjolnir.engine.nozzle.throat           = struct();
-mjolnir.engine.nozzle.exit             = struct();
+
 mjolnir.engine.nozzle.throat.diameter  = 38.4e-3;
-    Ae_At                              = 4.75;
+mjolnir.engine.nozzle.throat.position  = [0;0;-2.25];
+
+Ae_At                              = 4.75;
+
+mjolnir.engine.nozzle.exit             = struct();
 mjolnir.engine.nozzle.exit.diameter    = sqrt(Ae_At) * mjolnir.engine.nozzle.throat.diameter;
 mjolnir.engine.nozzle.exit.area        = pi * (mjolnir.engine.nozzle.exit.diameter)^2 / 4;         % Nozzle exit area (m^2).
+mjolnir.engine.nozzle.exit.position    = [0;0;-2.35];
 
 mjolnir.engine.nozzle.beta             = 80;                                                                                                                                       % Nozzle inlet angle (in °).
 mjolnir.engine.nozzle.alpha            = 10;                            % Nozzle exit angle (in °).

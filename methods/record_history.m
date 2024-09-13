@@ -28,6 +28,8 @@ if isfield(comp, 'dont_record') == 0
 historian.(parameter) = assign_parameters(comp.(parameter), historian.(parameter), history_index);
 elseif sum(matches(comp.dont_record, parameter)) == 0
 historian.(parameter) = assign_parameters(comp.(parameter), historian.(parameter), history_index);
+else
+disp(parameter)
 end
 end
 

@@ -4,8 +4,8 @@ function [comp, state_vector_derivatives] = apply_rigid_body_model(comp, state_v
 % used by the ODE-solver to iterate the system.
 
  % Unpack fields of rigid_body-struct into workspace
-variables = fieldnames(comp.rigid_body);
-for i = 1:numel(variables); eval(variables{i}+"= comp.rigid_body."+variables{i}+";"); end
+variables = fieldnames(comp);
+for i = 1:numel(variables); eval(variables{i}+"= comp."+variables{i}+";"); end
 
 
 
