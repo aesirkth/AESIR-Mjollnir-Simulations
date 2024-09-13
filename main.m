@@ -13,37 +13,37 @@
         - This data has not been available yet, so beware that these parameters are not tuned.
 %}
 
-setup; clc
+setup; clc; clear
 
 job = struct();
 
 %% User settings.
-job.update_N2O             = false;                 % True if the calculations for N2O should be re-run, usually false.
-job.run_simulation         = true;                  % True if the simulation should be run, if false it will load the most recent simulation.
-job.process_data           = true;                  % TODO: it would be nice to integrate this more properly into the main.
-job.plot_data              = true;                  % True if the data should be plot together with the simulations.
+job.update_N2O             = false;                                    % True if the calculations for N2O should be re-run, normally false.
+job.run_simulation         = true;                                     % True if the simulation should be run, if false it will load the most recent simulation.
+job.process_data           = true;                                     % TODO: it would be nice to integrate this more properly into the main.
+job.plot_data              = true;                                     % True if the data should be plot together with the simulations.
 job.record_video           = false;
-job.data_name              = filename_availability("Datasets/test.mat");
-job.quick                  = false;                % True if quick simulation should be done. Less accurate, but useful for tuning.
+job.load_name              = "Datasets/test(2).mat";
+job.save_name              = filename_availability(job.load_name);
+job.quick                  = false;                                    % True if quick simulation should be done. Less accurate, but useful for tuning.
 
 
-%job.static                 = true;                 
-%job.full_duration          = true;                 % True if the tank parameters should be set to a full-duration burn, otherwise short-duration parameters are used.
-%job.model                  ='Moody';               % Mass flow model, one of {'Moody', 'Dyer'}. Uses Moody by default.
 
 job.mjolnir = initiate_mjolnir;
+job.t_max   = 120;                                                     % Final time.
 
-job.t_max   = 120;                 % Final time.
 
-sim = run_simulation_job(job);
+
+
+sim         = run_simulation_job(job);
 
 
 if job.plot_data
     %% Plotting:
 
 
-    load(job.data_name)
-    ui=configure_sim2ui(sim, job);
+    load(job.load_name)
+    ui = configure_sim2ui(sim, job);
     index = 1;
     while exist("ui", "var")
     push_sim2ui(sim, job, ui);

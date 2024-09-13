@@ -2,21 +2,21 @@ function sim = run_simulation_job(job)
 
     sim         = struct(); % Don't want to save, and then load and thus overwrite, job-options 
     sim.mjolnir = job.mjolnir;
-    sim.name    = job.data_name;
+    sim.name    = job.save_name;
     sim.job     = job;
 
-    if isfile(job.data_name); load(job.data_name); end
+    if isfile(job.load_name); load(job.load_name); end
 
     if job.run_simulation
         %% Initialization.
     
-        if isfile(job.data_name); warning("File name already exists, file will be overwritten upon simulation completion."); end
+        if isfile(job.save_name); warning("File name already exists, file will be overwritten upon simulation completion."); end
 
         tic
         
         %% Solve differential equations.
 
-        evalin("base", "loading_message = 'Simulating "+ job.data_name +":';");
+        evalin("base", "loading_message = 'Simulating "+ job.save_name +":';");
         evalin("base", "loading_bar = waitbar(0, loading_message);");
         assignin("base", "loading_bar_end_time", job.t_max);
         sim.initial_state_vector = comp2state_vector(job.mjolnir, zeros(31,1));
@@ -32,7 +32,7 @@ function sim = run_simulation_job(job)
         sim.simulation_time = toc;
         evalin("base","close(loading_bar)");
         evalin("base", "clear loading_bar_end_time, loading_message");
-        save(job.data_name, "sim")
+        save(job.save_name, "sim")
         
     end
     
@@ -42,11 +42,11 @@ function sim = run_simulation_job(job)
     if job.process_data
         %% Post-processing:
         
-        load(job.data_name)
+        load(job.load_name)
         
-        if isfile(job.data_name); warning("File name already exists, file will be overwritten upon simulation completion."); end
+        if isfile(job.save_name); warning("File name already exists, file will be overwritten upon simulation completion."); end
     
-            evalin("base", "loading_message = 'Post-processing "+ job.data_name +":';");
+            evalin("base", "loading_message = 'Post-processing "+ job.save_name +":';");
             evalin("base", "loading_bar = waitbar(0, loading_message);");
             assignin("base", "loading_bar_end_time", job.t_max);
     
@@ -71,7 +71,7 @@ function sim = run_simulation_job(job)
         sim.post_processing_time = toc;
         evalin("base","close(loading_bar)");
         evalin("base", "clear loading_bar_end_time, loading_message");
-        save(job.data_name, "sim")
+        save(job.save_name, "sim")
         
         
         
