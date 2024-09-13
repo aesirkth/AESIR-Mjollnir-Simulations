@@ -56,16 +56,16 @@ function [Qdot_ext_w,hcc] = heat_flux_ext_wall(comp)
     end
 
 
-    function [output] = Wall_ext_temp_finder(T_unknown)
+    %function [output] = Wall_ext_temp_finder(T_unknown)
     %EXTERNAL WALL TEMPERATURE FINDER by getting the zero of this function
     %http://dark.dk/documents/technical_notes/simplified%20aerodynamic%20heating%20of%20rockets.pdf
     
-    sigma = comp.enviroment.stephan_cst;
-    epsilon = comp.aluminium_emissivity;
+    %sigma = comp.enviroment.stephan_cst;
+    %epsilon = comp.aluminium_emissivity;
     
     
-    output = h - (sigma*epsilon*T_unknown^4)/(T_boundary-comp.T_excomp.tank.wall.temperature);
-end
+    % = h - (sigma*epsilon*T_unknown^4)/(T_boundary-comp.T_excomp.tank.wall.temperature);
+    %end
 
 end
     
