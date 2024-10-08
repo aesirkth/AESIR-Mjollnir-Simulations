@@ -14,5 +14,8 @@ moment_sum = cellsum(cellfun(@(moment) moments.(moment).vec ,                   
     
 comp.guidance.measured_acceleration         = (comp.attitude')*force_sum/comp.mass;               % In components basis
 comp.guidance.measured_angular_acceleration = comp.moment_of_inertia\(comp.attitude')*moment_sum; % In components basis
+comp.guidance.measured_velocity             = comp.velocity;
+comp.guidance.measured_position             = comp.position;
+
 
 end

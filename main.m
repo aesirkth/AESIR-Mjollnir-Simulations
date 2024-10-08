@@ -15,40 +15,62 @@
 
 setup; clc; clear
 
-job = struct();
+
+try load("simulation_jobs.mat", "simulation_jobs")
+disp("Working through existing job-que...")
+simulation_job_que(simulation_jobs)
+disp("Done.")
+catch
+end
+disp("Creating new jobs...")
+ base_simulation_job = struct();
 
 %% User settings.
-job.update_N2O             = false;                                    % True if the calculations for N2O should be re-run, normally false.
-job.run_simulation         = true;                                     % True if the simulation should be run, if false it will load the most recent simulation.
-job.process_data           = true;                                     % TODO: it would be nice to integrate this more properly into the main.
-job.plot_data              = true;                                     % True if the data should be plot together with the simulations.
-job.record_video           = false;
-job.load_name              = "Datasets/test(2).mat";
-job.save_name              = filename_availability(job.load_name);
-job.quick                  = false;                                    % True if quick simulation should be done. Less accurate, but useful for tuning.
+ base_simulation_job.update_N2O             = false;                                    % True if the calculations for N2O should be re-run, normally false.
+ base_simulation_job.quick                  = false;                                    % True if quick simulation should be done. Less accurate, but useful for tuning.
+
+directory = "Data/Dataset1/sims/";
+if ~isfolder(directory); mkdir(directory); end
+
+ base_simulation_job.name                   = directory + "sim.mat";
+ base_simulation_job.overwrite              = true;                                    % True if the simulation should be run, if false it will load the most recent simulation.
+ base_simulation_job.save                   = true;
+
+ base_simulation_job.plot_data              = true;                                     % True if the data should be plot together with the simulations.
+ base_simulation_job.record_video           = false;
+ base_simulation_job.is_done                = false;
 
 
 
-job.mjolnir = initiate_mjolnir;
-job.t_max   = 120;                                                     % Final time.
+
+ base_simulation_job.mjolnir                = initiate_mjolnir;
+
+
+ base_simulation_job.t_max                  = 80;                                      % Final time.
 
 
 
-
-sim         = run_simulation_job(job);
-
-
-if job.plot_data
-    %% Plotting:
+job_index = 1
 
 
-    load(job.load_name)
-    ui = configure_sim2ui(sim, job);
-    index = 1;
-    while exist("ui", "var")
-    push_sim2ui(sim, job, ui);
+for I_gain = 10.^(1:1:7)
+    for D_gain = 10.^(1:1:7)
+        job = base_simulation_job;
+        job.mjolnir.guidance.I_gain = I_gain;
+        job.mjolnir.guidance.D_gain = D_gain;
+
+        
+        if    job.overwrite; job.name = filename_availability(job.name, job_index);save(job.name, "job");
+        else;                job.name = strrep(job.name, ".mat", "("+string(job_index)+").mat");
+        end    
+
+        
+        simulation_jobs{job_index} =  job;
+        job_index = job_index+1
     end
-    if record_video; close(job.vidobj); end
-
-
 end
+
+disp("Done.")
+disp("Working through new jobs...")
+simulation_job_que(simulation_jobs)
+disp("Done.")

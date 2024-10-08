@@ -26,9 +26,9 @@ state_vector_derivatives(4:6) = force_sum/mass;
 % Stepping angular shit
 rotation_rate = (attitude*moment_of_inertia*(attitude'))\angular_momentum; 
 
-rotation_rate_tensor = [ 0                     -rotation_rate(3)  rotation_rate(2);
-                        rotation_rate(3)  0                      -rotation_rate(1);
-                       -rotation_rate(2)  rotation_rate(1)   0];
+rotation_rate_tensor = [  0                -rotation_rate(3)        rotation_rate(2);
+                          rotation_rate(3)  0                      -rotation_rate(1);
+                         -rotation_rate(2)  rotation_rate(1)        0               ];
 
 attitude_derivative = rotation_rate_tensor*attitude;
 

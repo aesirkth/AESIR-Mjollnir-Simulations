@@ -24,7 +24,7 @@ relative_velocity_comp_basis    = (attitude')*relative_velocity;
 
 
 
-parallel_velocity_magnitude          = sqrt(norm(relative_velocity)^2 - relative_velocity_comp_basis*norm(relative_velocity)); % Source: I made it the hell up.
+parallel_velocity_magnitude     = sqrt(norm(relative_velocity)^2 - relative_velocity_comp_basis*norm(relative_velocity)); % Source: I made it the hell up.
 
 
 

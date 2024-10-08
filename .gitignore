@@ -1,2 +1,5 @@
-.MATLABDriveTag
-.mp4
+*.MATLABDriveTag
+*.mp4
+/Data
+*simulation_jobs.mat
+*render_jobs.mat

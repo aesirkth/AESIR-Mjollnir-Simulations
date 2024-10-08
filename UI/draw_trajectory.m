@@ -14,13 +14,22 @@ bounds_z = z_mean + [-0.8,1.2]*(max_span+10)*0.5;
 
 [x_grid, y_grid] = meshgrid(linspace(bounds_x(1),bounds_x(2),50), linspace(bounds_y(1),bounds_y(2),50));
 
-z_grid = comp.enviroment.terrain.z(x_grid, y_grid);
+z_grid = comp.enviroment.terrain.z(x_grid', y_grid')';
 
 initial_plotstate = ax.NextPlot;
 
 scatter3(ax, historian.position(1,end), historian.position(2,end), historian.position(3,end), "^");
 ax.NextPlot = "add";
 plot3(ax, historian.position(1,1:index), historian.position(2,1:index), historian.position(3,1:index), "--", "LineWidth",1.5)
+if comp.guidance.is_activate
+plot3    (ax, historian.guidance.closest_point(1,:    ), historian.guidance.closest_point(2,:    ), historian.guidance.closest_point(3,:    ));
+scatter3 (ax, historian.guidance.closest_point(1,index), historian.guidance.closest_point(2,index), historian.guidance.closest_point(3,index));
+scatter3 (ax, historian.guidance.aim_point    (1,index), historian.guidance.aim_point    (2,index), historian.guidance.aim_point    (3,index));
+text     (ax, historian.guidance.closest_point(1,index), historian.guidance.closest_point(2,index), historian.guidance.closest_point(3,index), "closest point");
+text     (ax, historian.guidance.aim_point    (1,index), historian.guidance.aim_point    (2,index), historian.guidance.aim_point    (3,index), "Aim");
+
+
+end
 mesh(ax, x_grid, y_grid, z_grid);
 ax.DataAspectRatio    = [1 1 1];
 ax.XLim = bounds_x;

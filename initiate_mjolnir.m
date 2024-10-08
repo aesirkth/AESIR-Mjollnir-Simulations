@@ -15,11 +15,11 @@ mjolnir.dont_record(end+1)       = "N2O";
 %% Enviroment & physical constants
 
 mjolnir.enviroment                      = struct();
-mjolnir.enviroment.dont_record          = ["",""];
 mjolnir.enviroment.position             = [0.25;0.25;-0.2];
 mjolnir.enviroment.g                    = 9.81;
 mjolnir.enviroment.temperature          = 282;
 
+mjolnir.enviroment.dont_record          = ["",""];
 mjolnir.enviroment.dont_record(end+1)   = "terrain";
 mjolnir.enviroment.terrain              = initiate_terrain();
 
@@ -61,13 +61,14 @@ mjolnir.moments.null                  = moment([0;0;0], [0;0;0]);
 
 %% Mesh:
 mjolnir.mesh                                     = stlread("./assets/AM_00 Mjollnir Full CAD v79 low_poly 0.03.stl");
+%mjolnir.mesh                                     = stlread("./Assets/rocket_mockup.stl");
 mjolnir.dont_record(1)                           = "mesh";
-mjolnir.mesh.vertices                            = mjolnir.mesh.vertices*0.05;
+mjolnir.mesh.vertices                            = 4*mjolnir.mesh.vertices/max(mjolnir.mesh.vertices, [], "all");
 mjolnir.mesh.vertices                            = mjolnir.mesh.vertices -   ...
                                                     0.5*[max(mjolnir.mesh.vertices(:,1))+min(mjolnir.mesh.vertices(:,1));
                                                          max(mjolnir.mesh.vertices(:,2))+min(mjolnir.mesh.vertices(:,2));
                                                          max(mjolnir.mesh.vertices(:,3))+min(mjolnir.mesh.vertices(:,3))]';
-
+%mjolnir.mesh.vertices(:,3) = mjolnir.mesh.vertices(:,3)+0.4;
 
 
 
@@ -86,42 +87,53 @@ mjolnir.aerodynamics.position                     = mjolnir.aerodynamics.center_
 
 
 %% Shute
-mjolnir.shute                         = struct();
-mjolnir.shute.position                = [0;0;2];
-mjolnir.shute.mass                    = 10;
+mjolnir.shute                               = struct();
+mjolnir.shute.position                      = [0;0;2];
+mjolnir.shute.mass                          = 10;
 
 
 %% Payload
-mjolnir.payload                       = struct();
-mjolnir.payload.position              = [0;0;1.7];
-mjolnir.payload.mass                  = 2;
+mjolnir.payload                             = struct();
+mjolnir.payload.position                    = [0;0;1.7];
+mjolnir.payload.mass                        = 2;
 
 
 %% Electronics
-mjolnir.electronics                   = struct();
-mjolnir.electronics.position          = [0;0;1.5];
-mjolnir.electronics.mass              = 2.3;
+mjolnir.electronics                         = struct();
+mjolnir.electronics.position                = [0;0;1.5];
+mjolnir.electronics.mass                    = 2.3;
 
 
 %% Guidance
-mjolnir.guidance                      = struct();
-mjolnir.guidance.D_gain               = 10000;
-mjolnir.guidance.I_gain               = 100000;
+mjolnir.guidance                            = struct();
+mjolnir.guidance.is_activate                = false; %% The below is not used unless true.
+mjolnir.guidance.update_desired_direction   = true;
+mjolnir.guidance.D_gain                     = 1e4;
+mjolnir.guidance.I_gain                     = 1e3;
 
-mjolnir.guidance.control_athority     = 45;
-mjolnir.guidance.desired_direction    = roty(45)*[0;0;1];
-mjolnir.guidance.integrated_theta     = [0;0];
+mjolnir.guidance.control_athority           = 45;
+mjolnir.guidance.desired_direction          = roty(45)*[0;0;1];
+mjolnir.guidance.integrated_theta           = [0;0];
+        x = 2:2:1000;
+mjolnir.guidance.trajectory                 = points2trajectory([x;0*x;500*sqrt(x)] + mjolnir.position);
+mjolnir.guidance.aimpoint_angle             = 5;
+mjolnir.guidance.closest_point              = zeros(3,1);
+mjolnir.guidance.aim_point                  = zeros(3,1);
+mjolnir.guidance.closest_index              = 1;
+mjolnir.guidance.aim_index                  = 1;
+mjolnir.guidance.aim_finder_steps           = 1;
+mjolnir.guidance.closest_point_finder_steps = 1;
 
 %% Body-tube
-mjolnir.body_tube                     = struct();
-mjolnir.body_tube.position            = [0.07;0.07;1.4];
-mjolnir.body_tube.mass                = 7;
+mjolnir.body_tube                           = struct();
+mjolnir.body_tube.position                  = [0.07;0.07;1.4];
+mjolnir.body_tube.mass                      = 7;
 
 
 %% Kasrtullen
-mjolnir.kastrullen                    = struct();
-mjolnir.kastrullen.position           = [0;0;-1.5];
-mjolnir.kastrullen.length             = 35e-2;      % Length of Kastrullen.
+mjolnir.kastrullen                          = struct();
+mjolnir.kastrullen.position                 = [0;0;-1.5];
+mjolnir.kastrullen.length                   = 35e-2;      % Length of Kastrullen.
 
 
 

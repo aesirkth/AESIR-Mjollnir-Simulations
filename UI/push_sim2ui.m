@@ -1,4 +1,4 @@
-function push_sim2ui(sim, job, ui)
+function push_sim2ui(sim, render_job, ui)
 
 %% Skip-feature:
 try index = evalin("base", "indexstamp"); catch; assignin("base", "indexstamp", 1); index = 1; end
@@ -8,7 +8,7 @@ while sim.t(index) < ui.TSlider.Value && sim.t(index +1) < ui.TSlider.Value;inde
 while sim.t(index) > ui.TSlider.Value && sim.t(index +1) > ui.TSlider.Value;index = index-1;end
 
 
-if isequal(ui.Switch.Value,'⏵︎') && index < numel(sim.t)-1
+if isequal(ui.Switch.Value,'⏵︎') && index < numel(sim.t)
 index = index+1;
 ui.TSlider.Value = sim.t(index);
 assignin("base", "indexstamp", index);
@@ -44,7 +44,8 @@ ui.ax4.NextPlot = "replacechildren";
 
 drawnow
 
-if job.record_video; writeVideo(vidobj, getframe(ui.UIFigure)); end
+if render_job.record_video; writeVideo(render_job.vidobj, getframe(ui.UIFigure)); end
+if render_job.close_on_finish && index == numel(sim.t);   close   (ui.UIFigure);  end
 
 else
 pause(0.5)

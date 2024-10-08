@@ -1,14 +1,10 @@
-function ui = configure_sim2ui(sim, job, ui)
+function [ui, render_job] = configure_sim2ui(sim, render_job, ui)
 
-if ~exist("ui", "var"); ui = mjolnir_app(); end
 
-if job.record_video
-    job.video_name = split(job.data_name, "(");
-    job.video_name = split(job.video_name(1), ".");
-    job.video_name = job.video_name(1)+".mp4";
-    job.vidobj     = VideoWriter(job.video_name, "MPEG-4");
-    open(job.vidobj)
-end
+
+if ~exist("ui",  "var"); ui  = mjolnir_app(); end
+
+
 
 ui.UIFigure.Name  = "Mjölnir flight sim";
 ui.TSlider.Limits = [0,sim.job.t_max];
@@ -39,7 +35,7 @@ ui.ax .View = [az, 5];
 ui.ax3.View = [az, 5];
 ui.ax2.View = [az, 5];
 
-
+ui.Switch.Value = '⏵︎';
 
 
 

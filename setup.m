@@ -15,6 +15,7 @@ addpath('./STLRead');
 addpath('./UI');
 addpath('./Data');
 addpath('./Arduino');
+addpath('./Wrappers');
 if isfolder('../colorthemes/')
 addpath('../colorthemes/'); 
 end
