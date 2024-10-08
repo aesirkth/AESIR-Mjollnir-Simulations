@@ -18,30 +18,25 @@ clc; clear; setup;
 
 
 disp("Creating new jobs...")
- base_simulation_job = struct();
+base_simulation_job = struct();
 
 %% User settings.
- base_simulation_job.update_N2O             = false;                                    % True if the calculations for N2O should be re-run, normally false.
- base_simulation_job.quick                  = false;                                    % True if quick simulation should be done. Less accurate, but useful for tuning.
+base_simulation_job.quick                  = false;                                    % True if quick simulation should be done. Less accurate, but useful for tuning.
 
 directory = "Data/test/sims/";
 if ~isfolder(directory); mkdir(directory); end
 
- base_simulation_job.name                   = directory + "sim.mat";
- base_simulation_job.overwrite              = true;                                    % True if the simulation should be run, if false it will load the most recent simulation.
- base_simulation_job.save                   = true;
-
- base_simulation_job.plot_data              = true;                                     % True if the data should be plot together with the simulations.
- base_simulation_job.record_video           = false;
- base_simulation_job.is_done                = false;
+base_simulation_job.name                   = directory + "sim.mat";
+base_simulation_job.overwrite              = true;
+base_simulation_job.save                   = true;
 
 
 
 
- base_simulation_job.mjolnir                = initiate_mjolnir;
+base_simulation_job.mjolnir                = initiate_mjolnir;
 
 
- base_simulation_job.t_max                  = 80;                                      % Final time.
+base_simulation_job.t_max                  = 80;                                      % Final time.
 
 
 try 

@@ -6,8 +6,8 @@ disp("working through que...")
 for job_index = 1:numel(render_jobs)
 if  ~render_jobs{job_index}.is_done
 
-run_rendering_job(render_jobs{job_index})
-render_jobs{job_index}.is_done = true;
+render_jobs{job_index} = run_rendering_job(render_jobs{job_index});
+
 save("render_jobs.mat", "render_jobs")
     
 end
