@@ -13,15 +13,10 @@
         - This data has not been available yet, so beware that these parameters are not tuned.
 %}
 
-setup; clc; clear
+clc; clear; setup;
 
 
-try load("simulation_jobs.mat", "simulation_jobs")
-disp("Working through existing job-que...")
-simulation_job_que(simulation_jobs)
-disp("Done.")
-catch
-end
+
 disp("Creating new jobs...")
  base_simulation_job = struct();
 
@@ -29,7 +24,7 @@ disp("Creating new jobs...")
  base_simulation_job.update_N2O             = false;                                    % True if the calculations for N2O should be re-run, normally false.
  base_simulation_job.quick                  = false;                                    % True if quick simulation should be done. Less accurate, but useful for tuning.
 
-directory = "Data/Dataset1/sims/";
+directory = "Data/test/sims/";
 if ~isfolder(directory); mkdir(directory); end
 
  base_simulation_job.name                   = directory + "sim.mat";
@@ -49,8 +44,14 @@ if ~isfolder(directory); mkdir(directory); end
  base_simulation_job.t_max                  = 80;                                      % Final time.
 
 
+try 
+load("simulation_jobs.mat", "simulation_jobs");
+job_index   = numel(simulation_jobs);
+catch
+simulation_jobs = {}; 
+job_index   = 1;
+end
 
-job_index = 1
 
 
 for I_gain = 10.^(1:1:7)
@@ -70,7 +71,6 @@ for I_gain = 10.^(1:1:7)
     end
 end
 
-disp("Done.")
-disp("Working through new jobs...")
-simulation_job_que(simulation_jobs)
+save("simulation_jobs.mat", "simulation_jobs");
+
 disp("Done.")

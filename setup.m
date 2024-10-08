@@ -6,16 +6,15 @@ clear
 %% Adding paths to sub-folders:
 addpath('./Datasets');
 addpath('./Simulation')
-addpath('./Simulation/Combustion');
-addpath('./Simulation/Flight');
-addpath('./Simulation/Thrust');
+addpath('./Simulation/Methods')
 addpath('./Assets');
 addpath('./Methods');
 addpath('./STLRead');
 addpath('./UI');
 addpath('./Data');
-addpath('./Arduino');
 addpath('./Wrappers');
+addpath('./projekt_tralljok')
+addpath('./projekt_tralljok/Arduino')
 if isfolder('../colorthemes/')
 addpath('../colorthemes/'); 
 end

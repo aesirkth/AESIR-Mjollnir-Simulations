@@ -22,7 +22,7 @@ state_vector_derivative = zeros(size(state_vector));
 
 
 %[comp, state_vector_derivative] = apply_propulsion_model           (comp, state_vector_derivative); % <---- [Original Aesir propulsion model]
- comp                           = apply_propulsion_model           (comp, t);
+ comp                           = apply_simplified_propulsion_model(comp, t);
  comp                           = apply_aerodynamics_model         (comp);                          % <---- [Added by Spiggen 2024]
  comp                           = apply_gravity_model              (comp);                          % <---- [Added by Spiggen 2024]
  %% No more additional forces, as inertial-navigation emulator needs force-information

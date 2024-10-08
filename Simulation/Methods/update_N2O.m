@@ -1,12 +1,4 @@
-function N2O = initiate_N2O
 
-try 
-update_N2O = evalin("base", "update_N2O");
-catch
-update_N2O = false;
-end
-
-if update_N2O
 
 N2O = struct;
 
@@ -98,14 +90,8 @@ N2O.thermal_conductivity = 103e-3;         % W/m.K
 
 
 
-save("Simulation\N2O.mat", "N2O")
+save("Simulation/Methods/N2O.mat", "N2O")
 
-
-else
-load("Simulation\N2O.mat", "N2O")
-
-
-end
 
 
 
@@ -129,6 +115,3 @@ k = (density_liquid / density_vapor)^(1/3);
 
 end
 
-
-
-end

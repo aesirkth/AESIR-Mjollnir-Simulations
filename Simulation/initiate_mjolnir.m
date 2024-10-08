@@ -6,8 +6,9 @@ mjolnir.dont_record = ["", ""];
 mjolnir.static        = false; % True if simulation should be for a static fire, otherwise it is done for flight.
 mjolnir.full_duration = true;  % True if the tank parameters should be set to a full-duration burn, otherwise short-duration parameters are used.
 
+load("Simulation/Methods/N2O.mat", "N2O")
 
-mjolnir.N2O                      = initiate_N2O;
+mjolnir.N2O                      = N2O;
 
 mjolnir.dont_record(end+1)       = "N2O";
 

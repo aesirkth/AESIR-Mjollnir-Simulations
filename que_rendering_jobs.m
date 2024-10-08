@@ -1,15 +1,10 @@
 clc; clear; setup;
 
-try
-load("render_jobs.mat");
-disp("Working through existing rendering que...")
-render_job_que(render_jobs);
-disp("Done.")
-catch
-end
-disp("Creating new rendering jobs...")
 
+
+disp("Creating new jobs...")
 base_render_job                 = struct();
+
 base_render_job.play_on_startup = true;
 base_render_job.close_on_finish = true;
 base_render_job.record_video    = true;
@@ -17,9 +12,13 @@ base_render_job.overwrite       = false;
 base_render_job.is_done         = false;
 base_render_job.sim_name        = ""; %% Placeholder
 
-
-render_jobs = {}; job_index = 1;
-
+try 
+load("render_jobs.mat", "render_jobs");
+job_index   = numel(render_jobs);
+catch
+render_jobs = {}; 
+job_index   = 1;
+end
 
 sim_directory = "Data/tvc_unstable_gains_trajectory/sims/";
 vid_directory = strrep(sim_directory, "sims", "videos");
@@ -39,9 +38,7 @@ job_index = job_index +1;
 end
 end
 
-save("render_jobs.mat", "render_jobs")
-disp("Done.")
-disp("Woring through new rendering jobs...")
-render_job_que(render_jobs)
-disp("Done.")
 
+save("render_jobs.mat", "render_jobs");
+
+disp("Done.")
