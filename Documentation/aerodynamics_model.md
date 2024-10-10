@@ -98,7 +98,9 @@ M
 
 Because of the fact that $\omega$ takes on different values during the simulation, the integration bounds change as well. This makes it impossible (and thus impractical) to seperate the terms.
 
-<h3>Approximations for sign(v)</h3>
+<h3>Approximations for sign(v).</h3>
 
 Plotting part of the integrand $ (v_0 - \omega r)^2 sign(v_0 - \omega r) b(r) $ over $v$ reveals a way to approximate it (in the example below $b(r)$ is assumed to be constant, for simplicity):
 
+> ![](integrand.gif)
+> *Fig 5: integrand for different $v_0, \omega$*
