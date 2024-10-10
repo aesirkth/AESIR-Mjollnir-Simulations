@@ -1,6 +1,6 @@
 # Aerodynamics model
 
-Author: Vilgot Lötberg
+Author: Vilgot Lötberg, vilgotl@kth.se
 
 <h2>Background</h2>
 
@@ -13,7 +13,7 @@ The model is primarily intendet to be used in conjunction with the equations of 
 
 A common way to describe aerodynamic bodies is to use the 'center of pressure' -approach, where all the aerodymamic forces are assumed to act from a single point on the body.
 
->![](center_of_pressure_combined.gif)
+![](center_of_pressure_combined.gif)
 >*Fig 1: aerodynamic forces acting from center of pressure*
 
 While useful to get an overview of the bodys aerodynamic tendencies, such as whether or not its stable in flight, it is not very accurate when it comes to describing the actual aerodynamic behaviour of the body.
@@ -24,7 +24,7 @@ $$ \vec{M} = \vec{r} \times \vec{F} $$
 
 However, by instead considering the infitesimal area-elements along the bodys broadside, and considering the pressure applied to each in its normal direction from, for example, the rockets rotation, it paints a different picture. Assuming no relative velocity, and looking only at the contribution from the body's own rotation, the velocity distribution along its side becomes the following:
 
->![](velocity_distribution.gif)
+![](velocity_distribution.gif)
 >*Fig 2: velocity distribution along broadside under pure rotation*
 
 Consider now the simplified equation of drag/lift as given by Nasa*:
@@ -37,8 +37,8 @@ $$ F = \frac{1}{2} \;\rho \; C_{d/l} \;A \; v^2 \; \text{sign}(v)$$
 
 Considering an infitesimal area segment along the bodys broadside:
 
->![](area_projected.png)
->![](area_element.png)
+![](area_projected.png)
+![](area_element.png)
 >*Fig 3: "infitesimal" area element*
 
 The force distributed along the broadside as
@@ -47,7 +47,7 @@ $$\begin{align}\partial F = \frac{1}{2} \;\rho \; C_{d/l} \;\partial A \; v^2 \;
 
 thus looks like this:
 
->![](force_distribution.gif)
+![](force_distribution.gif)
 >*Fig 4: force distribution along broadside*
 
 This results in the total moment from all the $\partial F$ contributions being much larger than that which would result from assuming a center-of-pressure, and this will be proven mathematically later in the paper. What follows is to setup a more accurate model that can be used to calculate the moment resulting from the $\partial F$ contributions along the body. Initially this model will only be describing the moment in a single direction, though it will later be expanded to a vectorized context. The method described is computationally efficient, as it bypasses the need to perform expensive integrals during every simulation step. By allowing some assumptions, a method can be developed where the simulation-dependant parameters; $v_{wind}, \omega$; are simply multiplied by a set of coefficients to get the moment.
@@ -61,7 +61,7 @@ $$\begin{align} M = \int_{R} r \partial F = \int_{R} r \frac{1}{2} C_d \rho v^2 
 
 Once again concidering a small area-element $\partial A$, it can be defined as:
 
-> ![](area_dimensions.png)
+![](area_dimensions.png)
 > *Fig 5: parameterization of area-element*
 
 $$\begin{align}\partial A = b(r)\cdot \partial r \end{align}$$
@@ -102,18 +102,18 @@ Because of the fact that $\omega$ takes on different values during the simulatio
 
 Plotting part of the integrand $ (v_0 - \omega r)^2 sign(v_0 - \omega r) b(r) $ over $v$ reveals a way to approximate it:
 
-> ![](integrand.gif)
+![](integrand.gif)
 > *Fig 6: integrand for different $v_0, \omega$*
 
 
 The shape of the curve is somewhat remeniscent of a cubic polynomial. The general shape of which can be written as $ (v_0 - \omega \cdot r)^3$, in essence approximating $sign(v) = v$ to capture the odd nature of $sign(v)$:
 
-> ![](integrand_approximation.gif)
+![](integrand_approximation.gif)
 > *Fig 7: integrand for different $v_0, \omega$*
 
 To make the polynomial into a good approximation, it's normalised with $ |v_0 - \omega \cdot r_{ref}| $ to normalise the magnitude to that of the initial integrand, and to get the dimensions to agree.
 
-The approximation is not perfect, as can be seen in Fig 7. There are combinations of $v_0, \omega$ that yield wildly different results than the original, though in the persuit of computational efficiency this is a tradeof this model is prepared to make. For most combinations it yields a relatively good result, and as will be discussed later, this will still result can be proven to be better than that of the center-of-pressure model.
+The approximation is not perfect, as can be seen in Fig 7. There are combinations of $v_0, \omega$ that yield wildly different results than the original, though in the persuit of computational efficiency this model will employ it regardless. For most combinations it yields a relatively good result, and as will be discussed later, this will still give a better result than that of the center-of-pressure model.
 
 This yields the approximation as:
 
