@@ -104,3 +104,9 @@ Plotting part of the integrand $ (v_0 - \omega r)^2 sign(v_0 - \omega r) b(r) $ 
 
 > ![](integrand.gif)
 > *Fig 5: integrand for different $v_0, \omega$*
+
+
+The shape of the curve is awfully reminiscent of another common mathematical curve:
+
+> ![](integrand_approximation.gif)
+> *Fig 5: integrand for different $v_0, \omega$*
