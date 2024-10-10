@@ -143,7 +143,9 @@ Thus, all the simulation-terms have been brought outside the integral, allowing 
 The integral-terms will hence forward be shorted to:
 
 $$ \mathbb{A} = \int_{R} \begin{pmatrix} r^1 & r^2 & r^3 & r^4 \end{pmatrix} b(r) \partial r$$
+
 Or, using index notation:
+
 $$ \mathbb{A}_{k} = \int_{R} r^k b(r) \partial r,k = 1,2,3,4 $$
 
 The reason for choosing $\mathbb{A}$ will soon become apparent, as it's components have a physical interpretation. The reason for treating it as a tensor instead of a vector will later also become apparent when the model is generalized to 3 dimensions.
