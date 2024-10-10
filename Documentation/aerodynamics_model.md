@@ -100,7 +100,7 @@ Because of the fact that $\omega$ takes on different values during the simulatio
 
 <h3>Approximations for sign(v).</h3>
 
-Plotting part of the integrand $ (v_0 - \omega r)^2 sign(v_0 - \omega r) b(r) $ over $v$ reveals a way to approximate it (in the example below $b(r)$ is assumed to be constant, for simplicity):
+Plotting part of the integrand $ (v_0 - \omega r)^2 sign(v_0 - \omega r) b(r) $ over $v$ reveals a way to approximate it:
 
 > ![](integrand.gif)
 > *Fig 6: integrand for different $v_0, \omega$*
@@ -121,6 +121,8 @@ $$\begin{align} (v_0-\omega r)^2\cdot sign(v_0-\omega r)b(r) \approx \frac{(v_0 
 \end{align}$$
 
 Where $r_{ref}$ is some reference-radius, which can be found impirically through testing and plotting. The reference-radius used in this paper is $r_{ref} = 0.5\cdot r_{max}$, where $r_{max}$ is the maximal radius on the body (in the case of the rocket above, the tip of the nosecone).
+
+<h3>Seperation of integral terms.</h3>
 
 Substituting the approximation into the moment equation:
 
@@ -157,6 +159,4 @@ $$ M = \mathbb{A}\cdot \begin{pmatrix}v_0^3 & -3v_0^2\omega & 3 v_0 \omega^2 & -
 
 
 <h3>Physical interpretation of A.</h3>
-
-
 

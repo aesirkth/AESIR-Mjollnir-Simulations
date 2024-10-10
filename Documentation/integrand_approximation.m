@@ -8,6 +8,26 @@ light(ax);
 mesh = stlread("../Assets/AM_00 Mjollnir Full CAD v79 low_poly 0.03.stl");
 mesh.vertices = (mesh.vertices - [0 0 (max(mesh.vertices(3,:)) + min(mesh.vertices(3,:)))*0.5] - [0 0 10])*(roty(90)');
 
+%% b-fun
+tempfig = figure();
+tempax = axes(tempfig); tempax.Color = [0 0 0];
+patch(tempax, mesh, ...
+                              'FaceColor',       [1 1 1], ...
+                              'EdgeColor',       'none',        ...
+                              'FaceLighting',    'gouraud',     ...
+                              'AmbientStrength', 1, ...
+                              'FaceAlpha',       1)
+
+img = getframe(tempax); img = double(img.cdata(30:end-30,30:end-30,1)); img = floor(img); img = img ~= 0;
+close(tempfig)
+p1 = max(img.*(1:width(img)), [], "all"); p2 = min(img.*(1:width(img))+ (img==0)*1000000, [], "all");
+b_discrete = sum(img, 1)*(max(mesh.vertices(:,3)) - min(mesh.vertices(:,3)))/(max(sum(img, 1), [], "all"));
+r2p = @(r) (r-max(mesh.vertices(:,1))).*(p1-p2)./(max(mesh.vertices(:,1), [], "all") - min(mesh.vertices(:,1), [], "all"))+p1;
+b= @(r) interp1(1:width(b_discrete), b_discrete, r2p(r), "linear");
+
+
+%% animation setup
+
 rocket = animation(@(c)patch(ax, mesh, ...
                               'FaceColor',       ColorMap(70,:), ...
                               'EdgeColor',       'none',        ...
@@ -20,8 +40,8 @@ b_ax = animation(@(c)quiver3(ax, 0,-5,0, 0,0,40, "LineWidth", 1.5, "Color", [1 1
 
 r  = -50:0.2:50; r_text = -15; y_text = -10;
 y  = -ones(size(r))*2;
-f  = @(r,v,w) 0.1*sign(v - w.*r).*(v - w.*r).^2;
-f2 = @(r,v,w) 0.1*((v-w*r).^3)/abs(v-w*25);
+f  = @(r,v,w) 0.005*sign(v - w.*r).*b(r).*(v - w.*r).^2;
+f2 = @(r,v,w) 0.005*((v-w*r).^3).*b(r)./abs(v-w*25);
 
 integrand_line1 = animation(@(c) plot3(r, y, f(r,c{1}, c{2}), "LineWidth", 1.2, "Color", [1,0.5,0]), {0,1}, {10,0} );
 integrand_line2 = animation(@(c) plot3(r, y, f(r,c{1}, c{2}), "LineWidth", 1.2, "Color", [1,0.5,0]), {10,0}, {5,1} );
