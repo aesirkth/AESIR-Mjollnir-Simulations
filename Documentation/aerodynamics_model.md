@@ -4,7 +4,7 @@ Author: Vilgot Lötberg
 
 <h2>Background</h2>
 
-This paper will treat the modelling of the aerodynamic moments around a flying body. The method described takes into account the geometry of the body and the non-linearity of lifting moments distributed along its sides, though it does not take into account any fluid-mechanics interaction between different surfaces, nor the differences between supersonic and subsonic airflow.
+This paper will treat the modelling of the aerodynamic moments around a flying body using a tensor-based approach. The method described takes into account the geometry of the body and the non-linearity of lifting moments distributed along its sides, though it does not take into account any fluid-mechanics interaction between different surfaces, nor the differences between supersonic and subsonic airflow.
 
 The model is primarily intendet to be used in conjunction with the equations of motion to simulate rocketry/aircraft control/aerodynamic behavior in flight.
 
@@ -14,6 +14,7 @@ The model is primarily intendet to be used in conjunction with the equations of 
 A common way to describe aerodynamic bodies is to use the 'center of pressure' -approach, where all the aerodymamic forces are assumed to act from a single point on the body.
 
 ![](center_of_pressure_combined.gif)
+Fig 1: aerodynamic forces acting from center of pressure
 
 While useful to get an overview of the bodys aerodynamic tendencies, such as whether or not its stable in flight, it is not very accurate when it comes to describing the actual aerodynamic behaviour of the body.
 
@@ -24,6 +25,7 @@ $$ \vec{M} = \vec{r} \times \vec{F} $$
 However, by instead considering the infitesimal area-elements along the bodys broadside, and considering the pressure applied to each in its normal direction from, for example, the rockets rotation, it paints a different picture. Assuming no relative velocity, and looking only at the contribution from the body's own rotation, the velocity distribution along its side becomes the following:
 
 ![](velocity_distribution.gif)
+Fig 2: velocity distribution along broadside under pure rotation
 
 Consider now the simplified equation of drag/lift as given by Nasa*:
 
@@ -37,6 +39,7 @@ Considering an infitesimal area segment along the bodys broadside:
 
 ![](area_projected.png)
 ![](area_element.png)
+Fig 3: "infitesimal" area element
 
 The force distributed along the broadside as
 
@@ -45,9 +48,22 @@ $$\partial F = \frac{1}{2} \;\rho \; C_{d/l} \;\partial A \; v^2 \; \text{sign}(
 thus looks like this:
 
 ![](force_distribution.gif)
+Fig 4: force distribution along broadside
 
 This results in the total moment from all the $\partial F$ contributions being much larger than that which would result from assuming a center-of-pressure, and this will be proven mathematically later in the paper. What follows is to setup a more accurate model that can be used to calculate the moment resulting from the $\partial F$ contributions along the body. Initially this model will only be describing the moment in a single direction, though it will later be expanded to a vectorized context.
 
 
 <h2>Methodology</h2>
 
+From Fig 4, the moment-equation can be set up as (in a scalar context, will be expanded to a vectorized context later):
+
+$$ M = \int_{R} r \partial F = \int_{R} r \frac{1}{2} C_d \rho v^2 sign(v) \partial A$$
+
+Once again concidering a small area-element $\partial A$, it can be defined as:
+
+![](area_dimensions.png)
+Fig 5: parameterization of area-element
+
+$$\partial A = b(r)\cdot \partial r$$
+
+Where $\partial r$ is an infitesimal element along the radial direction, and $b(r)$ is the breath its normal direction.
