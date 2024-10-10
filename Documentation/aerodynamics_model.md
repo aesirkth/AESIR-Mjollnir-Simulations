@@ -1,6 +1,6 @@
 # Aerodynamics model
 
-Author: Vilgot Lötberg, vilgotl@kth.se
+Author: Vilgot Lötberg, vilgotl@kth.se, 0725079097
 
 <h2>Background</h2>
 
@@ -160,3 +160,6 @@ $$ M = \mathbb{A}\cdot \begin{pmatrix}v_0^3 & -3v_0^2\omega & 3 v_0 \omega^2 & -
 
 <h3>Physical interpretation of A.</h3>
 
+Plotting each integrand-term individually:
+
+sdkjlejlwjedkwejdlkJel

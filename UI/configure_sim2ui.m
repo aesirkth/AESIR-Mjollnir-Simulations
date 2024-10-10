@@ -14,7 +14,7 @@ grid(ui.ax4, "on");
 create_branch(ui.mjolnirNode, sim.mjolnir_historian)
 
 
-if isfolder('../colorthemes/'); aesir_purple(); end
+if isfolder('../colorthemes/'); dark_mode2(); end
 light(ui.ax)
 annotation(ui.UIFigure,'rectangle',[0 0 1 1],'Color',[1 1 1]);
 
