@@ -103,10 +103,51 @@ Because of the fact that $\omega$ takes on different values during the simulatio
 Plotting part of the integrand $ (v_0 - \omega r)^2 sign(v_0 - \omega r) b(r) $ over $v$ reveals a way to approximate it (in the example below $b(r)$ is assumed to be constant, for simplicity):
 
 > ![](integrand.gif)
-> *Fig 5: integrand for different $v_0, \omega$*
+> *Fig 6: integrand for different $v_0, \omega$*
 
 
-The shape of the curve is awfully reminiscent of another common mathematical curve:
+The shape of the curve is somewhat remeniscent of a cubic polynomial. The general shape of which can be written as $ (v_0 - \omega \cdot r)^3$, in essence approximating $sign(v) = v$ to capture the odd nature of $sign(v)$:
 
 > ![](integrand_approximation.gif)
-> *Fig 5: integrand for different $v_0, \omega$*
+> *Fig 7: integrand for different $v_0, \omega$*
+
+To make the polynomial into a good approximation, it's normalised with $ |v_0 - \omega \cdot r_{ref}| $ to normalise the magnitude to that of the initial integrand, and to get the dimensions to agree.
+
+The approximation is not perfect, as can be seen in Fig 7. There are combinations of $v_0, \omega$ that yield wildly different results than the original, though in the persuit of computational efficiency this is a tradeof this model is prepared to make. For most combinations it yields a relatively good result, and as will be discussed later, this will still result can be proven to be better than that of the center-of-pressure model.
+
+This yields the approximation as:
+
+$$\begin{align} (v_0-\omega r)^2\cdot sign(v_0-\omega r)b(r) \approx \frac{(v_0 - \omega r)^3}{|v_0 - \omega r_{ref} |} b(r)
+\end{align}$$
+
+Where $r_{ref}$ is some reference-radius, which can be found impirically through testing and plotting. The reference-radius used in this paper is $r_{ref} = 0.5\cdot r_{max}$, where $r_{max}$ is the maximal radius on the body (in the case of the rocket above, the tip of the nosecone).
+
+Substituting the approximation into the moment equation:
+
+$$ \begin{align}
+M 
+&= \int_{R} r \frac{1}{2} C_d \rho (v_0 - \omega r)^2 sign(v_0 - \omega r) b(r) \partial r \\
+&\approx \int_{R} r \frac{1}{2} C_d \rho \frac{(v_0 - \omega r)^3}{ |v_0 - \omega r_{ref} | } b(r) \partial r \\
+&= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \int_{R} r (v_0 - \omega r)^3 b(r) \partial r
+
+\end{align}$$
+
+Now the expression is in a form that can be expanded, and doing so reveals how the terms can be seperated out:
+
+
+$$ \begin{align}
+M 
+&= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \int_{R} r (v_0 - \omega r)^3 b(r) \partial r \\
+&\vdots\\
+&= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \int_{R} r (v_0^3 - 3v_0^2\omega r + 3v_0 \omega^2 r^2 - \omega^3 r^3) b(r) \partial r \\
+&= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \int_{R} r \begin{pmatrix} v_0^3 & -3v_0^2\omega & 3v_0 \omega^2 & -\omega^3 \end{pmatrix} \begin{pmatrix} r^0 \\ r^1 \\ r^2 \\ r^3\end{pmatrix} b(r) \partial r \\
+&= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \int_{R} \begin{pmatrix} v_0^3 & -3v_0^2\omega & 3v_0 \omega^2 & -\omega^3 \end{pmatrix} \begin{pmatrix} r^1 \\ r^2 \\ r^3 \\ r^4 \end{pmatrix} b(r) \partial r \\
+&= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \begin{pmatrix} v_0^3 & -3v_0^2\omega & 3v_0 \omega^2 & -\omega^3 \end{pmatrix}\int_{R}  \begin{pmatrix} r^1 \\ r^2 \\ r^3 \\ r^4 \end{pmatrix} b(r) \partial r \\
+
+\end{align}$$
+
+
+Thus, all the simulation-terms have been brought outside the integral, allowing for computation of the integral in a single instance to compute the coefficients, and then reuse them during simulation. What's more, the components contained in the integral have a physical interpretation.
+
+
+
