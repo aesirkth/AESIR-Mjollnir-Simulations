@@ -139,7 +139,22 @@ $$ \begin{align} M &= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \in
 &= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \begin{pmatrix} v_0^3 & -3v_0^2\omega & 3v_0 \omega^2 & -\omega^3 \end{pmatrix}\cdot\int_{R}  \begin{pmatrix} r^1 & r^2 & r^3 & r^4 \end{pmatrix} b(r) \partial r \end{align}$$
 
 
-Thus, all the simulation-terms have been brought outside the integral, allowing for computation of the integral in a single instance to compute the coefficients, and then reuse them during simulation. What's more, the components contained in the integral have a physical interpretation.
+Thus, all the simulation-terms have been brought outside the integral, allowing for computation of the integral in a single instance to compute the coefficients, and then reuse them during simulation. 
+The integral-terms will hence forward be shorted to:
+
+$$ \mathbb{A} = \int_{R} \begin{pmatrix} r^1 & r^2 & r^3 & r^4 \end{pmatrix} b(r) \partial r$$
+Or, using index notation:
+$$ \mathbb{A}_{k} = \int_{R} r^k b(r) \partial r, \;\; k = 1,2,3,4 $$
+
+The reason for choosing $\mathbb{A}$ will soon become apparent, as it's components have a physical interpretation. The reason for treating it as a tensor instead of a vector will later also become apparent when the model is generalized to 3 dimensions.
+
+The moment-equation thus conveniently becomes:
+
+$$ M = \mathbb{A}\cdot \begin{pmatrix}v_0^3 & -3v_0^2\omega & 3 v_0 \omega^2 & -\omega^3 \end{pmatrix}\frac{C_d \rho}{|v_0 - \omega r_{ref} |}$$
+
+
+
+<h3>Physical interpretation of A.</h3>
 
 
 
