@@ -70,6 +70,35 @@ Where $\partial r$ is an infitesimal element along the radial direction, and $b(
 
 $$\begin{align}(2),(3) \Longrightarrow M = \int_{R} r \frac{1}{2} C_d \rho v^2 sign(v) b(r) \partial r\end{align}$$
 
-From 
+The velocity $v$ normal to and experienced by $\partial A$ can be found as:
 
-The above equation works, though solving an integral for every simulation iteration is not ideal. What would be convenient is if all the geometry-dependant terms; $r, \partial r, b(r)$; could be seperated from the simulation/physics-dependant terms; $v$
+$$ \begin{align} v = v_0 - \omega r \end{align}$$
+
+Where $v_0$ is a renaming of the normal component of $\vec{v}_{wind}$, see Fig 1. Substituting once again into the moment equation gives:
+
+
+$$\begin{align}(4),(5) \Longrightarrow M = \int_{R} r \frac{1}{2} C_d \rho (v_0 - \omega r)^2 sign(v_0 - \omega r) b(r) \partial r\end{align}$$
+
+The above equation works, though solving an integral for every simulation iteration is not ideal. Because of the $b(r)$-term the integral has no convenient analytical solution that can be levraged, thus it has to be computed numerically. It would however be convenient if all the geometry-dependant terms; $r, \partial r, b(r)$; could be seperated from the simulation/physics-dependant terms; $v_0, \omega$, such that the integral could be computed once in the beginning of the simulation, and then the resulting coefficients just be reused. The sign-term makes this impractical however as is shown below, and has to be dealt with.
+
+<h3>Why getting rid of the sign(v)-term is necessary.</h3>
+
+Even if it's possible to split it up into two integrals for each interval for which $sign(v)$ is 1 & -1, solving for the bound where the sign-term flips sign yields:
+
+Searching for $v = 0$:
+$$\Longrightarrow v_0 - \omega \cdot r_{flip} = 0 \Longleftrightarrow \boxed{r_{flip} = \frac{v_0}{\omega}}$$
+
+Setting up the integral with these limits yields:
+
+$$ \begin{aligned}
+M 
+&=  \int_{R} r \frac{1}{2} C_d \rho (v_0 - \omega r)^2 sign(v_0 - \omega r) b(r) \partial r \\
+&= \int_{r^-}^{\frac{v_0}{\omega}} r \frac{1}{2} C_d \rho (v_0 - \omega r)^2 b(r) \partial r - \int_{\frac{v_0}{\omega}}^{r^+} r \frac{1}{2} C_d \rho (v_0 - \omega r)^2 b(r) \partial r 
+\end{aligned}$$
+
+Because of the fact that $\omega$ takes on different values during the simulation, the integration bounds change as well. This makes it impossible (and thus impractical) to seperate the terms.
+
+<h3>Approximations for sign(v)</h3>
+
+Plotting part of the integrand $ (v_0 - \omega r)^2 sign(v_0 - \omega r) b(r) $ over $v$ reveals a way to approximate it (in the example below $b(r)$ is assumed to be constant, for simplicity):
+
