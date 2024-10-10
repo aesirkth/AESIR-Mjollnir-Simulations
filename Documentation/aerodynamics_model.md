@@ -43,27 +43,33 @@ Considering an infitesimal area segment along the bodys broadside:
 
 The force distributed along the broadside as
 
-$$\partial F = \frac{1}{2} \;\rho \; C_{d/l} \;\partial A \; v^2 \; \text{sign}(v)$$
+$$\begin{align}\partial F = \frac{1}{2} \;\rho \; C_{d/l} \;\partial A \; v^2 \; \text{sign}(v)\end{align}$$
 
 thus looks like this:
 
 >![](force_distribution.gif)
 >*Fig 4: force distribution along broadside*
 
-This results in the total moment from all the $\partial F$ contributions being much larger than that which would result from assuming a center-of-pressure, and this will be proven mathematically later in the paper. What follows is to setup a more accurate model that can be used to calculate the moment resulting from the $\partial F$ contributions along the body. Initially this model will only be describing the moment in a single direction, though it will later be expanded to a vectorized context.
+This results in the total moment from all the $\partial F$ contributions being much larger than that which would result from assuming a center-of-pressure, and this will be proven mathematically later in the paper. What follows is to setup a more accurate model that can be used to calculate the moment resulting from the $\partial F$ contributions along the body. Initially this model will only be describing the moment in a single direction, though it will later be expanded to a vectorized context. The method described is computationally efficient, as it bypasses the need to perform expensive integrals during every simulation step. By allowing some assumptions, a method can be developed where the simulation-dependant parameters; $v_{wind}, \omega$; are simply multiplied by a set of coefficients to get the moment.
 
 
 <h2>Methodology</h2>
 
 From Fig 4, the moment-equation can be set up as (in a scalar context, will be expanded to a vectorized context later):
 
-$$ M = \int_{R} r \partial F = \int_{R} r \frac{1}{2} C_d \rho v^2 sign(v) \partial A$$
+$$\begin{align} M = \int_{R} r \partial F = \int_{R} r \frac{1}{2} C_d \rho v^2 sign(v) \partial A\end{align}$$
 
 Once again concidering a small area-element $\partial A$, it can be defined as:
 
 > ![](area_dimensions.png)
 > *Fig 5: parameterization of area-element*
 
-$$\partial A = b(r)\cdot \partial r$$
+$$\begin{align}\partial A = b(r)\cdot \partial r \end{align}$$
 
-Where $\partial r$ is an infitesimal element along the radial direction, and $b(r)$ is the breath its normal direction.
+Where $\partial r$ is an infitesimal element along the radial direction, and $b(r)$ is the breath its normal direction. Substituting into the moment-equation:
+
+$$\begin{align}(2),(3) \Longrightarrow M = \int_{R} r \frac{1}{2} C_d \rho v^2 sign(v) b(r) \partial r\end{align}$$
+
+From 
+
+The above equation works, though solving an integral for every simulation iteration is not ideal. What would be convenient is if all the geometry-dependant terms; $r, \partial r, b(r)$; could be seperated from the simulation/physics-dependant terms; $v$
