@@ -134,9 +134,9 @@ Now the expression is in a form that can be expanded, and doing so reveals how t
 $$ \begin{align} M &= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \int_{R} r (v_0 - \omega r)^3 b(r) \partial r \\
 &\vdots\\
 &= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \int_{R} r (v_0^3 - 3v_0^2\omega r + 3v_0 \omega^2 r^2 - \omega^3 r^3) b(r) \partial r \\
-&= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \int_{R} r \begin{pmatrix} v_0^3 & -3v_0^2\omega & 3v_0 \omega^2 & -\omega^3 \end{pmatrix} \begin{pmatrix} r^0 \\ r^1 \\ r^2 \\ r^3\end{pmatrix} b(r) \partial r \\
-&= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \int_{R} \begin{pmatrix} v_0^3 & -3v_0^2\omega & 3v_0 \omega^2 & -\omega^3 \end{pmatrix} \begin{pmatrix} r^1 \\ r^2 \\ r^3 \\ r^4 \end{pmatrix} b(r) \partial r \\
-&= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \begin{pmatrix} v_0^3 & -3v_0^2\omega & 3v_0 \omega^2 & -\omega^3 \end{pmatrix}\int_{R}  \begin{pmatrix} r^1 \\ r^2 \\ r^3 \\ r^4 \end{pmatrix} b(r) \partial r \end{align}$$
+&= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \int_{R} r \begin{pmatrix} v_0^3 & -3v_0^2\omega & 3v_0 \omega^2 & -\omega^3 \end{pmatrix} \cdot \begin{pmatrix} r^0 & r^1 & r^2 & r^3\end{pmatrix} b(r) \partial r \\
+&= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \int_{R} \begin{pmatrix} v_0^3 & -3v_0^2\omega & 3v_0 \omega^2 & -\omega^3 \end{pmatrix}\cdot \begin{pmatrix} r^1 & r^2 & r^3 & r^4 \end{pmatrix} b(r) \partial r \\
+&= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \begin{pmatrix} v_0^3 & -3v_0^2\omega & 3v_0 \omega^2 & -\omega^3 \end{pmatrix}\cdot\int_{R}  \begin{pmatrix} r^1 & r^2 & r^3 & r^4 \end{pmatrix} b(r) \partial r \end{align}$$
 
 
 Thus, all the simulation-terms have been brought outside the integral, allowing for computation of the integral in a single instance to compute the coefficients, and then reuse them during simulation. What's more, the components contained in the integral have a physical interpretation.
