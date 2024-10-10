@@ -13,8 +13,8 @@ The model is primarily intendet to be used in conjunction with the equations of 
 
 A common way to describe aerodynamic bodies is to use the 'center of pressure' -approach, where all the aerodymamic forces are assumed to act from a single point on the body.
 
-![](center_of_pressure_combined.gif)
-Fig 1: aerodynamic forces acting from center of pressure
+>![](center_of_pressure_combined.gif)
+>*Fig 1: aerodynamic forces acting from center of pressure*
 
 While useful to get an overview of the bodys aerodynamic tendencies, such as whether or not its stable in flight, it is not very accurate when it comes to describing the actual aerodynamic behaviour of the body.
 
@@ -24,8 +24,8 @@ $$ \vec{M} = \vec{r} \times \vec{F} $$
 
 However, by instead considering the infitesimal area-elements along the bodys broadside, and considering the pressure applied to each in its normal direction from, for example, the rockets rotation, it paints a different picture. Assuming no relative velocity, and looking only at the contribution from the body's own rotation, the velocity distribution along its side becomes the following:
 
-![](velocity_distribution.gif)
-Fig 2: velocity distribution along broadside under pure rotation
+>![](velocity_distribution.gif)
+>*Fig 2: velocity distribution along broadside under pure rotation*
 
 Consider now the simplified equation of drag/lift as given by Nasa*:
 
@@ -37,9 +37,9 @@ $$ F = \frac{1}{2} \;\rho \; C_{d/l} \;A \; v^2 \; \text{sign}(v)$$
 
 Considering an infitesimal area segment along the bodys broadside:
 
-![](area_projected.png)
-![](area_element.png)
-Fig 3: "infitesimal" area element
+>![](area_projected.png)
+>![](area_element.png)
+>*Fig 3: "infitesimal" area element*
 
 The force distributed along the broadside as
 
@@ -47,8 +47,8 @@ $$\partial F = \frac{1}{2} \;\rho \; C_{d/l} \;\partial A \; v^2 \; \text{sign}(
 
 thus looks like this:
 
-![](force_distribution.gif)
-Fig 4: force distribution along broadside
+>![](force_distribution.gif)
+>*Fig 4: force distribution along broadside*
 
 This results in the total moment from all the $\partial F$ contributions being much larger than that which would result from assuming a center-of-pressure, and this will be proven mathematically later in the paper. What follows is to setup a more accurate model that can be used to calculate the moment resulting from the $\partial F$ contributions along the body. Initially this model will only be describing the moment in a single direction, though it will later be expanded to a vectorized context.
 
@@ -61,8 +61,8 @@ $$ M = \int_{R} r \partial F = \int_{R} r \frac{1}{2} C_d \rho v^2 sign(v) \part
 
 Once again concidering a small area-element $\partial A$, it can be defined as:
 
-![](area_dimensions.png)
-Fig 5: parameterization of area-element
+> ![](area_dimensions.png)
+> *Fig 5: parameterization of area-element*
 
 $$\partial A = b(r)\cdot \partial r$$
 
