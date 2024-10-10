@@ -162,4 +162,9 @@ $$ M = \mathbb{A}\cdot \begin{pmatrix}v_0^3 & -3v_0^2\omega & 3 v_0 \omega^2 & -
 
 Plotting each integrand-term individually:
 
-sdkjlejlwjedkwejdlkJel
+![](area_moment0.png)
+![](area_moment1.png)
+![](area_moment2.png)
+![](area_moment3.png)
+![](area_moment4.png)
+> *Fig 8: A-terms*
