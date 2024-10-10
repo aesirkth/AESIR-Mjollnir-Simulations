@@ -2,7 +2,7 @@ set(groot, 'defaultAxesTickLabelInterpreter','latex'); set(groot, 'defaultLegend
 addpath('../../animation_toolbox/');addpath('../../colorthemes/');addpath('../STLRead/');
 fig = figure;
 ax = axes(fig); dark_mode2; plot3(ax, 0,0,0); ax.DataAspectRatio = [1,1,1]; 
-annotation(fig, "rectangle","EdgeColor", [1,1,1]*0.13, "Position", [0.35 0.1 0.3 0.8]);
+annotation(fig, "rectangle","EdgeColor", [1,1,1]*0.13, "Position", [0.25 0.1 0.5 0.8]);
 ax.XLim = [-50,50];ax.YLim = [-10,10];ax.ZLim = [-50,50]; axis off
 light(ax);
 mesh = stlread("../Assets/AM_00 Mjollnir Full CAD v79 low_poly 0.03.stl");
@@ -51,7 +51,7 @@ force_text              =      animation(@(c) textvec(ax,     (roty(amplitude*si
                                                                     "$\partial F = 1/2\; \rho C_{l} \partial A v^2 sign(v) $","Color", [1,0.5,0], "Interpreter", "latex"),{0}, {frequency*2*pi});
 
 saver = save_to_gif(ax, "force_distribution.gif");
-
+delete force_distribution.gif
 animate({rocket, ...
         projection, ...
         rotwind_vector, ...

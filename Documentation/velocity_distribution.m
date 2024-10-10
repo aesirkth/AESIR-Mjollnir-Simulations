@@ -2,7 +2,7 @@ set(groot, 'defaultAxesTickLabelInterpreter','latex'); set(groot, 'defaultLegend
 addpath('../../animation_toolbox/');addpath('../../colorthemes/');addpath('../STLRead/');
 fig = figure;
 ax = axes(fig); dark_mode2; plot3(ax, 0,0,0); ax.DataAspectRatio = [1,1,1]; 
-annotation(fig, "rectangle","EdgeColor", [1,1,1]*0.13, "Position", [0.35 0.1 0.3 0.8]);
+annotation(fig, "rectangle","EdgeColor", [1,1,1]*0.13, "Position", [0.25 0.1 0.5 0.8]);
 ax.XLim = [-50,50];ax.YLim = [-10,10];ax.ZLim = [-50,50]; axis off
 light(ax);
 mesh = stlread("../Assets/AM_00 Mjollnir Full CAD v79 low_poly 0.03.stl");
@@ -31,7 +31,7 @@ rotwind_text              =      animation(@(c) textvec(ax,     (roty(amplitude*
 
 
 saver = save_to_gif(ax, "velocity_distribution.gif");
-
+delete velocity_distribution.gif
 animate({rocket, ...
         rotwind_vector, ...
         rotwind_line, ...
