@@ -8,6 +8,7 @@ This paper will treat the modelling of the aerodynamic moments around a flying b
 
 The model is primarily intendet to be used in conjunction with the equations of motion to simulate rocketry/aircraft control/aerodynamic behavior in flight.
 
+It can also be seen as an unintentional study of polynomials.
 
 <h2>Introduction</h2>
 
@@ -168,3 +169,34 @@ Plotting each integrand-term individually:
 ![](area_moment3.png)
 ![](area_moment4.png)
 > *Fig 8: A-terms*
+
+The integral of the above correspond to all the different area-moments of the body. The 0'th term, $r^0$-term when integrated just gives rise to the area of the body, while the 1'st term gives rise to the 1'st area-moment.
+
+(The 1'st area-moment can be described as the product between the area and the center-of-area/center-of-pressure):
+
+$$ c_A = \frac{\int_{R} r^1 b(r) \partial r}{\int_{R} b(r) \partial r} = \frac{\mathbb{A_1}}{A} \Longleftrightarrow \mathbb{A_1} = c_A \cdot A$$
+
+Thus the 1'st area-moment can be thought of as the center-of-area.
+
+The 2'nd term, $r^2$, when integrated, gives rise to the second area-moment. A good way to think about the second area moment is as a metric for how far away from the center the area of the body is distributed. One other application where this shows up is in solid-mechanics and in beam-theory, as a beams ability to resist bending is proportional to how far away from the centerline its cross-section is distributed (think I-beams with a lot of area far away from the center).
+
+The 3'rd area-moment is very similar to the 1'st, but more weighted towards its extremes/edges, same with the 4'th, in that it's similar to the 2'nd, just weighted more at its extremes.
+
+
+<h4>Odd terms.</h4>
+
+In general all the even terms behave very similarly, just getting progressively more and more weighted towards the extremes.
+
+Also, the odd terms when integrated tend to give a low result, as the negative parts of the curve cancel out major portions of the positive. Thus the only remainder is that which is not cancelled out. 
+
+A way to interpret this is that the negative terms describe how unsymmetric the body is around 0, where a high result means the body is very unsymmetric, and the sign reveals whether the area is centered more to the positive or to the negative. 
+In the rocket example above, the integral will come out negative, as the fin presents a large unsymmetry that is not there in the fwd-section, and thus will not be cancelled.
+
+This will turn out to be significant.
+
+<h4>Even terms.</h4>
+
+Similarly, all the odd terms behave similarly, just getting weigted towards the extremes as well.
+
+
+First thing to notice is that the odd terms have integrals close to zero, as the parts under the r-axis cancel out much of that which is above. 
