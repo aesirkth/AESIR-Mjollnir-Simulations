@@ -338,8 +338,7 @@ $$\begin{align}
 &= \hat{r}_j \times \hat{a}_i \int_{R} \frac{1}{2} \;\rho \; C_{l,ij} \;\partial A \; v^2 \; \text{sign}(v) \\
 &\vdots \\
 &= (\hat{r}_j \times \hat{a}_i) \mathbb{A}_{ij}\cdot \begin{pmatrix} v_{0i}^3 & -3v_{0i}^2\omega_{ij} & 3 v_{0i} \omega_{ij}^2 & -\omega_{ij}^3 \end{pmatrix} \cdot  D_{ij} \\
-&= -(\hat{a}_i \times \hat{r}_j)   \mathbb{A}_{ij}\cdot \begin{pmatrix} v_{0i}^3 & -3v_{0i}^2\omega_{ij} & 3 v_{0i} \omega_{ij}^2 & -\omega_{ij}^3 \end{pmatrix} \cdot D_{ij} \\
-
+&= -(\hat{a}_i \times \hat{r}_j)   \mathbb{A}_{ij}\cdot \begin{pmatrix} v_{0i}^3 & -3v_{0i}^2\omega_{ij} & 3 v_{0i} \omega_{ij}^2 & -\omega_{ij}^3 \end{pmatrix} \cdot D_{ij}
 \end{align}$$
 
 Where:
@@ -350,7 +349,8 @@ $$\vec{\omega}_0 = \sum_{i=1}^{i=3} \omega_{0i}\hat{e}_i \qquad \omega_{ij} =\su
 
 $$ \mathbb{V}_{ij1} = v_{0i}^3 \qquad \mathbb{V}_{ij2} = -3v_{0i}^2\omega_{ij} \qquad \mathbb{V}_{ij3} = 3 v_{0i} \omega_{ij}^2 \qquad \mathbb{V}_{ij4} = -\omega_{ij}^3 $$
 
-$$ \mathbb{A}_{ijt} = \int_{R_j} r^t b_{ij}(r) \partial r \qquad t = 1,2,3,4, \qquad b_{ij}(r)\text{ is the width-function for surface i along axis j.}$$
+$$ \mathbb{A}_{ijt} = \int_{R_j} r^t b_{ij}(r) \partial r \qquad t = 1,2,3,4$$
+$b(r_{ij})$ is the width-function for surface i along axis j.
 
 Henceforth index-notation will be used in isolation as the number of indices grows. Let $\mathbb{V}$, and let $\hat{e}_1, \hat{e}_2, \hat{e}_3$ be a body-fix orthonormal basis, and let $t$ denote the index of $\mathbb{A}$:
 
