@@ -323,11 +323,13 @@ including the $\omega r$ term initially, i.e to dampen oscillations.
 <h3>Vectorization.</h3>
 
 Vectorizing requires being more rigorous with the moment's direction $\vec{M}$, and the direction of the $\vec{\omega}$-vector
-and the $\vec{r}$. Consider the moment around one of the faces $i$, along one axis $j$: $\vec{M}_{i,j}$, where the direction normal to both is indicated with $k$.
+and the $\vec{r}$. Consider the moment around one of the faces $i$, along one axis $j$: $\vec{M}_{i,j}$:
 
 Let $\vec{A}$, $\hat{a}$ be the vector and corresponding unit vector normal to the area.
 
 Let $\hat{r}$ be the unit vector along the axis of integration (normal to $\hat{a}$, naturally).
+
+Let $\hat{e}_1,\hat{e}_2,\hat{e}_3$ be a body-fix orthonormal basis (aligned with $\hat{a},\hat{r}$).
 
 
 Setting up the moment-equation once more:
@@ -338,7 +340,8 @@ $$\begin{align}
 &= \hat{r}_j \times \hat{a}_i \int_{R} \frac{1}{2} \;\rho \; C_{l,ij} \;\partial A \; v^2 \; \text{sign}(v) \\
 &\vdots \\
 &= (\hat{r}_j \times \hat{a}_i) \mathbb{A}_{ij}\cdot \begin{pmatrix} v_{0i}^3 & -3v_{0i}^2\omega_{ij} & 3 v_{0i} \omega_{ij}^2 & -\omega_{ij}^3 \end{pmatrix} \cdot  D_{ij} \\
-&= -(\hat{a}_i \times \hat{r}_j)   \mathbb{A}_{ij}\cdot \begin{pmatrix} v_{0i}^3 & -3v_{0i}^2\omega_{ij} & 3 v_{0i} \omega_{ij}^2 & -\omega_{ij}^3 \end{pmatrix} \cdot D_{ij}
+&= -(\hat{a}_i \times \hat{r}_j)   \mathbb{A}_{ij}\cdot \begin{pmatrix} v_{0i}^3 & -3v_{0i}^2\omega_{ij} & 3 v_{0i} \omega_{ij}^2 & -\omega_{ij}^3 \end{pmatrix} \cdot D_{ij} \\
+&= -(\hat{a}_i \times \hat{r}_j)  \sum_{t=1}^{t=4} \mathbb{A}_{ijt}\mathbb{V}_{ijt} \cdot D_{ij}
 \end{align}$$
 
 Where:
@@ -350,13 +353,30 @@ $$\vec{\omega}_0 = \sum_{i=1}^{i=3} \omega_{0i}\hat{e}_i \qquad \omega_{ij} =\su
 $$ \mathbb{V}_{ij1} = v_{0i}^3 \qquad \mathbb{V}_{ij2} = -3v_{0i}^2\omega_{ij} \qquad \mathbb{V}_{ij3} = 3 v_{0i} \omega_{ij}^2 \qquad \mathbb{V}_{ij4} = -\omega_{ij}^3 $$
 
 $$ \mathbb{A}_{ijt} = \int_{R_j} r^t b_{ij}(r) \partial r \qquad t = 1,2,3,4$$
-$b(r_{ij})$ is the width-function for surface i along axis j.
 
-Henceforth index-notation will be used in isolation as the number of indices grows. Let $\mathbb{V}$, and let $\hat{e}_1, \hat{e}_2, \hat{e}_3$ be a body-fix orthonormal basis, and let $t$ denote the index of $\mathbb{A}$:
+$b(r_{ij})$ is the width-function for surface i along axis j. $b(r_{ij})\delta_{ij} = 0$.
+
+Henceforth index-notation will be used in isolation as the number of indices grows.
 
 Let: 
 
 $$\vec{M}_{ij} = \sum_{k=1}^{k=3}\hat{e}_k M_{ijk} $$
 
 
-$$ M_{ijk} = -\epsilon_{ijk} \sum_{t=1}^{t=4} \mathbb{A}_{ijt}\mathbb{V}_{ijt} $$
+$$ M_{ijk} = -\epsilon_{ijk} \sum_{t=1}^{t=4} \mathbb{A}_{ijt}\mathbb{V}_{ijt} \cdot C_{l,ij}$$
+
+Thus, for the total moment around the entire body, $\vec{M}$:
+
+$$\vec{M} = \sum_{k=1}^{k=3} \hat{e}_k M_{k}$$
+
+$$\begin{align}
+M_k 
+&= \sum_{i=1}^{i=3}\sum_{j=1}^{j=3} M_{ijk} \\
+&= \sum_{i=1}^{i=3}\sum_{j=1}^{j=3} -\epsilon_{ijk} \sum_{t=1}^{t=4} \mathbb{A}_{ijt}\mathbb{V}_{ijt} \cdot C_{l,ij} 
+\end{align}$$
+
+
+Intepretation of the above equation yields that all the aerodynamic tendensies of the body can be described using the $\mathbb{V}$-tensor, which, from the equation, has rank 3. That is to say, all the aerodymamic characteristics of the body can be described by packaging them into a $3x3x4$-tensor. The 1'st dimension correspond to the dimension of the surface, i.e which direction its normal-vector is pointing, the 2'nd dimension correspond to the spatial axis of integration, the 3'rd correspond to the degree of the area-moment.
+
+
+
