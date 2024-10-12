@@ -44,7 +44,8 @@ along its side becomes the following:
 
 Consider now the simplified equation of drag/lift as given by Nasa*:
 
-$$F = \frac{1}{2} \;\rho \; C_{d/l} \;A \; v^2$$
+$$
+F = \frac{1}{2} \;\rho \; C_{d/l} \;A \; v^2$$
 
 (*The equation cannot be used as is in a vectorized context, as it maps both positive and 
 negative velocities to a positive force. A sign-term must be added in order to map velocities 
@@ -188,7 +189,7 @@ $$ \begin{align} M &= \frac{1}{2} \frac{C_d \rho}{ |v_0 - \omega r_{ref} | } \in
 
 Thus, all the simulation-terms have been brought outside the integral, allowing for computation 
 of the integral in a single instance to compute the coefficients, and then reuse them during simulation. 
-The integral-terms will hence forward be shorted to:
+The integral-terms will henceforth be shorted to:
 
 $$ \mathbb{A} = \int_{R} \begin{pmatrix} r^1 & r^2 & r^3 & r^4 \end{pmatrix} b(r) \partial r$$
 
@@ -200,12 +201,24 @@ The reason for choosing $\mathbb{A}$ will soon become apparent, as it's componen
 interpretation. The reason for treating it as a tensor instead of a vector will later also become 
 apparent when the model is generalized to 3 dimensions.
 
+
+
 The moment-equation thus conveniently becomes:
 
-$$ M = \mathbb{A}\cdot \begin{pmatrix}v_0^3 & -3v_0^2\omega & 3 v_0 \omega^2 & -\omega^3 
-\end{pmatrix}\frac{C_d \rho}{|v_0 - \omega r_{ref} |}$$
+$$ M = \frac{1}{2}C_d \rho \mathbb{A}\cdot \frac{\begin{pmatrix}v_0^3 & -3v_0^2\omega & 3 v_0 \omega^2 & -\omega^3 
+\end{pmatrix}}{|v_0 - \omega r_{ref} |}$$
+
+Which is still remeniscent of the original force-equation given by NASA. 
+
+The $v_0, \omega$-term will henceforth also be shorted to $\mathbb{V}$ such that:
+
+$$ \mathbb{V} = \frac{\begin{pmatrix}v_0^3 & -3v_0^2\omega & 3 v_0 \omega^2 & -\omega^3 
+\end{pmatrix}}{|v_0 - \omega r_{ref} |}$$
 
 
+Thus:
+
+$$M = \frac{1}{2}C_d \rho \mathbb{A}\cdot \mathbb{V}$$
 
 <h3>Physical interpretation of A.</h3>
 
@@ -271,7 +284,7 @@ This will also turn out to be significant.
 
 <h4>Terms corresponding to each area-moment.</h4>
 
-Putting the terms corresponding to each area-moment in a table reveals something interesting:
+Putting the terms of $\mathbb{V}$ corresponding to each area-moment $\mathbb{A}_k$ in a table reveals something interesting:
 
 $$
 \begin{Vmatrix}
@@ -282,7 +295,7 @@ $$
 \end{Vmatrix}
 $$
 
-All the even $\mathbb{A}_k$ terms correspont to terms where $ \omega $ is odd and $v_0$ is even, 
+All the even $\mathbb{A}_k$ terms correspond to terms where $ \omega $ is odd and $v_0$ is even, 
 while all the odd $\mathbb{A}_k$ terms correspond to terms where $ \omega $ is even and $v_0$ is odd.
 
 <h4>Terms corresponding to v_0.</h4>
@@ -305,3 +318,44 @@ what's more is that all the terms where $\omega$ is odd have a minus-sign, meani
 from $\omega$ work to contradict $\omega$. This also makes intuitive sense when one considers the reason for 
 including the $\omega r$ term initially, i.e to dampen oscillations.
 
+
+
+<h3>Vectorization.</h3>
+
+Vectorizing requires being more rigorous with the moment's direction $\vec{M}$, and the direction of the $\vec{\omega}$-vector
+and the $\vec{r}$. Consider the moment around one of the faces $i$, along one axis $j$: $\vec{M}_{i,j}$, where the direction normal to both is indicated with $k$.
+
+Let $\vec{A}$, $\hat{a}$ be the vector and corresponding unit vector normal to the area.
+
+Let $\hat{r}$ be the unit vector along the axis of integration (normal to $\hat{a}$, naturally).
+
+
+Setting up the moment-equation once more:
+
+$$\begin{align} 
+\vec{M}_{ij}
+&= \int_{R} r\cdot \hat{r}_j\times \partial \vec{F}_i \\
+&= \hat{r}_j \times \hat{a}_i \int_{R} \frac{1}{2} \;\rho \; C_{l,ij} \;\partial A \; v^2 \; \text{sign}(v) \\
+&\vdots \\
+&= (\hat{r}_j \times \hat{a}_i) \mathbb{A}_{ij}\cdot \begin{pmatrix} v_{0i}^3 & -3v_{0i}^2\omega_{ij} & 3 v_{0i} \omega_{ij}^2 & -\omega_{ij}^3 \end{pmatrix} \cdot  D_{ij} \\
+&= -(\hat{a}_i \times \hat{r}_j)   \mathbb{A}_{ij}\cdot \begin{pmatrix} v_{0i}^3 & -3v_{0i}^2\omega_{ij} & 3 v_{0i} \omega_{ij}^2 & -\omega_{ij}^3 \end{pmatrix} \cdot D_{ij} \\
+
+\end{align}$$
+
+Where:
+
+$$\vec{v}_0 = \sum_{i=1}^{i=3} v_{0i}\hat{e}_i \qquad  v_{0i} = \sum_{t=1}^{t=3}v_{0t}\delta_{it}$$
+
+$$\vec{\omega}_0 = \sum_{i=1}^{i=3} \omega_{0i}\hat{e}_i \qquad \omega_{ij} =\sum_{t=1}^{t=3} \omega_{t} (1-\delta_{ij}) $$
+
+$$ \mathbb{V}_{ij1} = v_{0i}^3 \qquad \mathbb{V}_{ij2} = -3v_{0i}^2\omega_{ij} \qquad \mathbb{V}_{ij3} = 3 v_{0i} \omega_{ij}^2 \qquad \mathbb{V}_{ij4} = -\omega_{ij}^3 $$
+
+$$ \mathbb{A}_{ijt} = \int_{R_j} r^t b_{ij}(r) \partial r \qquad t = 1,2,3,4, \qquad b_{ij}(r)\text{ is the width-function for surface i along axis j.}$$
+
+Henceforth index-notation will be used in isolation as the number of indices grows. Let $\mathbb{V}$, and let $\hat{e}_1, \hat{e}_2, \hat{e}_3$ be a body-fix orthonormal basis, and let $t$ denote the index of $\mathbb{A}$:
+
+Let: 
+$$\vec{M}_{ij} = \sum_{k=1}^{k=3}\hat{e}_k M_{ijk} $$
+
+
+$$ M_{ijk} = -\varepsilon_{ijk} \sum_{t=1}^{t=4} \mathbb{A}_{ijt}\mathbb{V}_{ijt} $$
