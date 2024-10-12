@@ -355,7 +355,8 @@ $$ \mathbb{A}_{ijt} = \int_{R_j} r^t b_{ij}(r) \partial r \qquad t = 1,2,3,4, \q
 Henceforth index-notation will be used in isolation as the number of indices grows. Let $\mathbb{V}$, and let $\hat{e}_1, \hat{e}_2, \hat{e}_3$ be a body-fix orthonormal basis, and let $t$ denote the index of $\mathbb{A}$:
 
 Let: 
+
 $$\vec{M}_{ij} = \sum_{k=1}^{k=3}\hat{e}_k M_{ijk} $$
 
 
-$$ M_{ijk} = -\varepsilon_{ijk} \sum_{t=1}^{t=4} \mathbb{A}_{ijt}\mathbb{V}_{ijt} $$
+$$ M_{ijk} = -\epsilon_{ijk} \sum_{t=1}^{t=4} \mathbb{A}_{ijt}\mathbb{V}_{ijt} $$
