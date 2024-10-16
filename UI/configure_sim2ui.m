@@ -2,16 +2,16 @@ function [ui, render_job] = configure_sim2ui(sim, render_job, ui)
 
 
 
-if ~exist("ui",  "var"); ui  = mjolnir_app(); end
+if ~exist("ui",  "var"); ui  = rocket_app(); end
 
 
 
-ui.UIFigure.Name  = "Mjölnir flight sim";
+ui.UIFigure.Name  = "Flight sim";
 ui.TSlider.Limits = [0,sim.job.t_max];
 grid(ui.ax4, "on");
 
 
-create_branch(ui.mjolnirNode, sim.mjolnir_historian)
+create_branch(ui.rocketNode, sim.rocket_historian)
 
 
 if isfolder('../colorthemes/'); dark_mode2(); end
@@ -23,12 +23,12 @@ index = 1; drawnow
 pause(1)
 ui.UIFigure.WindowState = "maximized";
 
-mjolnir = historian2comp(sim.mjolnir, sim.mjolnir_historian, 1);
+rocket = historian2comp(sim.rocket, sim.rocket_historian, 1);
 
 
-draw_component     (ui.ax, mjolnir, 0.003);
-draw_node_positions(ui.ax3, ui.mjolnirNode, ui.Tree, mjolnir);
-draw_trajectory    (ui.ax2, sim.mjolnir_historian, mjolnir, index);
+draw_component     (ui.ax, rocket, 0.003);
+draw_node_positions(ui.ax3, ui.rocketNode, ui.Tree, rocket);
+draw_trajectory    (ui.ax2, sim.rocket_historian, rocket, index);
 
 az = 10;
 ui.ax .View = [az, 5];

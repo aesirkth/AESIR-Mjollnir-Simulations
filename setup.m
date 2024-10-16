@@ -5,8 +5,9 @@ clear
 
 %% Adding paths to sub-folders:
 addpath('./Datasets');
-addpath('./Simulation')
-addpath('./Simulation/Methods')
+addpath('./Models');
+addpath('./Models/Methods');
+addpath('./Rockets');
 addpath('./Assets');
 addpath('./Methods');
 addpath('./STLRead');

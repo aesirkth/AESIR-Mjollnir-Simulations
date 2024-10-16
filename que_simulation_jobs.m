@@ -33,7 +33,7 @@ base_simulation_job.save                   = true;
 
 
 
-base_simulation_job.mjolnir                = initiate_mjolnir;
+base_simulation_job.rocket                = initiate_rocket;
 
 
 base_simulation_job.t_max                  = 80;                                      % Final time.
@@ -52,8 +52,8 @@ end
 for I_gain = 10.^(1:1:7)
     for D_gain = 10.^(1:1:7)
         job = base_simulation_job;
-        job.mjolnir.guidance.I_gain = I_gain;
-        job.mjolnir.guidance.D_gain = D_gain;
+        job.rocket.guidance.I_gain = I_gain;
+        job.rocket.guidance.D_gain = D_gain;
 
         
         if    job.overwrite; job.name = filename_availability(job.name, job_index);save(job.name, "job");

@@ -15,7 +15,8 @@ job.name                   = directory +"/sims/"+ "sim.mat";
 job.overwrite              = true;
 job.save                   = true;
 job.is_done                = false;
-job.mjolnir                = initiate_mjolnir;
+job.rocket                 = tralljok;
+
 job.t_max                  = 80;                                      % Final time.
 
 

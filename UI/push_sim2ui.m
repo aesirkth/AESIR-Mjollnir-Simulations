@@ -13,12 +13,12 @@ index = index+1;
 ui.TSlider.Value = sim.t(index);
 assignin("base", "indexstamp", index);
 
-mjolnir = historian2comp(sim.mjolnir, sim.mjolnir_historian, index);
+rocket = historian2comp(sim.rocket, sim.rocket_historian, index);
 
 
-draw_component     (ui.ax,  mjolnir, 0.001);
-draw_node_positions(ui.ax3, ui.mjolnirNode, ui.Tree, mjolnir);
-draw_trajectory    (ui.ax2, sim.mjolnir_historian, mjolnir, index);
+draw_component     (ui.ax,  rocket, 0.001);
+draw_node_positions(ui.ax3, ui.rocketNode, ui.Tree, rocket);
+draw_trajectory    (ui.ax2, sim.rocket_historian, rocket, index);
 
 %az = az+0.1;
 az = 5;
@@ -33,12 +33,12 @@ else
 ui.TLabel.Text = "T+"+string(floor(sim.t(index)/60))+" m, " + string(mod(sim.t(index), 60)) + " s";
 end
 
-ui.VelocityLabel.Text = "Velocity: "+string(norm(mjolnir.velocity)) +" m/s";
+ui.VelocityLabel.Text = "Velocity: "+string(norm(rocket.velocity)) +" m/s";
 
 
 plot(ui.ax4, 0,0);
 ui.ax4.NextPlot = "add";
-draw_branch(ui.ax4, ui.Tree, ui.mjolnirNode, sim.mjolnir_historian, sim.t, index);
+draw_branch(ui.ax4, ui.Tree, ui.rocketNode, sim.rocket_historian, sim.t, index);
 
 ui.ax4.NextPlot = "replacechildren";
 

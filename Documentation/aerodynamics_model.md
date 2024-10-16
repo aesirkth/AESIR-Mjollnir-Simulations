@@ -372,11 +372,8 @@ $$\vec{M} = \sum_{k=1}^{k=3} \hat{e}_k M_{k}$$
 $$\begin{align}
 M_k 
 &= \sum_{i=1}^{i=3}\sum_{j=1}^{j=3} M_{ijk} \\
-&= \sum_{i=1}^{i=3}\sum_{j=1}^{j=3} -\epsilon_{ijk} \sum_{t=1}^{t=4} \mathbb{A}_{ijt}\mathbb{V}_{ijt} \cdot C_{l,ij} 
+M_k &= \sum_{i=1}^{i=3}\sum_{j=1}^{j=3} -\epsilon_{ijk} \sum_{t=1}^{t=4} \mathbb{A}_{ijt}\mathbb{V}_{ijt} \cdot C_{l,ij} 
 \end{align}$$
 
 
 Intepretation of the above equation yields that all the aerodynamic tendensies of the body can be described using the $\mathbb{V}$-tensor, which, from the equation, has rank 3. That is to say, all the aerodymamic characteristics of the body can be described by packaging them into a $3x3x4$-tensor. The 1'st dimension correspond to the dimension of the surface, i.e which direction its normal-vector is pointing, the 2'nd dimension correspond to the spatial axis of integration, the 3'rd correspond to the degree of the area-moment.
-
-
-
