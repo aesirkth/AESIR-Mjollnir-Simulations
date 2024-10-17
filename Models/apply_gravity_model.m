@@ -1,9 +1,9 @@
-function [comp] = apply_gravity_model(comp)
+function [rocket] = apply_gravity_model(rocket)
 
 
-comp.forces.Gravity = force(comp.enviroment.g*...
-                                       comp.mass*[0;0;-1], ...
-                                       comp.center_of_mass);
+rocket.forces.Gravity = force(rocket.enviroment.g*...
+                                       rocket.mass*[0;0;-1], ...
+                                       rocket.center_of_mass);
 
 
 

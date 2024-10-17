@@ -66,10 +66,10 @@ end
         for time_index = 1:numel(sim.t)
         
         sim.rocket_historian = record_history(sim.rocket, ...
-                                               sim.state_vectors(:,time_index), ...
-                                               sim.t(time_index), ...
-                                               time_index,...
-                                               sim.rocket_historian);
+                                              sim.state_vectors(:,time_index), ...
+                                              sim.t(time_index), ...
+                                              time_index,...
+                                              sim.rocket_historian);
         end
     
         sim.post_processing_time = toc;
@@ -85,7 +85,5 @@ end
     
     end
     
+job.is_done = true;
     
-    
-
-end

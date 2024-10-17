@@ -1,11 +1,11 @@
-function [comp, state_vector_derivatives] = apply_rigid_body_model(comp, state_vector_derivatives)
-% Computing the derivative of the state-vector based on the component
+function [rocket, state_vector_derivatives] = apply_rigid_body_model(rocket, state_vector_derivatives)
+% rocketuting the derivative of the state-vector based on the rocketonent
 % parameters. The state-vector derivative and the state vector are then
 % used by the ODE-solver to iterate the system.
 
  % Unpack fields of rigid_body-struct into workspace
-variables = fieldnames(comp);
-for i = 1:numel(variables); eval(variables{i}+"= comp."+variables{i}+";"); end
+variables = fieldnames(rocket);
+for i = 1:numel(variables); eval(variables{i}+"= rocket."+variables{i}+";"); end
 
 
 

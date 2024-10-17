@@ -20,9 +20,17 @@ render_jobs = {};
 job_index   = 1;
 end
 
-sim_directory = "Data/tvc_unstable_gains_trajectory/sims/";
+sim_directory = uigetdir("Data", "Choose simulation-directory");
+if contains(sim_directory, "sims")
 vid_directory = strrep(sim_directory, "sims", "videos");
+else
+vid_directory = sim_directory + "/videos";
+end
 if ~isfolder(vid_directory); mkdir(vid_directory); end
+
+copyfile("que_rendering_jobs.m", filename_availability(vid_directory+"/source.m")); % For traceability
+
+
 
 files = struct2cell(dir(sim_directory)); files = files(1,:);
 

@@ -1,9 +1,9 @@
-function historian = record_history(comp, state, t, history_index, historian)
+function historian = record_history(rocket, state, t, history_index, historian)
 
-[~,comp] = system_equations(t, state, comp);
+[~,rocket] = system_equations(t, state, rocket);
 
 
-historian = assign_parameters(comp, historian, history_index);
+historian = assign_parameters(rocket, historian, history_index);
 
 end
 
@@ -11,26 +11,27 @@ end
 
 
 
-function historian = assign_parameters(comp, historian, history_index)
+function historian = assign_parameters(rocket, historian, history_index)
 parameter_names = fieldnames(historian);
 
 for parameter_index = 1:numel(parameter_names)
 parameter = parameter_names{parameter_index};
 
-if isequal(class(comp.(parameter)), 'double')
+if isequal(class(rocket.(parameter)), 'double')
 
-historian.(parameter)(:,history_index) = reshape(comp.(parameter), ...
-                                         numel  (comp.(parameter)), ...
+historian.(parameter)(:,history_index) = reshape(rocket.(parameter), ...
+                                         numel  (rocket.(parameter)), ...
                                          1);
 
-elseif isequal(class(comp.(parameter)), 'struct')
-if isfield(comp, 'dont_record') == 0
-historian.(parameter) = assign_parameters(comp.(parameter), historian.(parameter), history_index);
-elseif sum(matches(comp.dont_record, parameter)) == 0
-historian.(parameter) = assign_parameters(comp.(parameter), historian.(parameter), history_index);
+elseif isequal(class(rocket.(parameter)), 'struct')
+
+if     isfield(rocket, 'dont_record') == 0;                historian.(parameter) = assign_parameters(rocket.(parameter), historian.(parameter), history_index);
+elseif sum(matches(rocket.dont_record, parameter)) == 0;   historian.(parameter) = assign_parameters(rocket.(parameter), historian.(parameter), history_index);
+
 else
 disp(parameter)
 end
+
 end
 
 end

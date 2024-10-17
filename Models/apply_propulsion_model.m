@@ -1,7 +1,7 @@
-function comp = apply_simplified_propulsion_model(comp, t)
+function rocket = apply_propulsion_model(rocket, t)
 
 if t < 10
-comp.forces.Thrust = force(comp.attitude(:,3)*4e3, comp.engine.nozzle.exit.position);
+rocket.forces.Thrust = force(rocket.attitude(:,3)*4e3, rocket.engine.nozzle.exit.position);
 else
-comp.forces.Thrust = force([0;0;0]               , comp.engine.nozzle.exit.position);
+rocket.forces.Thrust = force([0;0;0]               , rocket.engine.nozzle.exit.position);
 end
