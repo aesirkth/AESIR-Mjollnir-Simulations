@@ -24,7 +24,7 @@ end
         evalin  ("base", "loading_message = 'Simulating "+ job.name +":';");
         evalin  ("base", "loading_bar = waitbar(0, loading_message);");
         assignin("base", "loading_bar_end_time", job.t_max);
-        sim.initial_state_vector = comp2state_vector(sim.rocket, zeros(31,1));
+        sim.initial_state_vector = rocket2state_vector(sim.rocket, zeros(31,1));
         
         % Solve ODE initial value problem.
         t_range = [0, job.t_max];

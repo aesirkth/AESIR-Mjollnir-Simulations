@@ -7,7 +7,7 @@ if ~exist("ui",  "var"); ui  = rocket_app(); end
 
 
 ui.UIFigure.Name  = "Flight sim";
-ui.TSlider.Limits = [0,sim.job.t_max];
+ui.TSlider.Limits = [0,max(sim.rocket_historian.t)];
 grid(ui.ax4, "on");
 
 
@@ -23,7 +23,7 @@ index = 1; drawnow
 pause(1)
 ui.UIFigure.WindowState = "maximized";
 
-rocket = historian2comp(sim.rocket, sim.rocket_historian, 1);
+rocket = historian2instance(sim.rocket, sim.rocket_historian, 0);
 
 
 draw_component     (ui.ax, rocket, 0.003);

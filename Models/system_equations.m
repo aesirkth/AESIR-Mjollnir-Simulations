@@ -28,7 +28,7 @@ state_vector_derivative = zeros(size(state_vector));
  %% No more additional forces, as inertial-navigation emulator needs force-information
 if rocket.guidance.is_activate
  rocket                           = apply_inertial_navigation        (rocket);                          % <---- [Added by Spiggen 2024]
-[rocket, state_vector_derivative] = apply_thrust_vectoring           (rocket, state_vector_derivative, t); % <---- [Added by Spiggen 2024]
+[rocket, state_vector_derivative] = apply_thrust_vectoring           (rocket, state_vector_derivative); % <---- [Added by Spiggen 2024]
 end
 %% Final step
 [rocket, state_vector_derivative] = apply_rigid_body_model           (rocket, state_vector_derivative); % <---- [Added by Spiggen 2024]

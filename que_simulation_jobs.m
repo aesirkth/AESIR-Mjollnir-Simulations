@@ -5,7 +5,6 @@ clc; clear; setup;
 disp("Creating new jobs...")
 base_simulation_job = struct();
 
-%% User settings.
 base_simulation_job.quick                  = false;                                    % True if quick simulation should be done. Less accurate, but useful for tuning.
 
 directory = "Data/tralljok" + string(datetime("today")) + "/sims/";
@@ -23,8 +22,6 @@ base_simulation_job.rocket                = tralljok;
 
 base_simulation_job.t_max                  = 80;                                      % Final time.
 
-
-copyfile("que_simulation_jobs.m", filename_availability(directory+"/source.m")); % For traceability
 
 
 try 
@@ -54,5 +51,7 @@ for I_gain = 10.^(1:1:7)
 end
 
 save("simulation_jobs.mat", "simulation_jobs");
+copyfile("simulation_jobs.mat",   filename_availability(directory+"/simulation_jobs.mat")); % For traceability
+copyfile("que_simulation_jobs.m", filename_availability(directory+"/source.txt")); % For traceability
 
 disp("Done.")

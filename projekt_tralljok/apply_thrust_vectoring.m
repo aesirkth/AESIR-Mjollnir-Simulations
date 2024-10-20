@@ -1,4 +1,4 @@
-function [comp, state_vector_derivative] = apply_thrust_vectoring(comp, state_vector_derivative, t)
+function [comp, state_vector_derivative] = apply_thrust_vectoring(comp, state_vector_derivative)
  
 %% Finding desired heading based on trajectory
 if comp.guidance.update_desired_direction
@@ -50,8 +50,7 @@ end
 
 stepsize = 1;
 comp.guidance.aim_finder_steps = 0;
-increment = false;
-at_local_optima = false;
+
 
 while true
 
