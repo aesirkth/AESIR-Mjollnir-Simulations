@@ -19,7 +19,7 @@ state_vector_derivative = zeros(size(state_vector));
 
 
 %% Applying the different models:
-
+rocket.t = t;
 
 %[rocket, state_vector_derivative] = apply_propulsion_model           (rocket, state_vector_derivative); % <---- [Original Aesir propulsion model]
  rocket                           = apply_propulsion_model           (rocket, t);

@@ -1,6 +1,3 @@
-clc
-clear
-% clear global
 
 
 %% Adding paths to sub-folders:

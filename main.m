@@ -6,7 +6,7 @@ disp("Creating new job...")
 job = struct();
 
 %% User settings.
-job.quick                  = false;                                    % True if quick simulation should be done. Less accurate, but useful for tuning.
+job.quick                  = true;                                    % True if quick simulation should be done. Less accurate, but useful for tuning.
 
 directory = "Data/test";
 if ~isfolder(directory+"/sims/"); mkdir(directory+"/sims/"); end
@@ -15,7 +15,7 @@ job.name                   = directory +"/sims/"+ "sim.mat";
 job.overwrite              = true;
 job.save                   = true;
 job.is_done                = false;
-job.rocket                 = tralljok;
+job.rocket                 = mjollnir;
 
 job.t_max                  = 80;                                      % Final time.
 
@@ -36,6 +36,7 @@ render_job                 = struct();
 render_job.play_on_startup = true;
 render_job.close_on_finish = true;
 render_job.record_video    = false;
+render_job.record_gif      = false;
 render_job.overwrite       = true;
 render_job.is_done         = false;
 

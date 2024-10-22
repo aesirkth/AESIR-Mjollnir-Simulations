@@ -22,7 +22,7 @@ render_jobs = {};
 job_index   = 1;
 end
 
-sim_directory = "Data\tralljok16-Oct-2024\sims";%uigetdir("Data", "Choose simulation-directory");
+sim_directory = "Data\trallgok_ODE45_21-Oct-2024\sims";%uigetdir("Data", "Choose simulation-directory");
 
 if contains(sim_directory, "sims"); vid_directory = strrep(sim_directory, "sims", "videos"); gif_directory = strrep(sim_directory, "sims", "gifs");
 else;                               vid_directory = sim_directory + "\videos";               gif_directory = sim_directory + "\gifs";

@@ -1,5 +1,5 @@
 function [job, sim] = run_simulation_job(job)
-
+setup;
 
 if  job.save && isfile(job.name) && ~job.overwrite; load(job.name); end
 

@@ -63,15 +63,10 @@ rocket.moments.null                  = moment([0;0;0], [0;0;0]);
 
 
 %% Mesh:
-rocket.mesh                                     = stlread("./assets/AM_00 Mjollnir Full CAD v79 low_poly 0.03.stl");
-%rocket.mesh                                     = stlread("./Assets/rocket_mockup.stl");
-rocket.dont_record(1)                           = "mesh";
-rocket.mesh.vertices                            = 4*rocket.mesh.vertices/max(rocket.mesh.vertices, [], "all");
-rocket.mesh.vertices                            = rocket.mesh.vertices -   ...
-                                                    0.5*[max(rocket.mesh.vertices(:,1))+min(rocket.mesh.vertices(:,1));
-                                                         max(rocket.mesh.vertices(:,2))+min(rocket.mesh.vertices(:,2));
-                                                         max(rocket.mesh.vertices(:,3))+min(rocket.mesh.vertices(:,3))]';
-%rocket.mesh.vertices(:,3) = rocket.mesh.vertices(:,3)+0.4;
+rocket.length_scale                             = 4;
+rocket.mesh                                     = "Assets/AM_00 Mjollnir Full CAD v79 low_poly 0.03.stl";
+rocket.length_scale                             = 4;
+
 
 
 

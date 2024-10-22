@@ -1,13 +1,10 @@
-function aerodynamics = mesh2aerodynamics(comp, mesh)
+function aerodynamics = mesh2aerodynamics(rocket)
+
 temp_fig = figure();
 temp_ax = axes(temp_fig); temp_ax.Color = [1 1 1];
-% temp_fig2 = figure();
-% temp_ax2 = axes(temp_fig2);
-% temp_fig3 = figure();
-% temp_ax3 = axes(temp_fig3);
 
-if exist("mesh", "var") == false; mesh = comp.mesh; end
 
+mesh = read_mesh(rocket);
 
 patch(temp_ax, mesh, 'FaceColor',       [0 0 0], ...
                      'EdgeColor',       'none');
@@ -90,18 +87,18 @@ for dimension = 1:3
 if     dimension2image_hash(dimension) == "height"
 height_vec = min_mesh_height:pixel_height:max_mesh_height;
 surface_area(face) = pixel_height*sum( height2width(height_vec), "all");
-moment_of_area(face, dimension, 1) = pixel_height*sum( height2width(height_vec).*((height_vec - comp.center_of_mass(dimension))   ), "all");
-moment_of_area(face, dimension, 2) = pixel_height*sum( height2width(height_vec).*((height_vec - comp.center_of_mass(dimension)).^2), "all");
-moment_of_area(face, dimension, 3) = pixel_height*sum( height2width(height_vec).*((height_vec - comp.center_of_mass(dimension)).^3), "all");
-moment_of_area(face, dimension, 4) = pixel_height*sum( height2width(height_vec).*((height_vec - comp.center_of_mass(dimension)).^4), "all");
+moment_of_area(face, dimension, 1) = pixel_height*sum( height2width(height_vec).*((height_vec - rocket.center_of_mass(dimension))   ), "all");
+moment_of_area(face, dimension, 2) = pixel_height*sum( height2width(height_vec).*((height_vec - rocket.center_of_mass(dimension)).^2), "all");
+moment_of_area(face, dimension, 3) = pixel_height*sum( height2width(height_vec).*((height_vec - rocket.center_of_mass(dimension)).^3), "all");
+moment_of_area(face, dimension, 4) = pixel_height*sum( height2width(height_vec).*((height_vec - rocket.center_of_mass(dimension)).^4), "all");
 length_scale(dimension) = (max_mesh_height - min_mesh_height)/2;
 elseif dimension2image_hash(dimension) == "width"
 width_vec = min_mesh_width:pixel_width:max_mesh_width;
 surface_area(face) = pixel_width*sum( width2height(width_vec), "all");
-moment_of_area(face, dimension, 1) = pixel_width*sum( width2height(width_vec ).*((width_vec - comp.center_of_mass(dimension))    ), "all");
-moment_of_area(face, dimension, 2) = pixel_width*sum( width2height(width_vec ).*((width_vec - comp.center_of_mass(dimension)) .^2), "all");
-moment_of_area(face, dimension, 3) = pixel_width*sum( width2height(width_vec ).*((width_vec - comp.center_of_mass(dimension)) .^3), "all");
-moment_of_area(face, dimension, 4) = pixel_width*sum( width2height(width_vec ).*((width_vec - comp.center_of_mass(dimension)) .^4), "all");
+moment_of_area(face, dimension, 1) = pixel_width*sum( width2height(width_vec ).*((width_vec - rocket.center_of_mass(dimension))    ), "all");
+moment_of_area(face, dimension, 2) = pixel_width*sum( width2height(width_vec ).*((width_vec - rocket.center_of_mass(dimension)) .^2), "all");
+moment_of_area(face, dimension, 3) = pixel_width*sum( width2height(width_vec ).*((width_vec - rocket.center_of_mass(dimension)) .^3), "all");
+moment_of_area(face, dimension, 4) = pixel_width*sum( width2height(width_vec ).*((width_vec - rocket.center_of_mass(dimension)) .^4), "all");
 length_scale(dimension) = (max_mesh_width - min_mesh_width)/2;
 end
 
@@ -123,7 +120,7 @@ end
 % pixel_width = pixel_width
 % end
 % temp_ax2.NextPlot = "add";
-% scatter(temp_ax2, comp.center_of_mass(dimension), 1);
+% scatter(temp_ax2, rocket.center_of_mass(dimension), 1);
 % temp_ax.NextPlot = "replacechildren";
 % face
 % dimension

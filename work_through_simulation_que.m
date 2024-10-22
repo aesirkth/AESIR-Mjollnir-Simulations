@@ -1,4 +1,4 @@
-clc; clear; setup;
+clc; clear; setup; parpool(8);
 
 load("simulation_jobs.mat", "simulation_jobs");
 disp("working through que...")
@@ -11,7 +11,7 @@ simulation_jobs{job_index} = run_simulation_job(simulation_jobs{job_index});
 end
 end
 
-save("simulation_jobs.mat", "simulation_jobs")
+
 disp("job-que empty")
 delete simulation_jobs.mat
 

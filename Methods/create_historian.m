@@ -3,7 +3,7 @@ function [historian, instance] = create_historian(instance,t)
 
 % Run single timestep to let system equations assign all the dependant
 % parameters we want to extract later.
-test_state = instance2state_vector(instance, zeros(28,1));
+test_state = rocket2state_vector(instance, zeros(28,1));
 [~,instance] = system_equations(0, test_state, instance);
 
 [historian, instance] = create_historian_internal(instance, t);

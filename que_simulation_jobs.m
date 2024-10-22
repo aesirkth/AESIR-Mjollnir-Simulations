@@ -5,9 +5,9 @@ clc; clear; setup;
 disp("Creating new jobs...")
 base_simulation_job = struct();
 
-base_simulation_job.quick                  = false;                                    % True if quick simulation should be done. Less accurate, but useful for tuning.
+base_simulation_job.quick                  = true;                                    % True if quick simulation should be done. Less accurate, but useful for tuning.
 
-directory = "Data/tralljok" + string(datetime("today")) + "/sims/";
+directory = "Data/trallgok_ODE45_" + string(datetime("today")) + "/sims/";
 if ~isfolder(directory); mkdir(directory); end
 
 base_simulation_job.name                   = directory + "sim.mat";

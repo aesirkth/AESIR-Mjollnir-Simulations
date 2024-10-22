@@ -1,10 +1,18 @@
-function draw_node_positions(ax, parent_node, tree, comp)
+function draw_node_positions(ax, parent_node, tree, rocket)
 
 ColorMap = evalin("base", "ColorMap");
 
+try 
+    mesh = evalin("base", filename2varname(rocket.mesh));
+catch
+    mesh = read_mesh(rocket);
+    assignin("base", filename2varname(rocket.mesh), mesh);
+end
+    
+
 
 plot3(ax, 0,0,0);
-patch(ax, comp.mesh, 'FaceColor',       ColorMap(70,:), ...
+patch(ax, mesh, 'FaceColor',       ColorMap(70,:), ...
                      'EdgeColor',       'none',        ...
                      'FaceLighting',    'gouraud',     ...
                      'AmbientStrength', 0.1, ...
@@ -17,7 +25,7 @@ lighting(ax, "flat")
 axis(ax, "tight")
 ax.DataAspectRatio = [1 1 1];
 
-draw_node_positions_internal(ax, parent_node, comp);
+draw_node_positions_internal(ax, parent_node, rocket);
 
 ax.NextPlot = "replacechildren";
 
@@ -37,7 +45,7 @@ for parameter_index = 1:numel(parent_node.Children)
        && isequal(parameter, "moments") == false
     
     if isfield(parent_struct.(parameter), "position"); node_position = parent_struct.(parameter).position;
-    else;                                                      node_position = comp.center_of_mass;
+    else;                                                      node_position = rocket.center_of_mass;
     end
     
     scatter3(ax, node_position(1), ...
