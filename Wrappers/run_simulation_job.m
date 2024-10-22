@@ -59,7 +59,7 @@ end
         sim.state_vectors = sim.solution.y(:,1:4:end);
     
     
-        [sim.rocket_historian, sim.rocket] = create_historian(sim.rocket,sim.t);
+        [sim.rocket_historian, sim.rocket] = create_historian(sim.rocket,numel(sim.t));
        
         tic
         
