@@ -1,0 +1,6 @@
+*.MATLABDriveTag
+*.mp4
+/Data
+/Blender
+*simulation_jobs.mat
+*render_jobs.mat
