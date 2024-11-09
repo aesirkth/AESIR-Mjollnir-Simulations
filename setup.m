@@ -4,8 +4,8 @@
 addpath('./Datasets');
 addpath('./Rockets');
 addpath('./Rockets/components/');
-addpath('./Rockets/Models');
-addpath('./Rockets/Models/Methods');
+addpath('./Models');
+addpath('./Models/Methods');
 addpath('./Assets');
 addpath('./Methods');
 addpath('./STLRead');
