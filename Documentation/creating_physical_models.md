@@ -6,7 +6,8 @@ Author: Vilgot Lötberg, vilgotl@kth.se, 0725079097
 - Understanding the rocket-structure
     - Note on coordinate systems
 - Understanding how the main script and the other high level scripts work
-- Understanding models and ODE-structure
+- Understanding models and ODE-structure on a high level
+    - Understanding models and ODE-structure on a lower level
 
 
 <h2>Understanding the rocket-structure</h2>
@@ -95,3 +96,4 @@ Notice that if the line ``rocket.engine.nozzle.attitude``-line was to appear in 
 
 <h3>Note on coordinate-systems</h3>
 
+In general when working with properties that are vectorized, they are 
