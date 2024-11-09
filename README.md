@@ -1,7 +1,7 @@
 # Creating and modelling rockets
 Author: Vilgot Lötberg, vilgotl@kth.se, 0725079097
 
-![](./Assets/mjollnir.png)
+![](./Assets/mjollnir2.png)
 
 <h2>Contents:</h2>
 
