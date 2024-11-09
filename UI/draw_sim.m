@@ -22,7 +22,7 @@ rocket = query_historian(sim.initial_rocket, sim.rocket_historian, ui.TSlider.Va
 
 if     isequal(ui.TabGroup.SelectedTab.Title, "Flight") 
 
-draw_rocket        (ui.ax,  rocket, 0.001);
+draw_rocket        (ui.ax,  rocket);
 draw_trajectory    (ui.ax2, sim.rocket_historian, rocket, ui.TSlider.Value);
 az = 5;
 ui.ax .View = [az, 5];

@@ -21,7 +21,14 @@ function rocket = trallgok()
     
     
     
-    %% Rigid-body model
+    %% Rigid-body
+    rocket.rigid_body                        = struct();
+    rocket.rigid_body.center_of_mass         = [0;0;-0.8];
+    rocket.rigid_body.moment_of_inertia      = eye(3)*(80*4.^2)*0.2;
+    rocket.rigid_body.moment_of_inertia(3,3) = (80*4.^2)*2;
+    
+
+
     rocket.position                      = [100;0;rocket.enviroment.terrain.z(100,0)]; rocket.state_variables{end+1} = "position";
     rocket.velocity                      = zeros(3,1);                                 rocket.state_variables{end+1} = "velocity";
     rocket.angular_momentum              = zeros(3,1);                                 rocket.state_variables{end+1} = "angular_momentum";
@@ -29,10 +36,8 @@ function rocket = trallgok()
     rocket.forces                        = struct();
     rocket.moments                       = struct();
     rocket.mass                          = 80; 
-    rocket.center_of_mass                = [0;0;-0.8];
     rocket.rotation_rate                 = zeros(3,1);
-    rocket.moment_of_inertia             = eye(3)*(80*4.^2)*0.2;
-    rocket.moment_of_inertia(3,3)        = (80*4.^2)*0.2;
+
     
     
     rocket.forces.null                   = force ([0;0;0], [0;0;0]);

@@ -211,7 +211,7 @@ rocket.engine.nozzle.attitude = eye(3);
 
 end
 
-rocket.forces.Thrust = force(rocket.attitude*rocket.engine.attitude*rocket.engine.nozzle.attitude*[0;0;1]*norm(rocket.forces.Thrust.vec), ...
+rocket.forces.Thrust = force(rocket.engine.attitude*rocket.engine.nozzle.attitude*[0;0;1]*norm(rocket.forces.Thrust.vec), ...
                              rocket.engine.position + rocket.engine.attitude*rocket.engine.nozzle.position);
 
 %I_sensitivity_weighting = @(theta) (2/sqrt(pi))*exp(-(theta/rocket.guidance.I_sensitivity_region).^2).*theta; % https://www.desmos.com/calculator/dmsb0mwpgu

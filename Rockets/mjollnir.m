@@ -28,16 +28,21 @@ rocket.enviroment.terrain              = initiate_terrain();
 
 
 %% Rigid-body model
+rocket.rigid_body                        = struct();
+rocket.rigid_body.center_of_mass         = [0;0;0.5];
+rocket.rigid_body.moment_of_inertia      = eye(3)*(80*4.^2)*0.2;
+rocket.rigid_body.moment_of_inertia(3,3) = (80*4.^2)*2;
+
+
+
 rocket.forces                        = struct();
 rocket.moments                       = struct();
 rocket.attitude                      = eye(3);                                  rocket.state_variables{end+1} = "attitude";
-rocket.center_of_mass                = [0;0;0.5];
 rocket.angular_momentum              = zeros(3,1);                              rocket.state_variables{end+1} = "angular_momentum";
 rocket.rotation_rate                 = zeros(3,1);
 rocket.position                      = [0;0;rocket.enviroment.terrain.z(0,0)];  rocket.state_variables{end+1} = "position";
 rocket.velocity                      = zeros(3,1);                              rocket.state_variables{end+1} = "velocity";
-rocket.moment_of_inertia             = eye(3)*(80*4.^2)*0.2;
-rocket.moment_of_inertia(3,3)        = (80*4.^2)*2;
+
 rocket.mass                          = 80;
 
 rocket.forces.null                   = force ([0;0;0], [0;0;0]);

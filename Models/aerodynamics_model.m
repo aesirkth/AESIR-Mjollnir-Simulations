@@ -19,11 +19,11 @@ parallel_velocity_magnitude     = sqrt(norm(rocket.aerodynamics.relative_velocit
 
 %% Forces:
 
-lift_force = rocket.attitude*(rocket.aerodynamics.pressure_coefficient.*(rocket.aerodynamics.surface_area.*sign(relative_velocity_rocket_basis).*(relative_velocity_rocket_basis.^2))*rocket.enviroment.air_density);
+lift_force = (rocket.aerodynamics.pressure_coefficient.*(rocket.aerodynamics.surface_area.*sign(relative_velocity_rocket_basis).*(relative_velocity_rocket_basis.^2))*rocket.enviroment.air_density);
 drag_force = normalize(rocket.aerodynamics.relative_velocity)*sum(rocket.aerodynamics.friction_coefficient.*rocket.aerodynamics.surface_area.*parallel_velocity_magnitude.^2)*rocket.enviroment.air_density;
 
-rocket.forces.DragForce = force(drag_force, rocket.center_of_mass);
-rocket.forces.LiftForce = force(lift_force, rocket.center_of_mass);
+rocket.forces.DragForce = force((rocket.attitude')*drag_force, rocket.rigid_body.center_of_mass);
+rocket.forces.LiftForce = force(lift_force,                    rocket.rigid_body.center_of_mass);
 
 
 
@@ -84,7 +84,7 @@ lift_moment_vector = [lift_moment_tensor(3,2) + lift_moment_tensor(2,3);
 
 
 
-rocket.moments.LiftMoment = moment(rocket.attitude*lift_moment_vector, rocket.center_of_mass);
+rocket.moments.LiftMoment = moment(lift_moment_vector, rocket.rigid_body.center_of_mass);
 
 
 

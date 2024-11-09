@@ -151,7 +151,7 @@ Plotting part of the integrand $ (v_0 - \omega r)^2 sign(v_0 - \omega r) b(r) $ 
 The shape of the curve is somewhat remeniscent of a cubic polynomial. The general shape of which 
 can be written as $ (v_0 - \omega \cdot r)^3$, in essence approximating $sign(v) = v$ to capture the odd nature of $sign(v)$:
 
-![](integrand_approximation.gif)
+![](../Assets/mjollnir.png)
 > *Fig 7: integrand for different $v_0, \omega$*
 
 To make the polynomial into a good approximation, it's normalised with $ |v_0 - \omega \cdot r_{ref}| $ 

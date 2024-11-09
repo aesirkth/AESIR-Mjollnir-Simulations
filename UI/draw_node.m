@@ -1,4 +1,4 @@
-function draw_node(tree, ax, name, historian, t)
+function draw_node(tree, ax, name, historian)
 ColorMap = evalin("base", "ColorMap");
 %index-finder:
 if ~exist("index", "var"); historian_index_finder; end
