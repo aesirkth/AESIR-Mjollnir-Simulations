@@ -217,7 +217,11 @@ Or rather, since ``my_parameter`` is necessarily a property of ``rocket`` in som
 
 $$\frac{\partial \text{my parameter}}{\partial t} = f(\text{rocket})$$
 
-For these occasions, the ``rocket`` has a field called ``rocket.derivative``. The keys and size of the values of the ``rocket.derivative`` have to be specified before running the simulation, for example in the rocket initiation script. For example, with the parameter ``rocket.my_parameter``:
+For these occasions, the ``rocket`` has a field called ``rocket.derivative``.
+
+(https://se.mathworks.com/help/matlab/ref/containers.map.html (used instead of dictionary, as dictionaries don't yet support vectorized values). Henceforth, the word dictionary will be used to refer to containers.Map()  ). 
+
+The keys and size of the values of the ``rocket.derivative`` have to be specified before running the simulation, for example in the rocket initiation script. For example, with the parameter ``rocket.my_parameter``:
 
 In the rocket initialization-script:
 ```
@@ -229,7 +233,7 @@ rocket.my_parameter = zeros(3,1);
 rocket.derivative("my_parameter") = zeros(3,1);
 ```
 
-The key to the derivative is the parameter name as a string. For examples of this, see ``mjollnir.m`` or ``trallgok.m``.
+The dictionary-key is the parameter name as a string. For examples of this, see ``mjollnir.m`` or ``trallgok.m``.
 
 Assigning something to this derivative, say in a model-script:
 
@@ -242,5 +246,32 @@ rocket.derivative("my_parameter") = dmy_parameter_dt;
 
 ```
 
-When the ODE is solved a script will automatically go through the derivative, integrate it, and assign the respective values back to the respective parameters.
+When the ODE is solved a script will automatically go through the derivative, integrate it, and assign the respective values back to the respective parameters inside ``rocket``.
+
+This works similarly with nested paramters, except now the keyword is not just the variable name, but the entire **address** to the parameter inside ``rocket``:
+
+In the rocket initialization-script:
+```
+function rocket = some_rocket()
+rocket = struct();
+rocket.derivative = containers.Map();
+
+rocket.subcomponent = struct();
+rocket.subcomponent.my_parameter = zeros(3,1); 
+rocket.derivative("subcomponent.my_parameter") = zeros(3,1);
+```
+
+In a model-script:
+
+```
+function rocket = my_model(rocket)
+
+dmy_parameter_dt = ...
+
+rocket.derivative("subcomponent.my_parameter") = dmy_parameter_dt;
+
+```
+
+In general, think of the keyword as the address to the variable in question.
+
 
