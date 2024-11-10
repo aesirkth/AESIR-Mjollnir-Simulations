@@ -8,12 +8,16 @@ Author: Vilgot Lötberg, vilgotl@kth.se, 0725079097
 - Understanding how the main script and the other high level scripts work
 - Understanding the rocket-structure
     - Coordinate-systems and basis
-- Understanding models and ODE-structure on a high level
-    - Understanding models and ODE-structure on a lower level
+- Understanding models and ODE-structure
+    - Models
+    - ODE-structure and derivatives
 
 
 **NOTE!**
 In this article, the words struct, structure and object are used interchangably to refer to the same thing.
+Similarly, the words list and cell are used interchangably to refer to the same thing.
+The name ``my_rocket`` is primarily used as a variable when the variable is an 
+**instance** of a certain rocket, for example when using the command-line to spawn a rocket or in a main-script, while ``rocket`` is used in code that can deal with any possible instance.
 
 
 <h2>Understanding how the main script and the other high level scripts work</h2>
@@ -23,7 +27,7 @@ In this article, the words struct, structure and object are used interchangably 
 
 <h2>Understanding the rocket-structure</h2>
 
-[NOTE!] This is not a comprehensive guide to what fields are contained in the rocket-struct at any given instance, as this is an ever changing code-base. This is simply meant as a guide to navigating the rocket-structure. To get a detailed view of what fields and parameters are contained in a given rocket, the instructions below describe how to obtain that information.
+**NOTE!** This is not a comprehensive guide to what fields are contained in the rocket-struct at any given instance, as this is an ever changing code-base. This is simply meant as a guide to navigating the rocket-structure. To get a detailed view of what fields and parameters are contained in a given rocket, the instructions below describe how to obtain that information.
 
 Creating a new rocket using this codebase requires a basic understanding of how, and why the codebase is structured. Typing into the MATLAB command-line interface (the reader is encouraged to type along):
 
@@ -105,7 +109,7 @@ my_attitude =
 Notice that if the line ``rocket.engine.nozzle.attitude`` was to appear in code, figuring out what property of the rocket it was reffering to and what was being calculated would be quite easy to figure out. Following this structure makes the code relatively self documenting, making it easy to backtrack and figure out what does what.
 
 <h3>Coordinate-systems and basis</h3>
-<h4>Summary:</h4> 
+<h4>TLDR:</h4> 
 In general, coordinate systems follow this pattern:
 
 **All an objects properties are in the objects parents basis!**
@@ -153,3 +157,90 @@ For all properties under ``rocket``, like ``rocket.position``, they will be in t
 For example ``rocket.rigid_body.center_of_mass`` will be in the basis of ``rocket``.
 
 What this basis acually is is ALWAYS described by the property ``attitude``, whether it be ``rocket.attitude``, ``rocket.engine.nozzle.attitude``, or ``rocket.fins.attitude``, this 3x3 matrix describes the basis vectors of it's parent object.
+
+If the parent has no property ``attitude``, then it assumes the basis is the same one as its parent.
+
+
+
+<h2>Understanding models and ODE-structure</h2>
+
+<h3>Models</h3> 
+
+<h4>TLDR:</h4> 
+
+A model is meant to encompass and model some behaviour of the rocket. For examples, see ``aerodynamics_model.m``, ``gravity_model.m`` or ``propulsion_model.m``.
+
+All the rockets models get stored in a list (https://se.mathworks.com/help/matlab/ref/cell.html) inside the ``rocket`` -struct called ``rocket.models``.
+
+```
+>> my_rocket.models
+
+ans =
+
+  1×5 cell array
+
+    {@equations_of_motion}    {@propulsion_model}    {@aerodynamics_model}    {@gravity_model}    {@equations_of_motion}
+```
+
+
+All models are functions with input and output ``rocket``. 
+
+Thus, adding a model to a rocket can be done via:
+
+```
+rocket.models{end+1} = @my_model;
+```
+
+Or, inside the rockets own creation-function:
+
+```
+rocket.models = {@model1, @model2, @model3, .... @my_model};
+```
+
+
+Prefferably, the actual function script is stored in a .m file under /Models.
+
+![](Documentation/models.png)
+
+
+
+
+<h3>ODE-structure and derivatives</h3> 
+
+<h4>TLDR:</h4> 
+
+When working with and modelling a parameter that needs to be integrated, on the ODE form:
+
+$$\frac{\partial \text{my parameter} }{\partial t} = f(\text{my parameter})$$
+
+Or rather, since ``my_parameter`` is necessarily a property of ``rocket`` in some way, it instead becomes:
+
+$$\frac{\partial \text{my parameter}}{\partial t} = f(\text{rocket})$$
+
+For these occasions, the ``rocket`` has a field called ``rocket.derivative``. The keys and size of the values of the ``rocket.derivative`` have to be specified before running the simulation, for example in the rocket initiation script. For example, with the parameter ``rocket.my_parameter``:
+
+In the rocket initialization-script:
+```
+function rocket = some_rocket()
+rocket = struct();
+rocket.derivative = containers.Map();
+
+rocket.my_parameter = zeros(3,1); 
+rocket.derivative("my_parameter") = zeros(3,1);
+```
+
+The key to the derivative is the parameter name as a string. For examples of this, see ``mjollnir.m`` or ``trallgok.m``.
+
+Assigning something to this derivative, say in a model-script:
+
+```
+function rocket = my_model(rocket)
+
+dmy_parameter_dt = ...
+
+rocket.derivative("my_parameter") = dmy_parameter_dt;
+
+```
+
+When the ODE is solved a script will automatically go through the derivative, integrate it, and assign the respective values back to the respective parameters.
+

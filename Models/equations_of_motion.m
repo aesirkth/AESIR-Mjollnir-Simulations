@@ -3,6 +3,7 @@ function rocket = equations_of_motion(rocket)
 % parameters. The state-vector rocket.derivative and the state vector are then
 % used by the ODE-solver to iterate the system.
 
+rocket.attitude = orthonormalize(rocket.attitude);
 
 % Forces & moments
 

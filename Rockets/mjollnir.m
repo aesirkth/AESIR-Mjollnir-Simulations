@@ -3,9 +3,14 @@ function rocket = mjollnir()
 rocket                  = struct();
 rocket.name             = "Mjöllnir";
 rocket.dont_record      = ["", ""];
-rocket.models           = {@propulsion_model, @aerodynamics_model, @gravity_model};
-rocket.state_variables  = {};
+rocket.models           = {@equations_of_motion, ...
+                           @propulsion_model,    ...
+                           @aerodynamics_model,  ...
+                           @gravity_model,       ...
+                           @equations_of_motion};
 
+
+rocket.derivative = containers.Map();
 
 
 
@@ -37,11 +42,11 @@ rocket.rigid_body.moment_of_inertia(3,3) = (80*4.^2)*2;
 
 rocket.forces                        = struct();
 rocket.moments                       = struct();
-rocket.attitude                      = eye(3);                                  rocket.state_variables{end+1} = "attitude";
-rocket.angular_momentum              = zeros(3,1);                              rocket.state_variables{end+1} = "angular_momentum";
+rocket.attitude                      = eye(3);                                  rocket.derivative("attitude")         = zeros(3);
+rocket.angular_momentum              = zeros(3,1);                              rocket.derivative("angular_momentum") = zeros(3,1);
 rocket.rotation_rate                 = zeros(3,1);
-rocket.position                      = [0;0;rocket.enviroment.terrain.z(0,0)];  rocket.state_variables{end+1} = "position";
-rocket.velocity                      = zeros(3,1);                              rocket.state_variables{end+1} = "velocity";
+rocket.position                      = [0;0;rocket.enviroment.terrain.z(0,0)];  rocket.derivative("position")         = zeros(3,1);
+rocket.velocity                      = zeros(3,1);                              rocket.derivative("velocity")         = zeros(3,1);
 
 rocket.mass                          = 80;
 

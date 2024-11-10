@@ -14,9 +14,7 @@ end
 % Setup
 rocket.t              = t;
 rocket                = state_vector2rocket (state_vector, rocket); % Unpacking the state-vector
-rocket.attitude       = orthonormalize      (rocket.attitude);
-rocket.derivative     = make_derivative     (rocket);
-rocket                = equations_of_motion (rocket); % <---- [Added by Spiggen 2024]
+
 
 %% Applying the rockets own models
 for i = 1:numel(rocket.models)
@@ -24,9 +22,6 @@ apply_model = rocket.models{i};
 rocket      = apply_model(rocket);
 end
 
-%% Final step
- rocket                           = equations_of_motion       (rocket); % <---- [Added by Spiggen 2024]
-
- state_vector_derivative = derivative2vector(rocket.derivative, rocket.state_variables);
+ state_vector_derivative = derivative2vector(rocket.derivative);
 
 end

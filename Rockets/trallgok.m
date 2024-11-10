@@ -3,9 +3,15 @@ function rocket = trallgok()
     rocket                 = struct();
     rocket.name            = "Trallgök";
     rocket.dont_record     = ["", ""];
-    rocket.models          = {@propulsion_model, @aerodynamics_model, @gravity_model, @inertial_navigation_model, @thrust_vectoring_model};
-    rocket.state_variables = {};
-    
+    rocket.models          = {@equations_of_motion,       ...
+                              @propulsion_model,          ...
+                              @aerodynamics_model,        ...
+                              @gravity_model,             ...
+                              @inertial_navigation_model, ...
+                              @thrust_vectoring_model,    ...
+                              @equations_of_motion};
+
+    rocket.derivative = containers.Map();
 
     
     %% Enviroment & physical constants
@@ -29,10 +35,10 @@ function rocket = trallgok()
     
 
 
-    rocket.position                      = [100;0;rocket.enviroment.terrain.z(100,0)]; rocket.state_variables{end+1} = "position";
-    rocket.velocity                      = zeros(3,1);                                 rocket.state_variables{end+1} = "velocity";
-    rocket.angular_momentum              = zeros(3,1);                                 rocket.state_variables{end+1} = "angular_momentum";
-    rocket.attitude                      = eye(3);                                     rocket.state_variables{end+1} = "attitude";
+    rocket.position                      = [100;0;rocket.enviroment.terrain.z(100,0)]; rocket.derivative("position")           = zeros(3,1);
+    rocket.velocity                      = zeros(3,1);                                 rocket.derivative("velocity")           = zeros(3,1);
+    rocket.angular_momentum              = zeros(3,1);                                 rocket.derivative("angular_momentum")   = zeros(3,1);
+    rocket.attitude                      = eye(3);                                     rocket.derivative("attitude")           = zeros(3);
     rocket.forces                        = struct();
     rocket.moments                       = struct();
     rocket.mass                          = 80; 
@@ -76,8 +82,8 @@ function rocket = trallgok()
     rocket.guidance.P_gain_offset              = 0.7e0;
     rocket.guidance.dieoff                     = 300;
 
-    rocket.guidance.P_error                    = zeros(2,1); rocket.state_variables{end+1} = "guidance.P_error";
-    rocket.guidance.D_error                    = zeros(2,1); rocket.state_variables{end+1} = "guidance.D_error";
+    rocket.guidance.P_error                    = zeros(2,1); rocket.derivative("guidance.P_error") = zeros(2,1);
+    rocket.guidance.D_error                    = zeros(2,1); rocket.derivative("guidance.D_error") = zeros(2,1);
 
     %    rocket.guidance.D_gain                     = 1e4;
 %    rocket.guidance.P_gain_offset              = 0.5e1;

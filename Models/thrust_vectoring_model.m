@@ -147,8 +147,8 @@ rocket.guidance.omega_y = rocket.guidance.omega(2);
 %rocket.guidance.integraged_theta_y = rocket.guidance.integrated_theta(2);
 
 P_gain = zeros(2,1);
-P_gain(1) = rocket.guidance.P_gain_offset*(rocket.guidance.D_gain^2)/(4*rocket.moment_of_inertia(1,1));
-P_gain(2) = rocket.guidance.P_gain_offset*(rocket.guidance.D_gain^2)/(4*rocket.moment_of_inertia(2,2));
+P_gain(1) = rocket.guidance.P_gain_offset*(rocket.guidance.D_gain^2)/(4*rocket.rigid_body.moment_of_inertia(1,1));
+P_gain(2) = rocket.guidance.P_gain_offset*(rocket.guidance.D_gain^2)/(4*rocket.rigid_body.moment_of_inertia(2,2));
 
 %% Main PID-controller
 %rocket.guidance.desired_moment_x = - P_gain_x*rocket.guidance.theta(1) + rocket.guidance.D_gain*rocket.guidance.omega(1) - rocket.guidance.I_gain*rocket.guidance.integrated_theta(1);
@@ -166,7 +166,7 @@ rocket.guidance.desired_moment(2) = -rocket.guidance.P_term(2)*P_gain(2)*rocket.
 
 %  Note, in the precense of memory, this will be calculated differently as the guidance-
 %  computer will keep track of the previously applied thrust-vectoring moment
-modelled_moment = rocket.moment_of_inertia*rocket.guidance.measured_angular_acceleration; 
+modelled_moment = rocket.rigid_body.moment_of_inertia*rocket.guidance.measured_angular_acceleration; 
 
 rocket.guidance.thrust_moment = (rocket.guidance.desired_moment - modelled_moment).*[1;1;1];
 
@@ -176,7 +176,7 @@ thrust_moment_direction =       rocket.guidance.thrust_moment/ ...
                            norm(rocket.guidance.thrust_moment);
 
 
-moment_arm            = (rocket.engine.position+rocket.engine.attitude*rocket.engine.nozzle.position - rocket.center_of_mass);
+moment_arm            = (rocket.engine.position+rocket.engine.attitude*rocket.engine.nozzle.position - rocket.rigid_body.center_of_mass);
 moment_arm_direction  = moment_arm/norm(moment_arm);
 moment_arm_complement =      cross(moment_arm_direction, thrust_moment_direction)/ ...
                         norm(cross(moment_arm_direction, thrust_moment_direction));
