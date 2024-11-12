@@ -2,6 +2,8 @@
 
 Author: Vilgot Lötberg, vilgotl@kth.se, 0725079097
 
+The below code can be found at: https://github.com/aesirkth/AESIR-Mjollnir-Simulations
+
 <h2>Background</h2>
 
 

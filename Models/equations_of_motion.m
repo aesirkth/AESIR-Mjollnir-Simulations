@@ -1,7 +1,5 @@
 function rocket = equations_of_motion(rocket)
-% rocketuting the rocket.derivative of the state-vector based on the rocketonent
-% parameters. The state-vector rocket.derivative and the state vector are then
-% used by the ODE-solver to iterate the system.
+% computing the motion of the rocket.
 
 rocket.attitude = orthonormalize(rocket.attitude);
 

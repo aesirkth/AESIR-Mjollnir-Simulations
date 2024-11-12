@@ -3,6 +3,8 @@ Author: Vilgot Lötberg, vilgotl@kth.se, 0725079097
 
 ![](./Assets/mjollnir2.png)
 
+The below code can be found at: https://github.com/aesirkth/AESIR-Mjollnir-Simulations
+
 <h2>Contents:</h2>
 
 - Understanding how the main script and the other high level scripts work
