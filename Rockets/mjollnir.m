@@ -7,6 +7,7 @@ rocket.models           = {@equations_of_motion, ...
                            @propulsion_model,    ...
                            @aerodynamics_model,  ...
                            @gravity_model,       ...
+                           @parachute_model,     ...
                            @equations_of_motion};
 
 
@@ -86,3 +87,14 @@ rocket.engine.attitude                      = eye(3);
 rocket.engine.nozzle                        = struct();
 rocket.engine.nozzle.position               = [0;0;0];
 rocket.engine.nozzle.attitude               = eye(3);
+
+
+%% Parachutes:
+
+rocket.chute                                = struct();
+rocket.chute.drogue                         = struct();
+rocket.chute.drogue.coefficient             = 0.75; % Placeholder value
+rocket.chute.drogue.area                    = 0.785; % Placeholder value
+rocket.chute.main                           = struct();
+rocket.chute.main.coefficient               = 0.785; % Placeholder value
+rocket.chute.main.area                      = 7; % Placeholder value
