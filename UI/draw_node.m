@@ -1,7 +1,7 @@
-function draw_node(tree, ax, name, historian)
+function draw_node(tree, ax, name, historian, t)
 ColorMap = evalin("base", "ColorMap");
 %index-finder:
-if ~exist("index", "var"); historian_index_finder; end
+historian_index_finder
 % Get parent
 for index = 1:numel(tree.Children); if strcmp(tree.Children(index).Text, name); parent = tree.Children(index); end; end
 t_list = historian.t;

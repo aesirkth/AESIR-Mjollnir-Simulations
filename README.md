@@ -154,6 +154,8 @@ In general, coordinate systems follow this pattern:
 
 **All an objects properties are in the objects parents basis!**
 
+This is how things are usually structured in 3D-software, think Blender, Unity, CAD, etc.
+
 For all properties under ``rocket``, like ``rocket.position``, they will be in the rockets's parents basis, ie the world. For properties under ``rocket.rigid_body``, they will be in the ``rocket.rigid_body``'s parent's basis, ie ``rocket``. 
 
 For example ``rocket.rigid_body.center_of_mass`` will be in the basis of ``rocket``.
@@ -161,6 +163,7 @@ For example ``rocket.rigid_body.center_of_mass`` will be in the basis of ``rocke
 What this basis acually is is ALWAYS described by the property ``attitude``, whether it be ``rocket.attitude``, ``rocket.engine.nozzle.attitude``, or ``rocket.fins.attitude``, this 3x3 matrix describes the basis vectors of it's parent object.
 
 If the parent has no property ``attitude``, then it assumes the basis is the same one as its parent.
+
 
 
 
@@ -277,3 +280,19 @@ rocket.derivative("subcomponent.my_parameter") = dmy_parameter_dt;
 In general, think of the keyword as the address to the variable in question.
 
 
+<h2>Reserved parameters</h2>
+
+<h4>TLDR:</h4>   
+
+The following keywords are reserved for specific purposes, but may be added, removed or changed, so long as the programmer is aware that they :
+
+- **position** : position of parent in relation to grandparent (see  **Coordinate-systems and basis**)
+- **attitude** : attitude - II -
+- **center_of_mass** : center of mass - II -
+- **moment_of_inertia** : moment of inertia -II-
+- 
+
+
+<h4>Extended:</h4> 
+
+Some parameters in the model are reserved, or have a ready defined meaning.

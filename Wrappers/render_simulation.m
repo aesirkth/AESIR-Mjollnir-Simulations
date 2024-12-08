@@ -34,12 +34,14 @@ ui = initiate_ui(); initiate_nodes(ui.Tree, sim.initial_rocket.name, sim.rocket_
 
 
 if render_job.record_video
+genpath(render_job.video_name);
 if isfile(render_job.video_name); delete(render_job.video_name); end
 render_job.vidobj = VideoWriter(render_job.video_name, "MPEG-4"); render_job.vidobj.FrameRate = render_job.framerate; %render_job.vidobj.FrameCount = sim.job.t_max*render_job.framerate;
 open(render_job.vidobj); 
 end
 
 if render_job.record_gif
+genpath(render_job.gif_name);
 if isfile(render_job.gif_name); delete(render_job.gif_name); end
 img = getframe(ui.UIFigure); img = frame2im(img); [img,cmap] = rgb2ind(img, 256);
 imwrite(img, cmap, render_job.gif_name, "gif", LoopCount=Inf, Delaytime = 1/render_job.framerate); 
