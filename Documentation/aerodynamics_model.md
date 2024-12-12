@@ -19,6 +19,8 @@ surfaces, nor the differences between supersonic and subsonic airflow.
 The model is primarily intendet to be used in conjunction with the equations of motion 
 to simulate rocketry/aircraft control/aerodynamic behavior in flight.
 
+
+
 It can also be seen as an unintentional study of polynomials.
 
 <h2>Introduction</h2>
@@ -153,7 +155,7 @@ Plotting part of the integrand $ (v_0 - \omega r)^2 sign(v_0 - \omega r) b(r) $ 
 The shape of the curve is somewhat remeniscent of a cubic polynomial. The general shape of which 
 can be written as $ (v_0 - \omega \cdot r)^3$, in essence approximating $sign(v) = v$ to capture the odd nature of $sign(v)$:
 
-![](../Assets/mjollnir.png)
+![](integrand_approximation.gif)
 > *Fig 7: integrand for different $v_0, \omega$*
 
 To make the polynomial into a good approximation, it's normalised with $ |v_0 - \omega \cdot r_{ref}| $ 

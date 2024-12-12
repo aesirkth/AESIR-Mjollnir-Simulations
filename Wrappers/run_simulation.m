@@ -1,27 +1,30 @@
 function [sim,job] = run_simulation(rocket, job)
 %% run_simulation(rocket, (job) )
 %
-% Parameter               Class                   Default   :   Description             
-%_______________________:_______________________:___________________________________________________________________
-% job                   : struct                : N/A       :   specify how the job should be run
-% job.name              : string                : "sim"     :   filename to which the job progress should be saved
-% job.save              : boolean               : false     :   whether progress should be saved to a .m file
-% job.load              : boolean               : false     :   whether progress should be loaded from previous sim if file is available
-% job.is_done           : boolean               : false     :   usually false, true if job is complete. Will not run of false.
-% job.ode_solver        : @ode45, @ode23t, ...  : @ode45    :   which solver should be used for the simulation   
-% job.t_max             : float                 : 80        :   simulation end time   
-
+% Parameter             : Class                 : Default                   :   Description             
+%___________________________________________________________________________________________________________________
+% job                   : struct                : N/A                       :   specify how the job should be run
+% job.name              : string                : "Data/test/sims/sim.mat"  :   filename to which the job progress should be saved
+% job.save              : boolean               : false                     :   whether progress should be saved to a .m file
+% job.load              : boolean               : false                     :   whether progress should be loaded from previous sim if file is available
+% job.is_done           : boolean               : false                     :   usually false, true if job is complete. Will not run of false.
+% job.ode_solver        : @ode45, @ode23t, ...  : @ode45                    :   which solver should be used for the simulation   
+% job.t_max             : float                 : 80                        :   simulation end time   
+%
+% [NOTE!] Latest sim auto-saves to "./Data/latest_sim.mat". You have no choise in the matter, as it's no fun to run a 
+% 10h+ sim and realize after the fact that you didn't turn saving on, loosing you all your work. The latest_sim file is over-
+% written every time a simulation is run, it just allows you to save your sim post mortem.
 
 
 setup;
 
-if ~exist  ("job", "var");       job              = struct();   end
-if ~isfield (job, "save");       job.save         = false;      end
-if ~isfield (job, "load");       job.load         = false;      end
-if ~isfield (job, "is_done");    job.is_done      = false;      end
-if ~isfield (job, "t_max");      job.t_max        = 80;         end   
-if ~isfield (job, "ode_solver"); job.ode_solver   = @ode45;     end
-if ~isfield (job, "name");       job.name         = "sim";      end
+if ~exist  ("job", "var");       job              = struct();                   end
+if ~isfield (job, "save");       job.save         = true;                       end
+if ~isfield (job, "load");       job.load         = false;                      end
+if ~isfield (job, "is_done");    job.is_done      = false;                      end
+if ~isfield (job, "t_max");      job.t_max        = 80;                         end   
+if ~isfield (job, "ode_solver"); job.ode_solver   = @ode45;                     end
+if ~isfield (job, "name");       job.name         = "Data/test/sims/sim.mat";   end
 
 
 
@@ -44,8 +47,7 @@ if ~exist("sim", "var")
     disp    ("Simulating/Simulating...")
     
     initial_state_vector    = rocket2state_vector(rocket);
-    [~, sim.initial_rocket] = system_equations   (0, initial_state_vector, rocket);
-
+    [~, sim.initial_rocket] = system_equations   (0, initial_state_vector, rocket); % [NOTE!] Due to recursion-structure, the rocket gotten out of ODE is not meant to be fed back into the ODE.
     % Solve ODE initial value problem.
     t_range = [0, job.t_max];
     
@@ -88,8 +90,8 @@ if ~exist("sim", "var")
     evalin("base", "clear loading_bar_end_time, loading_message");
     disp  ("Simulating/Done.")
 
-
-    if job.save; save(job.name, "sim", "job"); end
+                 save(genpath("./Data/latest_sim.mat"), "sim", "job");
+    if job.save; save(genpath(job.name),                "sim", "job"); end
 
 
 

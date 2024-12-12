@@ -1,7 +1,10 @@
 *.MATLABDriveTag
 *.mp4
 /Data
-/Blender
 *simulation_jobs.mat
 *render_jobs.mat
+<<<<<<< HEAD
 /Assets/large files
+=======
+/Test
+>>>>>>> 362280299d6bdc9a00e5bb16d2be5b218809e0dd
