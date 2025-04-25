@@ -10,7 +10,7 @@ The below code can be found at: https://github.com/aesirkth/AESIR-Mjollnir-Simul
 ![](../Data/tralljok16-Oct-2024/gifs/sim(1).gif)
 
 
-This paper will treat the modelling of the aerodynamic moments around a flying body 
+This article will treat the modelling of the aerodynamic moments around a flying body 
 using a tensor-based approach. The method described takes into account the geometry 
 of the body and the non-linearity of lifting moments distributed along its sides, 
 though it does not take into account any fluid-mechanics interaction between different 
